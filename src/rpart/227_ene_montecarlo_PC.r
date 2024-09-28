@@ -5,34 +5,25 @@ require("data.table")
 require("rpart")
 require("parallel")
 require("primes")
-require("ggplot2")
 
 
 PARAM <- list()
-# reemplazar por su primer semilla
+# reemplazar por las propias semillas
 PARAM$semilla_primigenia <- 111667
-PARAM$qsemillas <- 10
+PARAM$qsemillas <- 100
 
 # dataset
 PARAM$dataset_nom <- "./datasets/competencia_01.csv"
 
+
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
-PARAM$rpart1 <- list (
-  "cp" = -1,
-  "minsplit" = 700,
-  "minbucket" = 350,
-  "maxdepth" = 8
+PARAM$rpart <- list (
+  "cp" = -1, # complejidad minima
+  "minsplit" = 700, # minima cantidad de regs en un nodo para hacer el split
+  "minbucket" = 350, # minima cantidad de regs en una hoja
+  "maxdepth" = 8 # profundidad máxima del arbol
 )
-
-
-PARAM$rpart2 <- list (
-  "cp" = -1,
-  "minsplit" = 200,
-  "minbucket" = 30,
-  "maxdepth" = 12
-)
-
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset que consiste
@@ -53,70 +44,55 @@ particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, 
 }
 #------------------------------------------------------------------------------
 
-DosArbolesEstimarGanancia <- function(semilla, training_pct, param_rpart1, param_rpart2) {
+ArbolEstimarGanancia <- function(semilla, param_basicos) {
   # particiono estratificadamente el dataset
   particionar(dataset,
-    division = c(training_pct, 100L -training_pct), 
+    division = c(param_basicos$training_pct, 100L -param_basicos$training_pct), 
     agrupa = "clase_ternaria",
     seed = semilla # aqui se usa SU semilla
   )
 
   # genero el modelo
   # predecir clase_ternaria a partir del resto
-  modelo1 <- rpart("clase_ternaria ~ .",
+  modelo <- rpart("clase_ternaria ~ .",
     data = dataset[fold == 1], # fold==1  es training,  el 70% de los datos
     xval = 0,
-    control = param_rpart1
+    control = param_basicos$rpart
   ) # aqui van los parametros del arbol
 
   # aplico el modelo a los datos de testing
-  prediccion1 <- predict(modelo1, # el modelo que genere recien
+  prediccion <- predict(modelo, # el modelo que genere recien
     dataset[fold == 2], # fold==2  es testing, el 30% de los datos
     type = "prob"
   ) # type= "prob"  es que devuelva la probabilidad
 
+  # prediccion es una matriz con TRES columnas,
+  #  llamadas "BAJA+1", "BAJA+2"  y "CONTINUA"
+  # cada columna es el vector de probabilidades
+
 
   # calculo la ganancia en testing  qu es fold==2
-  ganancia_test1 <- dataset[
+  ganancia_test <- dataset[
     fold == 2,
-    sum(ifelse(prediccion1[, "BAJA+2"] > 0.025,
+    sum(ifelse(prediccion[, "BAJA+2"] > 0.025,
       ifelse(clase_ternaria == "BAJA+2", 273000, -7000),
       0
     ))
   ]
 
   # escalo la ganancia como si fuera todo el dataset
-  ganancia_test_normalizada1 <- ganancia_test1 / (( 100 - training_pct ) / 100 )
-
-  modelo2 <- rpart("clase_ternaria ~ .",
-    data = dataset[fold == 1], # fold==1  es training,  el 70% de los datos
-    xval = 0,
-    control = param_rpart2
-  ) # aqui van los parametros del arbol
-
-  # aplico el modelo a los datos de testing
-  prediccion2 <- predict(modelo2, # el modelo que genere recien
-    dataset[fold == 2], # fold==2  es testing, el 30% de los datos
-    type = "prob"
-  ) # type= "prob"  es que devuelva la probabilidad
-
-
-  # calculo la ganancia en testing  qu es fold==2
-  ganancia_test2 <- dataset[
-    fold == 2,
-    sum(ifelse(prediccion2[, "BAJA+2"] > 0.025,
-      ifelse(clase_ternaria == "BAJA+2", 273000, -7000),
-      0
-    ))
-  ]
-
-  # escalo la ganancia como si fuera todo el dataset
-  ganancia_test_normalizada2 <- ganancia_test2 / (( 100 - training_pct ) / 100 )
+  ganancia_test_normalizada <- ganancia_test / (( 100 - PARAM$training_pct ) / 100 )
 
   return(list(
     "semilla" = semilla,
-    "ganancia1" = ganancia_test_normalizada1,
-    "ganancia2" = ganancia_test_normalizada2
+    "testing" = dataset[fold == 2, .N],
+    "testing_pos" = dataset[fold == 2 & clase_ternaria == "BAJA+2", .N],
+    "envios" = dataset[fold == 2, sum(prediccion[, "BAJA+2"] > 0.025)],
+    "aciertos" = dataset[
+        fold == 2,
+        sum(prediccion[, "BAJA+2"] > 0.025 & clase_ternaria == "BAJA+2")
+    ],
+    "ganancia_test" = ganancia_test_normalizada
   ))
 }
 #------------------------------------------------------------------------------
@@ -140,43 +116,27 @@ dataset <- fread(PARAM$dataset_nom)
 dataset <- dataset[foto_mes==202104]
 
 
-
-dir.create("C:/Users/German/Documents/MaestriaDataMining/DMEyF/exp/EX2410", showWarnings = TRUE)
-setwd("C:/Users/German/Documents/MaestriaDataMining/DMEyF/exp/EX2410")
-
-
 # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
 #  tantas veces como valores tenga el vector  PARAM$semillas
-salidas <- mcmapply(DosArbolesEstimarGanancia,
+salidas <- mcmapply(ArbolEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
-  MoreArgs = list(PARAM$training_pct, PARAM$rpart1, PARAM$rpart2), # aqui paso el segundo parametro
+  MoreArgs = list(PARAM), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
   mc.cores = 1
 )
 
+# muestro la lista de las salidas en testing
+#  para la particion realizada con cada semilla
+salidas
 
 # paso la lista a vector
 tb_salida <- rbindlist(salidas)
 
 
+for( i in seq(10, 100, 10) )
+{
+  cat( i, "\t", tb_salida[ 1:i, mean(ganancia_test)], "\n" )
+}
 
 
-# grafico densidades
-
-grafico <- ggplot( tb_salida, aes(x=ganancia1)) + geom_density(alpha=0.25)  +
-             geom_density(data=tb_salida, aes(x=ganancia2), fill="purple", color="purple",  alpha=0.10)
-
-pdf("densidad_dos.pdf")
-print(grafico)
-dev.off()
-
-
-print( tb_salida[ , list( "arbol1" = mean( ganancia1),  "arbol2" = mean(ganancia2) ) ] )
-
-print( tb_salida[ , list( "prob( m1 > m2)" = sum(ganancia1 > ganancia2 )/ .N ) ]  )
-
-
-wt <- wilcox.test(  tb_salida$ganancia1,  tb_salida$ganancia2 )
-cat( "Wilcoxon Test p-value ", wt$p.value, "\n" )
-
-
+cat( "desvio : " , tb_salida[ , sd(ganancia_test) ], "\n" )
