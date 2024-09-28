@@ -7,10 +7,10 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("~/buckets/b1") # Establezco el Working Directory
+setwd("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF") # Establezco el Working Directory
 
 # cargo el dataset que tiene la clase calculada !
-dataset <- fread("./datasets/competencia_01.csv")
+dataset <- fread("./datasets/competencia_01_R_datatable.csv")
 
 dtrain <- dataset[foto_mes <= 202104] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202106] # defino donde voy a aplicar el modelo
