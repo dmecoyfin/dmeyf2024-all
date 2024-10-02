@@ -94,8 +94,9 @@ dfinaltrain <- lgb.Dataset(
 # me quedo con los mejores hiperparametros de la Bayesian Optimization
 setorder( tb_BO_log, -ganancia )
 param_completo <- copy(as.list(tb_BO_log[1]))
+param_completo$seed <- 245083
 
-set.seed(245083, kind = "L'Ecuyer-CMRG")
+set.seed(param_completo$seed , kind = "L'Ecuyer-CMRG")
 
 # entreno el modelo
 modelo <- lightgbm(
