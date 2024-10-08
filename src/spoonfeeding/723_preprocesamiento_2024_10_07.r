@@ -88,7 +88,6 @@ dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings = FALSE)
 # Establezco el Working Directory DEL EXPERIMENTO
 setwd(paste0("./exp/", PARAM$experimento, "/"))
 
-ñ
 
 # Training Strategy  ----------------------------------------------
 
