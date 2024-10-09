@@ -53,6 +53,7 @@ action_limitar_memoria( 4 )
 
 # Aqui empieza el programa
 setwd("~/buckets/b1/exp/")
+#setwd("/mnt/storage/work/dmeyf/exp/")
 
 # cargo el resultado de la Bayesian Optimization
 tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana,"/BO_log.txt"))
