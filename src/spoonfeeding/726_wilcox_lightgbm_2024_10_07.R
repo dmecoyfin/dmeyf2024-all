@@ -77,7 +77,7 @@ PARAM$num_seeds <- 0
 #Parametros a modificar
 PARAM$max_seeds <- 30  # Máximo de semillas permitidas
 PARAM$semilla_primigenia <- 111667 # Semilla general para reproducibilidad
-PARAM$envios <- seq(8000, 1300, 500) # Rango de envios que queremos evaluar
+PARAM$envios <- seq(8000, 13000, 500) # Rango de envios que queremos evaluar
 
 #Genero las semillas de números primos
 primos <- generate_primes(min = 100000, max = 1000000)
@@ -85,11 +85,19 @@ set.seed(PARAM$semilla_primigenia)
 PARAM$semillas <- sample(primos, PARAM$max_seeds )
 
 # los campos que se van a utilizar
-campos_buenos <- setdiff(
+campos_buenos1 <- setdiff(
   colnames(dataset1),
   c("clase_ternaria", "clase01",
     "part_training", "part_validation", "part_testing",
     "part_final_train", "part_future")
+)
+
+campos_buenos2 <- setdiff(
+  colnames(dataset1),
+  c("clase_ternaria", "clase01",
+    "part_training", "part_validation", "part_testing",
+    "part_final_train", "part_future",
+    "cprestamos_presonales", "mprestamos_personales")
 )
 
 setorder(tb_BO_log1, -ganancia )
@@ -119,18 +127,18 @@ entrenar_y_predecir <- function(seed) {
   
   # Convertimos los datos a formato lgb.Dataset
   dtrain1 <- lgb.Dataset(
-    data = data.matrix(dataset1[part_training == 1L, campos_buenos, with = FALSE]),
+    data = data.matrix(dataset1[part_training == 1L, campos_buenos1, with = FALSE]),
     label = dataset1[part_training == 1L, clase01],
     free_raw_data = FALSE
   )
   dtrain2 <- lgb.Dataset(
-    data = data.matrix(dataset2[part_training == 1L, campos_buenos, with = FALSE]),
+    data = data.matrix(dataset2[part_training == 1L, campos_buenos2, with = FALSE]),
     label = dataset2[part_training == 1L, clase01],
     free_raw_data = FALSE
   )
-  dvalid1 <- data.matrix(dataset1[part_validation == 1L, campos_buenos, with = FALSE])
+  dvalid1 <- data.matrix(dataset1[part_validation == 1L, campos_buenos1, with = FALSE])
   
-  dvalid2 <- data.matrix(dataset2[part_validation == 1L, campos_buenos, with = FALSE])
+  dvalid2 <- data.matrix(dataset2[part_validation == 1L, campos_buenos2, with = FALSE])
   
   # Entrenamos ambos modelos con los mismos parámetros, pero con la semilla diferente
   modelo_1 <- lightgbm(
