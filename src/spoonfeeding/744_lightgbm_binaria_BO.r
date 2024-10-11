@@ -43,7 +43,7 @@ PARAM <- list()
 PARAM$experimento_data <- "PP7430"
 PARAM$experimento <- "HT7440"
 
-PARAM$semilla_azar <- 102191 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
 
 # por ahora 1 para que no me llueva una catarata de preguntas de alumnos
 #  justo antes del cierre de la primera competencia
@@ -87,13 +87,13 @@ PARAM$lgb_basicos <- list(
 
 
 # Aqui se cargan los hiperparametros VIRTUALES
-#  que se optimzan en la Bayesian Optimization
+#  que se optimzan en la Bayesian Optimization utilizo los calculados en HT4220_mejor.txt !!!!!!!!!
 PARAM$bo_lgb <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.02, upper = 0.3),
-  makeNumericParam("feature_fraction", lower = 0.01, upper = 1.0),
-  makeNumericParam("leaf_size_log", lower = -14.0, upper = -1.0),
-  makeNumericParam("coverage_log", lower = -15.0, upper = 0.0),
-  makeNumericParam("num_iterations_log", lower = 4.0, upper = 12.0)
+  makeNumericParam("learning_rate", lower = 0.01, upper = 0.1),
+  makeNumericParam("feature_fraction", lower = 0.5, upper = 0.8),
+  makeNumericParam("leaf_size_log", lower = -10.0, upper = -6.0),
+  makeNumericParam("coverage_log", lower = -8.0, upper = -3.0),
+  makeNumericParam("num_iterations_log", lower = 6.0, upper = 8.0)
 )
 
 
