@@ -94,7 +94,7 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
     semillas, # paso el vector de semillas
     MoreArgs = list(PARAM$training_pct, param_basicos), # aqui paso el segundo parametro
     SIMPLIFY = FALSE,
-    mc.cores = detectCores() # en Windows debe ser 1
+    mc.cores = 1 # en Windows debe ser 1
   )
 
   return(salida)
@@ -103,7 +103,7 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/Joseph/OneDrive - Lisicki Litvin y Asociados/Maestria/DM EF/") # Establezco el Working Directory
 # cargo los datos
 
 
@@ -122,8 +122,8 @@ dataset <- dataset[foto_mes==202104]
 
 # creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
-dir.create("~/buckets/b1/exp/HT2810/", showWarnings = FALSE)
-setwd( "~/buckets/b1/exp/HT2810/" )
+dir.create("exp/HT2810/", showWarnings = FALSE)
+setwd ("exp/HT2810/" )
 
 
 # genero la data.table donde van los resultados detallados del Grid Search
@@ -142,14 +142,17 @@ tb_grid_search_detalle <- data.table(
 
 for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
   for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    # notar como se agrega
-
+    for (vmin_bucket in c(333,267,200,133,67,33,17,7,3)) {
+    # notar como se agrega  
+    
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
+    print(paste("vmax_depth:", vmax_depth, ", vmin_split:", vmin_split, ", vmin_bucket", vmin_bucket))
+      
     param_basicos <- list(
       "cp" = -0.5, # complejidad minima
       "maxdepth" = vmax_depth, # profundidad máxima del arbol
       "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
+      "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
     )
 
     # Un solo llamado, con la semilla 17
@@ -161,12 +164,15 @@ for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
             rbindlist(ganancias) )
     )
 
+
+        
+    }
   }
 
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",
-          sep = "\t" )
+          sep = "|" )
 }
 
 #----------------------------
@@ -179,13 +185,13 @@ tb_grid_search <- tb_grid_search_detalle[,
 ]
 
 # ordeno descendente por ganancia
-setorder( tb_grid_search, -ganancia_mean )
+setorder(tb_grid_search, -ganancia_mean )
 
 # genero un id a la tabla
 tb_grid_search[, id := .I ]
 
-fwrite( tb_grid_search,
+fwrite(tb_grid_search,
   file = "gridsearch.txt",
-  sep = "\t"
+  sep = "|"
 )
 
