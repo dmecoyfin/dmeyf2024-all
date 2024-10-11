@@ -25,11 +25,11 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230-concept-drifting-corregido"
+PARAM$experimento <- "PP7430-concept-drifting-corregido-602891"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_azar <- 994391 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 602891 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "deflacion"
@@ -487,9 +487,9 @@ dataset[, azar := NULL ]
 
 
 # Grabo el dataset
-#fwrite( dataset,
-#  file = "dataset.csv.gz",
-#  sep = "\t"
-#)
+fwrite( dataset,
+  file = "dataset.csv.gz",
+  sep = "\t"
+)
 
 cat("\n\nEl preprocesamiento ha terminado\n")
