@@ -12,7 +12,7 @@ require("lightgbm")
 PARAM <- list()
 PARAM$experimento <- "KA4210"
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 111667
 
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
@@ -20,11 +20,17 @@ PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 613
+PARAM$finalmodel$num_iterations <- 1781
 PARAM$finalmodel$learning_rate <- 0.01
-PARAM$finalmodel$feature_fraction <- 0.5489793063
-PARAM$finalmodel$min_data_in_leaf <- 1014
-PARAM$finalmodel$num_leaves <- 928
+PARAM$finalmodel$feature_fraction <- 0.8261
+PARAM$finalmodel$min_data_in_leaf <- 3520
+PARAM$finalmodel$num_leaves <- 406
+PARAM$finalmodel$max_depth <- 5
+PARAM$finalmodel$num_boost_round <- 122
+PARAM$finalmodel$lambda_l1 <- 0.0910
+
+
+
 
 
 PARAM$finalmodel$max_bin <- 31
@@ -87,9 +93,14 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
+    max_depth = PARAM$finalmodel$max_depth,
+    num_boost_round <- PARAM$finalmodel$num_boost_round,
+    lambda_l1 <- PARAM$finalmodel$lambda_l1,
     seed = PARAM$semilla_primigenia
   )
 )
+
+
 
 #--------------------------------------
 # ahora imprimo la importancia de variables
@@ -134,7 +145,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(9000, 13000, by = 500)
+cortes <- seq(9000, 20000, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
