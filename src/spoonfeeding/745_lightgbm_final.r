@@ -33,8 +33,8 @@ PARAM$experimento_bayesiana <- "HT7440"
 
 PARAM$experimento <- "KA7450"
 
-PARAM$semilla_azar <- 102191 # Aqui poner su  primer  semilla
-PARAM$semillas_cantidad <- 3
+PARAM$semilla_azar <- 903761 # Aqui poner su  primer  semilla
+PARAM$semillas_cantidad <- 5
 
 # c(1,2) son el mejor y el segundo mejor de la bayesian optimization
 PARAM$bo_ranks <- c(1, 2 )
