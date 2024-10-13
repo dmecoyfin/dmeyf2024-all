@@ -29,9 +29,13 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 PARAM$experimento_data <- "PP7430"
+PARAM$experimento_data <- "PP7230_estandarizar"
+
 PARAM$experimento_bayesiana <- "HT7440"
+PARAM$experimento_bayesiana <- "HT7440_PP7230_estandarizar"
 
 PARAM$experimento <- "KA7450"
+PARAM$experimento <- "KA7450_estandarizar"
 
 PARAM$semilla_azar <- 102191 # Aqui poner su  primer  semilla
 PARAM$semillas_cantidad <- 3
@@ -70,7 +74,9 @@ set.seed(PARAM$semilla_azar)
 ksemillas <- sample(primos)[seq(PARAM$semillas_cantidad)]
 
 # cargo el resultado de la Bayesian Optimization
-tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana,"/BO_log.txt"))
+#tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana,"/BO_log.txt"))
+#tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana, "/BO_log.txt"), sep = ",")
+tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana, "/BO_log.txt"), sep = "\t")
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(paste0(PARAM$experimento_data,"/dataset.csv.gz"))
