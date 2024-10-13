@@ -28,16 +28,16 @@ options(error = function() {
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
-PARAM$experimento_data <- "PP7230"
-PARAM$experimento_bayesiana <- "HT7440"
+PARAM$experimento_data <- "PP7230_2024_10_12_C"
+PARAM$experimento_bayesiana <- "HT7440_2024_10_12_B"
 
-PARAM$experimento <- "KA7450"
+PARAM$experimento <- "KA7450_2024_10_12_A"
 
 PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
-PARAM$semillas_cantidad <- 3
+PARAM$semillas_cantidad <- 10
 
 # c(1,2) son el mejor y el segundo mejor de la bayesian optimization
-PARAM$bo_ranks <- c(1, 2 )
+PARAM$bo_ranks <- c(1)
 
 #------------------------------------------------------------------------------
 # limita el uso de memoria RAM a  Total_hardware - GB_min
@@ -75,24 +75,6 @@ tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana,"/BO_log.txt"))
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(paste0(PARAM$experimento_data,"/dataset.csv.gz"))
 
-# En un mundo prolijo, estas variables se eliminan
-#  durante la creacion del dataset
-# https://www.youtube.com/watch?v=eitDnP0_83k
-dataset[, cprestamos_personales := NULL ]
-dataset[, cprestamos_personales_lag1 := NULL ]
-dataset[, cprestamos_personales_delta1 := NULL ]
-
-dataset[, mprestamos_personales := NULL ]
-dataset[, mprestamos_personales_lag1 := NULL ]
-dataset[, mprestamos_personales_delta1 := NULL ]
-
-dataset[, cplazo_fijo := NULL ]
-dataset[, cplazo_fijo_lag1 := NULL ]
-dataset[, cplazo_fijo_delta1 := NULL ]
-
-dataset[, ctarjeta_debito := NULL ]
-dataset[, ctarjeta_debito_lag1 := NULL ]
-dataset[, ctarjeta_debito_delta1 := NULL ]
 
 
 # creo la carpeta donde va el experimento

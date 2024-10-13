@@ -40,10 +40,10 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento_data <- "PP7430"
+PARAM$experimento_data <- "PP7230_2024_10_12_C"
 PARAM$experimento <- "HT7440"
 
-PARAM$semilla_azar <- 102191 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
 
 # por ahora 1 para que no me llueva una catarata de preguntas de alumnos
 #  justo antes del cierre de la primera competencia

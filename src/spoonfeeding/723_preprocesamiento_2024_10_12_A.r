@@ -25,7 +25,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230_2024_10_12_A"
+PARAM$experimento <- "PP7230_2024_10_12_C"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
@@ -46,7 +46,7 @@ PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
 PARAM$trainingstrategy$future <- c(202106)
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 1.0
+PARAM$trainingstrategy$training_undersampling <- 0.25
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
