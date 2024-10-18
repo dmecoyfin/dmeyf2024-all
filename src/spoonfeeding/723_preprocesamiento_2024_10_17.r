@@ -25,9 +25,9 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230_2024_10_07"
+PARAM$experimento <- "PP7230_2024_10_17_A"
 
-PARAM$input$dataset <- "./datasets/competencia_01.csv"
+PARAM$input$dataset <- "./datasets/competencia_02.csv"
 
 PARAM$semilla_azar <- 111667 # Aqui poner su  primer  semilla
 
@@ -37,16 +37,16 @@ PARAM$clase_minoritaria <- c("BAJA+1","BAJA+2")
 
 # los meses en los que vamos a entrenar
 #  la magia estara en experimentar exhaustivamente
-PARAM$trainingstrategy$testing <- c(202104)
-PARAM$trainingstrategy$validation <- c(202103)
-PARAM$trainingstrategy$training <- c(202102)
+PARAM$trainingstrategy$testing <- c(202105)
+PARAM$trainingstrategy$validation <- c(202106)
+PARAM$trainingstrategy$training <- c(202101,202102, 202103, 202104,202105,202106)
 
 
-PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
-PARAM$trainingstrategy$future <- c(202106)
+PARAM$trainingstrategy$final_train <- c(202101,202102, 202103, 202104,202105,202106)
+PARAM$trainingstrategy$future <- c(202108)
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 0.5
+PARAM$trainingstrategy$training_undersampling <- 0.1
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
