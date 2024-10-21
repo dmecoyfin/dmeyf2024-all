@@ -34,7 +34,7 @@ options(error = function() {
 PARAM <- list()
 
 PARAM$experimento_data <- "PP7235_25_s1_sin_pres"
-PARAM$experimento <- "HT7245_quant"
+PARAM$experimento <- "HT7245_dart"
 
 # 799891, 799921, 799961, 799991, 800011
 PARAM$semilla_azar <- 799991 # Aqui poner su  primer  semilla
@@ -42,14 +42,10 @@ PARAM$semilla_azar <- 799991 # Aqui poner su  primer  semilla
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
 
-# parametros registrados en  BO_log.txt
-# fecha	cols	rows	boosting	objective	metric	first_metric_only	boost_from_average	feature_pre_filter	force_row_wise	verbosity	max_depth	min_gain_to_split	min_sum_hessian_in_leaf	lambda_l1	lambda_l2	max_bin	num_iterations	bagging_fraction	pos_bagging_fraction	neg_bagging_fraction	is_unbalance	scale_pos_weight	drop_rate	max_drop	skip_drop	extra_trees	use_quantized_grad	quant_train_renew_leaf	seed	learning_rate	feature_fraction	num_leaves	min_data_in_leaf	num_grad_quant_bins	estimulos	ganancia	iteracion_bayesiana
-# 20241012 152911	569	41985	gbdt	binary	custom	TRUE	TRUE	FALSE	TRUE	-100	-1	0	0.001	0	0	31	761	1	1	1	FALSE	1	0.1	50	0.5	TRUE	TRUE	TRUE	799991	0.0254916538458663	0.777150625088209	2441	1560	4	10557	139985037.981009	46
-# 20241012 154054	569	41985	gbdt	binary	custom	TRUE	TRUE	FALSE	TRUE	-100	-1	0	0.001	0	0	31	1907	1	1	1	FALSE	1	0.1	50	0.5	TRUE	TRUE	TRUE	799991	0.0257186892792681	0.79315967509857	2393	2501	4	11746	139668134.932534	54
 
 # Hiperparametros FIJOS de  lightgbm
 PARAM$lgb_basicos <- list(
-  boosting = "gbdt" , #puede ir  dart  , ni pruebe random_forest
+  boosting = "dart", # "gbdt" ,puede ir  dart  , ni pruebe random_forest
   objective = "binary",
   metric = "custom",
   first_metric_only = TRUE,
@@ -64,24 +60,21 @@ PARAM$lgb_basicos <- list(
   lambda_l2 = 0.0, # lambda_l2 >= 0.0
   max_bin = 31L, # lo debo dejar fijo, no participa de la BO
   num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
-  
-  # bagging_freq = 0, # para que funcione tiene que ser mayor que 0
-  # bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-  # pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-  # neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-  # is_unbalance = FALSE, # this should increase the overall performance metric of your model, 
-                        # it will also result in poor estimates of the individual class probabilities
-  # scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
-  # dart
+  bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+  pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+  neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+  is_unbalance = FALSE, #
+  scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+
   # drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
-  # max_drop = 50, # <=0 means no limit
-  # skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+  max_drop = 50, # <=0 means no limit
+  skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
   extra_trees = TRUE, # Magic Sauce
   
-  use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
-  # num_grad_quant_bins =  4, 
+  use_quantized_grad = FALSE, # enabling this will discretize (quantize) the gradients and hessians into bins
+  num_grad_quant_bins =  4, 
   quant_train_renew_leaf = TRUE, # renewing is very helpful for good quantized training accuracy for ranking objectives
   
 
@@ -95,13 +88,9 @@ PARAM$bo_lgb <- makeParamSet(
   makeNumericParam("learning_rate", lower = 0.02, upper = 0.1),
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
   makeIntegerParam("num_leaves", lower = 500L, upper = 4096L),
-  makeIntegerParam("min_data_in_leaf", lower = 1000L, upper = 10000L), 
-  
-  # makeNumericParam("bagging_fraction", lower = 0.1, upper = 0.9),
-  # makeNumericParam("neg_bagging_fraction", lower = 0.25, upper = 0.9)
-  
-  # makeNumericParam("drop_rate", lower = 0.1, upper = 1.0),
-  makeIntegerParam("num_grad_quant_bins", lower = 3L, upper = 7L) #después estuve probando aumentar esto
+  makeIntegerParam("min_data_in_leaf", lower = 1000L, upper = 10000L),
+  makeNumericParam("drop_rate", lower = 0.1, upper = 1.0)
+  # makeIntegerParam("num_grad_quant_bins", lower = 3L, upper = 7L)
   # makeNumericParam("lambda_l2", lower = 0.0, upper = 0.5)
 )
 
@@ -296,8 +285,8 @@ EstimarGanancia_lightgbm <- function(x) {
 # action_limitar_memoria( 4 )
 
 # setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/exp/")
-setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/exp/")
-# setwd("~/buckets/b1/exp/") # Establezco el Working Directory
+# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/exp/")
+setwd("~/buckets/b1/exp/") # Establezco el Working Directory
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(paste0(PARAM$experimento_data,"/dataset.csv.gz"))
