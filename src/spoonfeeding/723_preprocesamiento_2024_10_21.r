@@ -65,6 +65,29 @@ action_limitar_memoria <- function( GB_min = 4 ) {
 }
 #------------------------------------------------------------------------------
 
+#------------------------------------------------------------------------------
+# Aqui empieza el programa
+
+# Limito la memoria, para que ningun alumno debe sufrir que el R 
+#  aborte sin avisar si no hay suficiente memoria
+#  la salud mental de los alumnos es el bien mas preciado 
+action_limitar_memoria( 4 )
+
+
+setwd("~/buckets/b1/") # Establezco el Working Directory
+
+# cargo el dataset donde voy a entrenar el modelo
+dataset <- fread(PARAM$input$dataset)
+
+
+
+# creo la carpeta donde va el experimento
+dir.create("./exp/", showWarnings = FALSE)
+dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings = FALSE)
+
+# Establezco el Working Directory DEL EXPERIMENTO
+setwd(paste0("./exp/", PARAM$experimento, "/"))
+
 # Feature Engineering Historico  ----------------------------------------------
 #   aqui deben calcularse los  lags y  lag_delta
 #   Sin lags no hay paraiso !  corta la bocha
