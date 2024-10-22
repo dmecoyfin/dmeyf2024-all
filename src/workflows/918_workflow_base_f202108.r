@@ -341,10 +341,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
     
     
-    # quantized
-    use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
-    num_grad_quant_bins =  4,
-    quant_train_renew_leaf = TRUE,
+    # # quantized me rompió 
+    # use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
+    # num_grad_quant_bins =  4,
+    # quant_train_renew_leaf = TRUE,
 
     extra_trees = FALSE,
     
@@ -431,7 +431,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_juan_quant <- function( pnombrewf )
+wf_pajaritos <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -450,7 +450,7 @@ wf_juan_quant <- function( pnombrewf )
     mtry_ratio= 0.2
   )
 
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
@@ -468,5 +468,5 @@ wf_juan_quant <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_juan_quant()
+wf_pajaritos()
 
