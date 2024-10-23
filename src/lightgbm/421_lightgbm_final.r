@@ -19,11 +19,11 @@ PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 613
-PARAM$finalmodel$learning_rate <- 0.01
-PARAM$finalmodel$feature_fraction <- 0.5489793063
-PARAM$finalmodel$min_data_in_leaf <- 1014
-PARAM$finalmodel$num_leaves <- 928
+PARAM$finalmodel$num_iterations <- 348
+PARAM$finalmodel$learning_rate <- 0.01842
+PARAM$finalmodel$feature_fraction <- 0.77235
+PARAM$finalmodel$min_data_in_leaf <- 1931
+PARAM$finalmodel$num_leaves <- 800
 
 
 PARAM$finalmodel$max_bin <- 31
@@ -48,7 +48,7 @@ dataset[, clase01 := ifelse(clase_ternaria %in% c("BAJA+2", "BAJA+1"), 1L, 0L)]
 #--------------------------------------
 
 # los campos que se van a utilizar
-campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria", "clase01"))
+campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria", "clase01", "cprestamos_personales","mprestamos_personales"))
 
 #--------------------------------------
 
@@ -86,7 +86,7 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    seed = ksemilla_azarPARAM$semilla_primigenia
+    seed = 878777
   )
 )
 
