@@ -43,7 +43,7 @@ PARAM <- list()
 PARAM$experimento_data <- "PP7430-concept-drifting-corregido-602891"
 PARAM$experimento <- "HT7440-concept-drifting-corregido-602891"
 
-PARAM$semilla_azar <- 994391 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 609891 # Aqui poner su  primer  semilla
 
 # por ahora 1 para que no me llueva una catarata de preguntas de alumnos
 #  justo antes del cierre de la primera competencia
