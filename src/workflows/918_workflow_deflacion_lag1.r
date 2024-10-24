@@ -459,5 +459,5 @@ wf_agosto_deflacion_lag1 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_deflacion_lag1()
+wf_agosto_deflacion_lag1()
 
