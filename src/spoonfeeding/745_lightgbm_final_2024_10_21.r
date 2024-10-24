@@ -28,13 +28,13 @@ options(error = function() {
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
-PARAM$experimento_data <- "PP7230_2024_10_12_C"
-PARAM$experimento_bayesiana <- "HT7440_2024_10_12_B"
+PARAM$experimento_data <- "PP7230_2024_10_21"
+PARAM$experimento_bayesiana <- "HT7440_2024_10_21"
 
-PARAM$experimento <- "KA7450_2024_10_12_A"
+PARAM$experimento <- "KA7450_2024_10_21"
 
 PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
-PARAM$semillas_cantidad <- 10
+PARAM$semillas_cantidad <- 20
 
 # c(1,2) son el mejor y el segundo mejor de la bayesian optimization
 PARAM$bo_ranks <- c(1)
