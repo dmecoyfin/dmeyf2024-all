@@ -174,7 +174,7 @@ for ( irank in ranks ) {
       cat( "written prediccion Kaggle\n")
 
       # hago el submit
-      submitear <- TRUE
+      submitear <- FALSE
       if( "rango_submit"  %in%  names(envg$PARAM) )
       {
         if( !(sem %in% envg$PARAMrango_submit) ) submitear <- FALSE

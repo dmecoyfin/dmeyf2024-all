@@ -402,7 +402,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
+  param_local$meta$script <- "/src/wf-etapas/2601_KA_evaluate_kaggle.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
