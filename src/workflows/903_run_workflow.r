@@ -1,7 +1,7 @@
 require("rlang", quietly=TRUE) 
 
 # workflow que voy a correr
-PARAM <- "src/workflows/918_workflow_deflacion_lag1.r"
+PARAM <- "src/workflows/918_workflow_rank_cero_fijo_lag12.r"
 
 envg <- env()
 

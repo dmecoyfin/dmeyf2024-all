@@ -422,7 +422,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_lag1 <- function( pnombrewf )
+wf_agosto_lag12 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -459,5 +459,5 @@ wf_agosto_lag1 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_lag1()
+wf_agosto_lag12()
 
