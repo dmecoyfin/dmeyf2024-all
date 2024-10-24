@@ -134,11 +134,11 @@ FEhist_base <- function( pinputexps)
 
   param_local$meta$script <- "/src/wf-etapas/1501_FE_historia.r"
 
-  param_local$lag1 <- TRUE
+  param_local$lag1 <- FALSE
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
   param_local$lag6 <- FALSE # no me engraso con los lags de orden 6
-  param_local$lag12 <- FALSE # no me engraso con los lags de orden 12
+  param_local$lag12 <- TRUE # no me engraso con los lags de orden 12
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
