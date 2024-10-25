@@ -9,7 +9,11 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por las propias semillas
+<<<<<<< HEAD
+PARAM$semilla_primigenia <- 878777
+=======
 PARAM$semilla_primigenia <- 102191
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 PARAM$qsemillas <- 50
 
 # dataset
@@ -99,7 +103,11 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
+<<<<<<< HEAD
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF") # Establezco el Working Directory
+=======
 setwd("~/buckets/b1/") # Establezco el Working Directory
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 
 
 # genero numeros primos
@@ -122,7 +130,11 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
   MoreArgs = list(PARAM), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
+<<<<<<< HEAD
+  mc.cores = 1
+=======
   mc.cores = detectCores()
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 )
 
 # muestro la lista de las salidas en testing
