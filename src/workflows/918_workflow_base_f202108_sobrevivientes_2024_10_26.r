@@ -429,7 +429,7 @@ wf_agosto_gf_sobrevivientes <- function( pnombrewf )
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  #FEintra_manual_base()
+  FEintra_manual_base()
   #DR_drifting_base(metodo="rank_cero_fijo")
   #FEhist_base()
 
@@ -439,16 +439,16 @@ wf_agosto_gf_sobrevivientes <- function( pnombrewf )
   #  mtry_ratio= 0.2
   #)
 
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=0.0)
 
   # Etapas modelado
-  ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  #ts8 <- TS_strategy_base8()
+  #ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  SC_scoring( c(fm, ts8) )
-  KA_evaluate_kaggle()  # genera archivos para Kaggle
+  #fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+  #SC_scoring( c(fm, ts8) )
+  #KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -458,4 +458,3 @@ wf_agosto_gf_sobrevivientes <- function( pnombrewf )
 
 # llamo al workflow con future = 202108
 wf_agosto_gf_sobrevivientes()
-
