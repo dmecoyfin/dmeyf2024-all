@@ -420,7 +420,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_gf_sobrevivientes <- function( pnombrewf )
+wf_agosto_gf_sobrevivientes_2024_10_27 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -457,4 +457,4 @@ wf_agosto_gf_sobrevivientes <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_gf_sobrevivientes()
+wf_agosto_gf_sobrevivientes_2024_10_27()
