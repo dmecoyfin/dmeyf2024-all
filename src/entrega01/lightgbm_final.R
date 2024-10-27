@@ -28,7 +28,7 @@ options(error = function() {
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
-PARAM$experimento_data <- "PP7230v4"
+PARAM$experimento_data <- "PP7430v4"
 PARAM$experimento_bayesiana <- "HT7440v4"
 
 PARAM$experimento <- "KA7450v4"
@@ -37,7 +37,7 @@ PARAM$semilla_azar <- c(111119 ,555523,  277859) # Aqui poner su  primer  semill
 PARAM$semillas_cantidad <- 3
 
 # c(1,2) son el mejor y el segundo mejor de la bayesian optimization
-PARAM$bo_ranks <- 1#c(1, 2 )
+PARAM$bo_ranks <- c(1, 2 )
 
 #------------------------------------------------------------------------------
 # limita el uso de memoria RAM a  Total_hardware - GB_min
