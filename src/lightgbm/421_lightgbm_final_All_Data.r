@@ -10,23 +10,30 @@ require("lightgbm")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210_Prueba1"
+PARAM$experimento <- "KA4210_All_Data2"
 
 PARAM$semilla_primigenia <- 214363
 
 
-#PARAM$input$dataset <- "./datasets/competencia_01.csv"
+# PARAM$input$dataset <- "./datasets/competencia_01.csv"
 PARAM$input$dataset <- "G:/Mi unidad/01-Maestria Ciencia de Datos/DMEyF/TPs/dmeyf-2024/datasets/competencia_01_julia.csv"
+
 PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 613
-PARAM$finalmodel$learning_rate <- 0.01
-PARAM$finalmodel$feature_fraction <- 0.5489793063
-PARAM$finalmodel$min_data_in_leaf <- 1014
-PARAM$finalmodel$num_leaves <- 928
+#PARAM$finalmodel$num_iterations <- 613
+#PARAM$finalmodel$learning_rate <- 0.01
+#PARAM$finalmodel$feature_fraction <- 0.5489793063
+#PARAM$finalmodel$min_data_in_leaf <- 1014
+#PARAM$finalmodel$num_leaves <- 928
 
+PARAM$finalmodel$num_iterations <- 1387
+PARAM$finalmodel$learning_rate <- 0.055204
+PARAM$finalmodel$feature_fraction <- 0.19479
+PARAM$finalmodel$min_data_in_leaf <- 112	
+PARAM$finalmodel$num_leaves <- 902
+PARAM$finalmodel$envios <- 1387
 
 PARAM$finalmodel$max_bin <- 31
 
@@ -35,6 +42,7 @@ PARAM$finalmodel$max_bin <- 31
 # Aqui empieza el programa
 #setwd("~/buckets/b1")
 setwd("G:/Mi unidad/01-Maestria Ciencia de Datos/DMEyF/TPs/dmeyf-2024/")
+
 
 # cargo el dataset donde voy a entrenar
 dataset <- fread(PARAM$input$dataset, stringsAsFactors = TRUE)
@@ -57,7 +65,7 @@ campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria", "clase01"))
 
 # establezco donde entreno
 dataset[, train := 0L]
-dataset[foto_mes %in% PARAM$input$training, train := 1L]
+dataset[foto_mes <= PARAM$input$training, train := 1L]
 
 #--------------------------------------
 # creo las carpetas donde van los resultados
@@ -88,11 +96,7 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-<<<<<<< HEAD
     seed = 214363
-=======
-    seed = PARAM$semilla_primigenia
->>>>>>> cb8f4b9c4c172c98254858b4fbf5f094e0b96cb3
   )
 )
 
@@ -139,7 +143,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(12000, 14000, by = 500)
+cortes <- seq(9000, 15000, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
