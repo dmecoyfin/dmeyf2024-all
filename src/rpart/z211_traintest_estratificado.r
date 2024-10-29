@@ -5,7 +5,11 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
+<<<<<<< HEAD
+PARAM$semilla <- 122323
+=======
 PARAM$semilla <- 102191
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
@@ -40,7 +44,11 @@ particionar <- function(
 # Aqui comienza el programa
 
 # Establezco el Working Directory, elija una carpeta de su 
+<<<<<<< HEAD
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
+=======
 setwd("~/buckets/b1/")
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 
 # cargo el dataset
 dataset <- fread("./datasets/competencia_01.csv")

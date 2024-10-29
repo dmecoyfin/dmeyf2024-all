@@ -21,18 +21,18 @@ modelo <- rpart(
     formula = "clase_ternaria ~ .",
     data = dtrain, # los datos donde voy a entrenar
     xval = 0,
-    cp = -1, 
-    minsplit = 1000, 
-    minbucket = 333, 
-    maxdepth = 8 
+    cp = -1,
+    minsplit = 20, 
+    minbucket = 7, 
+    maxdepth = 4 
 )
 
 
-# grafico el arbol
-prp(modelo,
-    extra = 101, digits = -5,
-    branch = 1, type = 4, varlen = 0, faclen = 0
-)
+# # grafico el arbol
+# prp(modelo,
+#     extra = 101, digits = -5,
+#     branch = 1, type = 4, varlen = 0, faclen = 0
+# )
 
 
 # aplico el modelo a los datos nuevos
@@ -53,14 +53,14 @@ dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
 #  con probabilidad de BAJA+2 mayor  a  1/40
 dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 
-# genero el archivo para Kaggle
-# primero creo la carpeta donde va el experimento
-dir.create("./exp/")
-dir.create("./exp/KA2001")
+# # genero el archivo para Kaggle
+# # primero creo la carpeta donde va el experimento
+# dir.create("./exp/")
+# dir.create("./exp/KA2001")
 
 # solo los campos para Kaggle
 fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/K101_002.csv",
+        file = "./exp/KA2001/K101_004.csv",
         sep = ","
 )
 
