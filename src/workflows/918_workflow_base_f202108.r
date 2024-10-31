@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 102191
+envg$EXPENV$semilla_primigenia <- 113311
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -420,9 +420,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_agosto <- function( 301024wf )
 {
-  param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
+  param_local <- exp_wf_init( 301024wf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
   DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
