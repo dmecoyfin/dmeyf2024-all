@@ -420,9 +420,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( p3010wf )
+wf_agosto <- function( pnombrewf )
 {
-  param_local <- exp_wf_init( p3010wf ) # linea workflow inicial fija
+  param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
   DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
