@@ -16,8 +16,6 @@ envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
-
-
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
 envg$EXPENV$semilla_primigenia <- 111667
@@ -101,7 +99,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -238,36 +236,6 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 
 
   param_local$meta$script <- "/src/wf-etapas/z1601_CN_canaritos_asesinos.r"
-
-  # Parametros de un LightGBM que se genera para estimar la column importance
-  param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  param_local$train$positivos <- c( "BAJA+2")
-  param_local$train$training <- c( 202101, 202102, 202103)
-  param_local$train$validation <- c( 202105 )
-  param_local$train$undersampling <- 0.1
-  param_local$train$gan1 <- 273000
-  param_local$train$gan0 <-  -7000
-
-
-  # ratio varia de 0.0 a 2.0
-  # desvio varia de -4.0 a 4.0
-  param_local$CanaritosAsesinos$ratio <- ratio
-  # desvios estandar de la media, para el cutoff
-  param_local$CanaritosAsesinos$desvios <- desvio
-
-  return( exp_correr_script( param_local ) ) # linea fija
-}
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-# Canaritos Asesinos Creadores   Baseline
-#  azaroso, utiliza semilla
-
-CN_canaritos_asesinos_creadores_base <- function( pinputexps, ratio, desvio)
-{
-  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-
-
-  param_local$meta$script <- "/src/wf-etapas/1601_CN_canaritos_asesinos_creadores.r"
 
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
@@ -452,37 +420,35 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_gf_sobrevivientes_creados <- function( pnombrewf )
+wf_agosto_base_canaritos <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  #Reemplazar por el archivo de la iteración de asesinato que correponda
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_2.csv.gz")
 
   # Etapas preprocesamiento
-  CA_catastrophe_base( metodo="MachineLearning")
-  CN_canaritos_asesinos_creadores_base(ratio=0.2, desvio=4.0)
-  #FEintra_manual_base()
-  #DR_drifting_base(metodo="rank_cero_fijo")
-  #FEhist_base()
+#  CA_catastrophe_base( metodo="MachineLearning")
+#  FEintra_manual_base()
+#  DR_drifting_base(metodo="deflacion")
+#  FEhist_base()
 
-  #FErf_attributes_base( arbolitos= 20,
-  #  hojas_por_arbol= 16,
-  #  datos_por_hoja= 1000,
-  #  mtry_ratio= 0.2
-  #)
+#  FErf_attributes_base( arbolitos= 20,
+#    hojas_por_arbol= 16,
+#    datos_por_hoja= 1000,
+#    mtry_ratio= 0.2
+#  )
 
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+   CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  #ts8 <- TS_strategy_base8()
-  #ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+#  ts8 <- TS_strategy_base8()
+#  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  #fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  #SC_scoring( c(fm, ts8) )
-  #KA_evaluate_kaggle()  # genera archivos para Kaggle
+#  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+#  SC_scoring( c(fm, ts8) )
+#  KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -491,5 +457,4 @@ wf_agosto_gf_sobrevivientes_creados <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_gf_sobrevivientes_creados()
-
+wf_agosto_base_canaritos()
