@@ -12,7 +12,7 @@ require("lightgbm")
 PARAM <- list()
 PARAM$experimento <- "KA4210"
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 111667
 
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
@@ -20,11 +20,11 @@ PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 613
+PARAM$finalmodel$num_iterations <- 1512
 PARAM$finalmodel$learning_rate <- 0.01
-PARAM$finalmodel$feature_fraction <- 0.5489793063
-PARAM$finalmodel$min_data_in_leaf <- 1014
-PARAM$finalmodel$num_leaves <- 928
+PARAM$finalmodel$feature_fraction <- 0.9513
+PARAM$finalmodel$min_data_in_leaf <- 3680
+PARAM$finalmodel$num_leaves <- 14
 
 
 PARAM$finalmodel$max_bin <- 31
