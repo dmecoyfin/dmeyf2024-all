@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 111667
+envg$EXPENV$semilla_primigenia <- 102191
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -99,7 +99,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -420,7 +420,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_gf_sobrevivientes <- function( pnombrewf )
+wf_agosto_base <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -429,26 +429,26 @@ wf_agosto_gf_sobrevivientes <- function( pnombrewf )
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  #FEintra_manual_base()
-  #DR_drifting_base(metodo="rank_cero_fijo")
-  #FEhist_base()
+#  FEintra_manual_base()
+  DR_drifting_base(metodo="deflacion")
+#  FEhist_base()
 
-  #FErf_attributes_base( arbolitos= 20,
-  #  hojas_por_arbol= 16,
-  #  datos_por_hoja= 1000,
-  #  mtry_ratio= 0.2
-  #)
+#  FErf_attributes_base( arbolitos= 20,
+#    hojas_por_arbol= 16,
+#    datos_por_hoja= 1000,
+#    mtry_ratio= 0.2
+  )
 
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+   CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+#  ts8 <- TS_strategy_base8()
+#  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  SC_scoring( c(fm, ts8) )
-  KA_evaluate_kaggle()  # genera archivos para Kaggle
+#  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+#  SC_scoring( c(fm, ts8) )
+#  KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -457,5 +457,4 @@ wf_agosto_gf_sobrevivientes <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_gf_sobrevivientes()
-
+wf_agosto_base()
