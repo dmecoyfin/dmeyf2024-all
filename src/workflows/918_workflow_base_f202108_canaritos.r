@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 102191
+envg$EXPENV$semilla_primigenia <- 111667
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -425,10 +425,10 @@ wf_agosto_base_canaritos <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_1.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_2.csv.gz")
 
   # Etapas preprocesamiento
-  CA_catastrophe_base( metodo="MachineLearning")
+#  CA_catastrophe_base( metodo="MachineLearning")
 #  FEintra_manual_base()
 #  DR_drifting_base(metodo="deflacion")
 #  FEhist_base()
