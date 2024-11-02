@@ -2,22 +2,22 @@ require( "data.table" )
 
 #Especificar carpeta donde guarda el dataset los canarios asesinos.
 #Si va a ser la primer iteracion, especificar carpeta del dataset original
-setwd("~/buckets/b1/expw/CN-0007")  # Establezco el Working Directory
+setwd("~/buckets/b1/expw/CN-0006") # Establezco el Working Directory
 
 #Nombre del dataset
 dataset <- fread("dataset.csv.gz")
 
 #Nombre de la carpeta donde se guardan la importancia de las variables. suele ser la del ultimo canario asesino
 #Si es primer iteración, correr un canario asesino que da el archivo con la importancia
-setwd("~/buckets/b1/expw/CN-0007")
+setwd("~/buckets/b1/expw/CN-0006")
 
 #Nombre del archivo con las variables ordendas por importancia.
 impo_1 <- fread("impo_1.txt")
 
 variables_importantes <- impo_1[1:20, Feature] #Selecciono las 20 variables mas importantes
 
-#Cambiar de acuerdo a medida que vamos avanzando con la nueva generación de variables
-k=1
+#ACA HAY QUE EMPEZAR UN MEGA BUCLE
+k=2
 #AQUI COMIENZO A CREAR NUEVAS VARIABLES-----------------------------------------
 
 # Inicializa nuevas_variables como un data.table vacío
@@ -109,53 +109,3 @@ nombre_archivo <- paste0("nuevas_variables_iter_", k, ".csv")
 fwrite(nuevas_variables, file = nombre_archivo, logical01 = TRUE, sep = ",")
 cat( "Finalizado grabado de nuevas variables\n" )
 
-# grabo el dataset
-cat( "escritura del dataset nuevo\n")
-cat( "Iniciando grabado del dataset nuevo\n" )
-nombre_dataset <- paste0("dataset_iter_", k, ".csv.gz")
-
-# Guarda el archivo
-fwrite(dataset, file = nombre_dataset, logical01 = TRUE, sep = ",")
-cat( "Finalizado grabado del dataset nuevo\n" )
-
-#ACA EMPIEZA CANARIOS----------------------------------------------------------------------------------
-require("rlang", quietly=TRUE) 
-
-# workflow que voy a correr
-PARAM <- "src/workflows/918_workflow_base_f202108_canaritos.r"
-
-envg <- env()
-
-envg$EXPENV <- list()
-envg$EXPENV$repo_dir <- "~/dmeyf2024/"
-
-#------------------------------------------------------------------------------
-
-correr_workflow <- function( wf_scriptname )
-{
-  dir.create( "~/tmp", showWarnings = FALSE)
-  setwd("~/tmp" )
-
-  # creo el script que corre el experimento
-  comando <- paste0( 
-      "#!/bin/bash\n", 
-      "source /home/$USER/.venv/bin/activate\n",
-      "nice -n 15 Rscript --vanilla ",
-      envg$EXPENV$repo_dir,
-      wf_scriptname,
-      "   ",
-      wf_scriptname,
-     "\n",
-     "deactivate\n"
-    )
-  cat( comando, file="run.sh" )
-
-  Sys.chmod( "run.sh", mode = "744", use_umask = TRUE)
-
-  system( "./run.sh" )
-}
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-
-# aqui efectivamente llamo al workflow
-correr_workflow( PARAM )

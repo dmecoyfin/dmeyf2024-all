@@ -174,13 +174,15 @@ CanaritosAsesinos <- function(
   col_inutiles <- setdiff(colnames(dataset), col_utiles)
 
   dataset[, (col_inutiles) := NULL]
+  
+  return(tb_importancia)
 
   cat( "fin CanaritosAsesinos()\n")
 }
 #------------------------------------------------------------------------------
 
 #ACA HAY QUE EMPEZAR UN MEGA BUCLE
-for (k in 1:20) {
+for (k in 1:2) {
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 cat( "ETAPA  1601_CN_canaritos_asesinos_creadores.r  START\n")
@@ -235,6 +237,12 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 
 envg$OUTPUT$CanaritosAsesinos$ncol_antes <- ncol(dataset)
 CanaritosAsesinos(
+  canaritos_ratio = envg$PARAM$CanaritosAsesinos$ratio,
+  canaritos_desvios = envg$PARAM$CanaritosAsesinos$desvios,
+  canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla
+)
+
+tb_importancia <- CanaritosAsesinos(
   canaritos_ratio = envg$PARAM$CanaritosAsesinos$ratio,
   canaritos_desvios = envg$PARAM$CanaritosAsesinos$desvios,
   canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla
