@@ -7,9 +7,9 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(102191, 200177, 410551, 552581, 892237)
+PARAM$semillas <- c(113149, 213151, 313153, 413159, 513173)
 
-PARAM$dataset_nom <- "./datasets/competencia_01.csv"
+PARAM$dataset_nom <- "C:/Users/Gastón/maestria/DM_EF/TareasHogar/competencia_01_polars.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
@@ -94,7 +94,7 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+# setwd("~/buckets/b1/") # Establezco el Working Directory
 
 # cargo los datos
 dataset <- fread(PARAM$dataset_nom)
@@ -108,7 +108,7 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
   MoreArgs = list(PARAM), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
-  mc.cores = detectCores()  # debe ser 1 si se trabaja con Windows
+  mc.cores = 1  # debe ser 1 si se trabaja con Windows
 )
 
 # muestro la lista de las salidas en testing
