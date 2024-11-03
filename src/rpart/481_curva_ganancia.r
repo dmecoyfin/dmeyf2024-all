@@ -16,15 +16,16 @@ require("yaml")
 require("ggplot2")
 
 
-# cambiar aqui los parametros cp:-0.588298729539491	minsplit:11	minbucket:4	maxdepth:11	5	99323000	55
+# cambiar aqui los parametros
 PARAM <- list()
 
-PARAM$dataset <- "./datasets/competencia_01.csv"
+PARAM$dataset <- "./datasets/competencia_01_polars.csv"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 113149
 
-PARAM$minsplit <- 1185
-PARAM$minbucket <- 150
+PARAM$cp <- -0.6134
+PARAM$minsplit <- 1209
+PARAM$minbucket <- 600
 PARAM$maxdepth <- 7
 
 #------------------------------------------------------------------------------
@@ -55,8 +56,7 @@ particionar <- function(data, division, agrupa = "", campo = "fold",
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-
+setwd("C:/Users/Gastón/maestria/DM_EF") # Establezco el Working Directory
 
 
 # cargo los datos
@@ -83,7 +83,7 @@ modelo <- rpart(
        formula = "clase_ternaria ~ . -fold",
        data = dataset[fold == 1, ],
        xval = 0,
-       cp = -1,
+       cp = PARAM$cp,
        minsplit = PARAM$minsplit,
        minbucket = PARAM$minbucket,
        maxdepth = PARAM$maxdepth
@@ -126,4 +126,8 @@ print( gra )
 
 cat( "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n" )
 cat( "Test  gan max: ", dataset[fold==2, max(ganancia_acumulada)], "\n" )
+cat( "minsplit: ", PARAM$minsplit, "\n" )
+cat( "minbucket: ", PARAM$minbucket, "\n" )
+cat( "maxdepth: ", PARAM$maxdepth, "\n")
+cat( "cp: ", PARAM$cp, "\n")
 
