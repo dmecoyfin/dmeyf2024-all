@@ -109,3 +109,11 @@ nombre_archivo <- paste0("nuevas_variables_iter_", k, ".txt")
 fwrite(nuevas_variables, file = nombre_archivo, logical01 = TRUE, sep = ",")
 cat( "Finalizado grabado de nuevas variables\n" )
 
+# grabo el dataset
+cat( "escritura del dataset nuevo\n")
+cat( "Iniciando grabado del dataset nuevo\n" )
+nombre_dataset <- paste0("dataset_iter_", k, ".csv.gz")
+
+# Guarda el archivo
+fwrite(dataset, file = nombre_dataset, logical01 = TRUE, sep = ",")
+cat( "Finalizado grabado del dataset nuevo\n" )
