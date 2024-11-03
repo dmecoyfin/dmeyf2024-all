@@ -106,6 +106,21 @@ FEintra_manual_base <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
+# Feature Engineering Intra Mes   Evolutivas
+# deterministico, SIN random
+
+FEintra_manual_evolutivas <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
+
+
+  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual_evolutivas.r"
+
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
+
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+#------------------------------------------------------------------------------
 # Data Drifting Baseline
 # deterministico, SIN random
 
@@ -425,21 +440,21 @@ wf_agosto_base_canaritos <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_2.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/expw/dataset.csv.gz")
 
   # Etapas preprocesamiento
+  FEintra_manual_evolutivas()
+#  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 #  CA_catastrophe_base( metodo="MachineLearning")
 #  FEintra_manual_base()
+  
 #  DR_drifting_base(metodo="deflacion")
 #  FEhist_base()
-
 #  FErf_attributes_base( arbolitos= 20,
 #    hojas_por_arbol= 16,
 #    datos_por_hoja= 1000,
 #    mtry_ratio= 0.2
 #  )
-
-   CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
 #  ts8 <- TS_strategy_base8()
