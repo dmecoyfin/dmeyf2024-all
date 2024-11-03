@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 102191
+envg$EXPENV$semilla_primigenia <- 111667
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -439,7 +439,7 @@ wf_agosto_base_2024_11_01 <- function( pnombrewf )
 #    mtry_ratio= 0.2
 #  )
 
-#   CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+   CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
 #  ts8 <- TS_strategy_base8()
