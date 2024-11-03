@@ -10,11 +10,11 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 111667
 PARAM$qsemillas <- 100
 
 # dataset
-PARAM$dataset_nom <- "./datasets/competencia_01.csv"
+PARAM$dataset_nom <- "./datasets/competencia_01_R_datatable.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
@@ -123,7 +123,7 @@ DosArbolesEstimarGanancia <- function(semilla, training_pct, param_rpart1, param
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF") # Establezco el Working Directory
 
 
 # genero numeros primos
@@ -141,8 +141,8 @@ dataset <- dataset[foto_mes==202104]
 
 
 
-dir.create("~/buckets/b1/exp/EX2440", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/EX2440")
+dir.create("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF/exp/EX2440", showWarnings = FALSE)
+setwd("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF/exp/EX2440")
 
 
 # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
@@ -176,7 +176,7 @@ print( tb_salida[ , list( "arbol1" = mean( ganancia1),  "arbol2" = mean(ganancia
 print( tb_salida[ , list( "prob( m1 > m2)" = sum(ganancia1 > ganancia2 )/ .N ) ]  )
 
 
-# wt <- wilcox.test(  tb_salida$ganancia1,  tb_salida$ganancia2 )
-# cat( "Wilcoxon Test p-value ", wt$p.value, "\n" )
+wt <- wilcox.test(  tb_salida$ganancia1,  tb_salida$ganancia2 )
+cat( "Wilcoxon Test p-value ", wt$p.value, "\n" )
 
 
