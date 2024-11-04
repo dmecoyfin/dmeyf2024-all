@@ -32,7 +32,7 @@ PARAM$finalmodel$max_bin <- 31
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-setwd("~/buckets/b1")
+setwd("C:/Users/German/Documents/MaestriaDataMining/DMEyF")
 
 
 # cargo el dataset donde voy a entrenar
