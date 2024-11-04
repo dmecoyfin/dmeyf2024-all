@@ -12,19 +12,18 @@ require("randomForest")
 require("ranger")
 
 PARAM <- list()
-PARAM$experimento <- "clu-randomforest-para-colaborativo-2"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_02.csv"
+PARAM$experimento <- "clu-randomforest"
+PARAM$semilla_primigenia <- 878777   # aqui va SU semilla
+PARAM$dataset <- "~/datasets/competencia_01.csv"
 
 
-#------------------------------------------------------------------------------
+ #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
 
 # leo el dataset
-dataset <- fread(PARAM$dataset)
+dataset <- fread("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF/datasets/competencia_01.csv")
 
 
 # creo la carpeta donde va el experimento
@@ -38,24 +37,13 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- setdiff(names(dataset)[sapply(dataset, is.numeric)], "numero_de_cliente")
 
-# Filtro el dataset
+# genero el dataset chico
 dchico <- dataset[
-  clase_ternaria == "BAJA+2" & foto_mes %in% c(202101, 202102, 202103, 202104, 202105, 202106), 
-  c("numero_de_cliente", campos_cluster), 
-  with = FALSE
-]
-
-
+  clase_ternaria=="BAJA+2", 
+  c("numero_de_cliente",campos_cluster),
+  with=FALSE]
 
 # arreglo los valores NA
 dchico  <- na.roughfix( dchico )
@@ -67,7 +55,7 @@ dchico  <- na.roughfix( dchico )
 
 set.seed(PARAM$semilla_primigenia)
 
-modelo <- randomForest(
+modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
   y= NULL,
   ntree= 1000, #se puede aumentar a 10000
@@ -76,7 +64,7 @@ modelo <- randomForest(
 
 # genero los clusters jerarquicos
 # distancia = 1.0 - proximidad
-hclust.rf <- hclust(
+hclust.rf <- hclust( 
   as.dist ( 1.0 - modelo$proximity),
   method= "ward.D2" )
 
@@ -88,7 +76,7 @@ plot( hclust.rf )
 dev.off()
 
 
-kclusters <- 5  # cantidad de clusters
+kclusters <- 6  # cantidad de clusters
 h <- 20
 distintos <- 0
 
@@ -109,7 +97,7 @@ while(  h>0  &  !( distintos >=kclusters & distintos <=kclusters ) )
 setorder( dchico, cluster, numero_de_cliente )
 
 fwrite(dchico,
-       file= "dchico.txt",
+       file= "dchico.csv",
        sep= "\t")
 
 #--------------------------------------
@@ -166,7 +154,7 @@ dev.off()
 # Ahora incorporo la evolucion historica antes de la BAJA
 
 # leo la historia ( desde donde hay,  202101 )
-dhistoria <- fread(PARAM$dataset)
+dhistoria <- fread("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF/datasets/competencia_01.csv")
 thewalkingdead <- dhistoria[ clase_ternaria =="BAJA+2", unique(numero_de_cliente) ]
 
 dwalkingdead <- dhistoria[ numero_de_cliente %in% thewalkingdead ]
@@ -208,7 +196,7 @@ for( campo in campos_totales ) {
     scale_colour_brewer(palette= "Dark2") +
     xlab("periodo") +
     ylab(campo) +
-    geom_smooth( method= "loess", level= 0.95,  na.rm= TRUE )
+    geom_smooth( method= "loess", level= 0.9,  na.rm= TRUE )
 
   print( grafico )
 }
