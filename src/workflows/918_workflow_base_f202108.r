@@ -18,8 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-envg$EXPENV$semilla_primigenia <- 799991
+envg$EXPENV$semilla_primigenia <- 878777
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -277,13 +276,13 @@ TS_strategy_base8 <- function( pinputexps )
 
 
   param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.25
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -339,26 +338,16 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
-    
-    
-    # # quantized me rompió 
-    # use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
-    # num_grad_quant_bins =  4,
-    # quant_train_renew_leaf = TRUE,
 
     extra_trees = FALSE,
-    
     # Parte variable
-    learning_rate = c( 0.02, 0.3 ),
+    learning_rate = c( 0.01, 0.1 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
     min_data_in_leaf = c( 100L, 10000L, "integer" )
-    
-    
   )
 
 
-  
   # iteraciones de la Optimizacion Bayesiana
   param_local$bo_iteraciones <- bo_iteraciones
 
@@ -431,7 +420,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_base <- function( pnombrewf )
+wf_agosto <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -450,14 +439,14 @@ wf_base <- function( pnombrewf )
     mtry_ratio= 0.2
   )
 
-  # CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1,2,3), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
@@ -468,5 +457,5 @@ wf_base <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_base()
+wf_agosto()
 

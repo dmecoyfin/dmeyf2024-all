@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 990211 
+envg$EXPENV$semilla_primigenia <- 878777 #
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -272,11 +272,11 @@ TS_strategy_base6 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101)
 
 
   param_local$train$training <- c(202102, 202101, 202012,
-    202111, 202010, 202009)
+    202011)
   param_local$train$validation <- c(202103)
   param_local$train$testing <- c(202104)
 
@@ -424,7 +424,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202106 donde SI hay clase completa
 
-wf_junio <- function( pnombrewf )
+exp_base_jun <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -435,7 +435,7 @@ wf_junio <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  #FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
     hojas_por_arbol= 16,
@@ -450,7 +450,7 @@ wf_junio <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1,2,3), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20)
   SC_scoring( c(fm, ts6) )
   EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
@@ -461,5 +461,5 @@ wf_junio <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_junio()
+exp_base_jun()
 
