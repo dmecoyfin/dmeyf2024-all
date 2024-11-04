@@ -9,7 +9,7 @@ gc() # garbage collection
 
 require("data.table")
 require("lightgbm")
-# require("ulimit")  # para controlar la memoria
+require("ulimit")  # para controlar la memoria
 
 
 # para que se detenga ante el primer error
@@ -25,10 +25,10 @@ options(error = function() {
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
-PARAM$experimento_data <- "PP7235_25_s1_sin_pres"
-PARAM$experimento_bayesiana <- "HT7245_dart"
+PARAM$experimento_data <- "PP7230"
+PARAM$experimento_bayesiana <- "HT7240"
 
-PARAM$experimento <- "KA7251_dart3"
+PARAM$experimento <- "KA7250"
 
 
 #------------------------------------------------------------------------------
@@ -43,17 +43,16 @@ action_limitar_memoria <- function( GB_min = 4 ) {
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
+# Final Model -----------------------------------------------------------------
 # Aqui empieza el programa
 
 # Limito la memoria, para que ningun alumno debe sufrir que el R 
 #  aborte sin avisar si no hay suficiente memoria
 #  la salud mental de los alumnos es el bien mas preciado 
-# action_limitar_memoria( 4 )
+action_limitar_memoria( 4 )
 
 # Aqui empieza el programa
-# setwd("~/buckets/b1/exp/")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/exp/")
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/exp/")
+setwd("~/buckets/b1/exp/")
 
 # cargo el resultado de la Bayesian Optimization
 tb_BO_log <- fread(paste0(PARAM$experimento_bayesiana,"/BO_log.txt"))
@@ -96,7 +95,6 @@ dfinaltrain <- lgb.Dataset(
 setorder( tb_BO_log, -ganancia )
 param_completo <- copy(as.list(tb_BO_log[1]))
 
-# SEMILLA
 set.seed(param_completo$seed, kind = "L'Ecuyer-CMRG")
 
 # entreno el modelo
@@ -113,12 +111,15 @@ archivo_importancia <- "impo.txt"
 
 fwrite(tb_importancia,
   file = archivo_importancia,
-  sep = ";"
+  sep = "\t"
 )
+
+# grabo el modelo
+lgb.save(modelo, "modelo.model")
 
 #--------------------------------------
 
-
+# Scoring ---------------------------------------------------------------------
 # aplico el modelo a los datos future
 dfuture <- dataset[part_future==1L]
 
@@ -132,28 +133,13 @@ prediccion <- predict(
 tb_entrega <- dfuture[, list(numero_de_cliente, foto_mes)]
 tb_entrega[, prob := prediccion]
 
-#--------------------------------------
-# grabo a disco el modelo en un formato para seres humanos ... ponele ...
-lgb.save(modelo, "modelo.txt" )
-#--------------------------------------
-
-# Asegúrate de que las columnas con números pequeños estén en formato decimal
-tb_entrega[] <- lapply(tb_entrega, function(x) {
-  if(is.numeric(x)) {
-    return(format(x, scientific = FALSE, digits = 15))
-  } else {
-    return(x)
-  }
-})
-
-
 # grabo las probabilidad del modelo
 fwrite(tb_entrega,
   file = "prediccion.txt",
-  sep = "\t",
-  quote = FALSE  # Para evitar comillas innecesarias
+  sep = "\t"
 )
 
+# Kaggle ----------------------------------------------------------------------
 # ordeno por probabilidad descendente
 setorder(tb_entrega, -prob)
 
@@ -164,7 +150,7 @@ setorder(tb_entrega, -prob)
 # suba TODOS los archivos a Kaggle
 # espera a la siguiente clase sincronica en donde el tema sera explicado
 
-cortes <- seq(5000, 15000, by = 1000)
+cortes <- seq(8000, 13000, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
