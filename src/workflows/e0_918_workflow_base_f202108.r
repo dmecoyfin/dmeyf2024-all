@@ -18,8 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-envg$EXPENV$semilla_primigenia <- 799991
+envg$EXPENV$semilla_primigenia <- 102191
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -277,13 +276,13 @@ TS_strategy_base8 <- function( pinputexps )
 
 
   param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.25
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -314,7 +313,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "dart", # puede ir  dart  , ni pruebe random_forest
+    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
@@ -328,7 +327,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 1000, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
@@ -339,26 +338,16 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
-    
-    
-    # # quantized me rompió 
-    # use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
-    # num_grad_quant_bins =  4,
-    # quant_train_renew_leaf = TRUE,
 
     extra_trees = FALSE,
-    
     # Parte variable
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 500L, 4096L,  "integer" ),
-    min_data_in_leaf = c( 1000L, 10000L, "integer" )
-    
-    
+    num_leaves = c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 100L, 10000L, "integer" )
   )
 
 
-  
   # iteraciones de la Optimizacion Bayesiana
   param_local$bo_iteraciones <- bo_iteraciones
 
@@ -403,32 +392,6 @@ SC_scoring <- function( pinputexps )
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
-
-#-----------------------------------------------------------------------------
-# proceso EV_conclase  Baseline
-# deterministico, SIN random
-
-EV_evaluate_conclase_gan <- function( pinputexps )
-{
-  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-  
-  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
-  
-  param_local$semilla <- NULL  # no usa semilla, es deterministico
-  
-  param_local$train$positivos <- c( "BAJA+2")
-  param_local$train$gan1 <- 117000
-  param_local$train$gan0 <-  -3000
-  param_local$train$meseta <- 2001
-  
-  # para graficar
-  param_local$graficar$envios_desde <-  9000L
-  param_local$graficar$envios_hasta <-  13000L
-  param_local$graficar$ventana_suavizado <- 2001L
-  
-  return( exp_correr_script( param_local ) ) # linea fija
-}
-
 #------------------------------------------------------------------------------
 # proceso KA_evaluate_kaggle
 # deterministico, SIN random
@@ -457,9 +420,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_pajaritos <- function( pnombrewf )
+wf_agosto_e0 <- function( e0wf )
 {
-  param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
+  param_local <- exp_wf_init( e0wf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
   DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
@@ -476,27 +439,23 @@ wf_pajaritos <- function( pnombrewf )
     mtry_ratio= 0.2
   )
 
-  # CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1,2,3), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
-  
-  # EV_evaluate_conclase_gan()
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
-
-
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_pajaritos()
+wf_agosto_e0()
 

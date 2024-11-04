@@ -13,19 +13,19 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 878777   # aqui va SU semilla
+PARAM$dataset <- "~/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
 
 # leo el dataset
-dataset <- fread(PARAM$dataset)
-
+# dataset <- fread(PARAM$dataset)
+# leo el dataset
+dataset <- fread("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF/datasets/competencia_01.csv")
 
 # creo la carpeta donde va el experimento
 dir.create("./exp/", showWarnings = FALSE)
@@ -38,15 +38,10 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
+  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
+  "mtarjeta_master_consumo", "mprestamos_personales",
+  "Visa_status", "Master_status", "cdescubierto_preacordado")
 
 
 # genero el dataset chico
@@ -164,7 +159,7 @@ dev.off()
 # Ahora incorporo la evolucion historica antes de la BAJA
 
 # leo la historia ( desde donde hay,  202101 )
-dhistoria <- fread(PARAM$dataset)
+dhistoria <- fread("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF/datasets/competencia_01.csv")
 thewalkingdead <- dhistoria[ clase_ternaria =="BAJA+2", unique(numero_de_cliente) ]
 
 dwalkingdead <- dhistoria[ numero_de_cliente %in% thewalkingdead ]
@@ -193,7 +188,7 @@ campos_totales <- setdiff( colnames(dwalkingdead),
 
 
 # Genero el grafico intervalo confianza 95%
-pdf("evol_RandomForest.pdf")
+pdf("evol_RandomForest_sinic.pdf")
 
 for( campo in campos_totales ) {
 
@@ -206,7 +201,7 @@ for( campo in campos_totales ) {
     scale_colour_brewer(palette= "Dark2") +
     xlab("periodo") +
     ylab(campo) +
-    geom_smooth( method= "loess", level= 0.95,  na.rm= TRUE )
+    geom_smooth( method= "loess", se=FALSE,  na.rm= TRUE )
 
   print( grafico )
 }
