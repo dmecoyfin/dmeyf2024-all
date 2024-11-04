@@ -23,8 +23,8 @@ PARAM$dataset <- "./datasets/competencia_01.csv"
 
 PARAM$semilla_primigenia <- 878777
 
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
+PARAM$minsplit <- 2
+PARAM$minbucket <- 1
 PARAM$maxdepth <- 20
 
 #------------------------------------------------------------------------------
