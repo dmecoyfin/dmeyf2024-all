@@ -1,11 +1,11 @@
-# 799891, 799921, 799961, 799991, 800011
-
-
 rm(list = ls()) # Borro todos los objetos
 gc() # Garbage Collection
 
 require("data.table")
 require("rpart")
+####################
+# semillas a probar
+# 990211, 247739, 770057, 549937, 330427
 
 PARAM <- list()
 PARAM$semilla <- 799891
@@ -43,9 +43,7 @@ particionar <- function(
 # Aqui comienza el programa
 
 # Establezco el Working Directory, elija una carpeta de su 
-# setwd("~/buckets/b1/")
-
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/maguf/OneDrive/Documentos/datamining2024")
 
 # cargo el dataset
 dataset <- fread("./datasets/competencia_01.csv")

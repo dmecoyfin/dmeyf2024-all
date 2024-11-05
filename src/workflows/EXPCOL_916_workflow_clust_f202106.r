@@ -17,8 +17,7 @@ envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
-
-envg$EXPENV$semilla_primigenia <- 990211 
+envg$EXPENV$semilla_primigenia <- 990211
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -289,7 +288,7 @@ TS_strategy_base6 <- function( pinputexps )
 }
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline
-#  donde la Bayuesian Optimization solo considera 4 hiperparámetros
+#  donde la Bayesian Optimization solo considera 4 hiperparámetros
 #  azaroso, utiliza semilla
 #  puede llegar a recibir  bypass, que por default esta en false
 
@@ -329,9 +328,9 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 0.5, # 0.0 < bagging_fraction <= 1.0
+    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    # neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
@@ -343,9 +342,8 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     # Parte variable
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 200L, 4096L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" ),
-    neg_bagging_fraction = c( 0.2, 1.0 )
+    num_leaves = c( 8L, 2048L,  "integer" ),
+    min_data_in_leaf = c( 100L, 10000L, "integer" )
   )
 
 
@@ -425,7 +423,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202106 donde SI hay clase completa
 
-wf_contr_bagg <- function( pnombrewf )
+wf_junio <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -434,15 +432,15 @@ wf_contr_bagg <- function( pnombrewf )
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  #FEintra_manual_base()
+  DR_drifting_base(metodo="deflacion")
+  #FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+  #FErf_attributes_base( arbolitos= 20,
+  #  hojas_por_arbol= 16,
+  #  datos_por_hoja= 1000,
+  #  mtry_ratio= 0.2
+  #)
 
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
@@ -451,7 +449,7 @@ wf_contr_bagg <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1,2,3), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts6) )
   EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
@@ -462,5 +460,5 @@ wf_contr_bagg <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_contr_bagg()
+wf_junio()
 

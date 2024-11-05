@@ -8,7 +8,7 @@ gc() # garbage collection
 
 require("data.table")
 require("rlist")
-# require("ulimit")  # para controlar la memoria
+require("ulimit")  # para controlar la memoria
 
 
 # para que se detenga ante el primer error
@@ -20,17 +20,15 @@ options(error = function() {
 })
 
 
-
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230_75_s3"
+PARAM$experimento <- "PP7230"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-PARAM$semilla_azar <- 799961 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 990211 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
@@ -42,7 +40,7 @@ PARAM$trainingstrategy$testing <- c(202104)
 PARAM$trainingstrategy$validation <- c(202103)
 PARAM$trainingstrategy$training <- c(202102)
 
-# acá me tengo que meter si quiero hacer el loop
+
 PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
 PARAM$trainingstrategy$future <- c(202106)
 
@@ -167,9 +165,6 @@ Corregir_Rotas <- function(dataset, pmetodo) {
 
   Corregir_atributo("mtarjeta_master_descuentos",
     c(202102), pmetodo)
-  
-  Corregir_atributo("ccajas_depositos",
-                    c(202105), pmetodo)
 
   cat( "fin Corregir_rotas()\n")
 }
@@ -248,7 +243,7 @@ drift_estandarizar <- function(campos_drift) {
 # Limito la memoria, para que ningun alumno debe sufrir que el R 
 #  aborte sin avisar si no hay suficiente memoria
 #  la salud mental de los alumnos es el bien mas preciado 
-# action_limitar_memoria( 4 )
+action_limitar_memoria( 4 )
 
 
  # tabla de indices financieros
@@ -264,9 +259,7 @@ tb_indices$foto_mes <- vfoto_mes
 
 tb_indices
 
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/")
-# setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/buckets/b1/") # Establezco el Working Directory
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
@@ -283,11 +276,11 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 # Catastrophe Analysis  -------------------------------------------------------
 # corrijo las variables que con el script Catastrophe Analysis detecte que
-# estaban rotas
+#   eestaban rotas
 
 # ordeno dataset
 setorder(dataset, numero_de_cliente, foto_mes)
-# corrijo usando el metodo MachineLearning
+# corrijo usando el metido MachineLearning
 Corregir_Rotas(dataset, "MachineLearning")
 
 
@@ -318,102 +311,102 @@ switch(PARAM$driftingcorreccion,
 
 
 
-# Feature Engineering Intra-mes Manual Artesanal  -----------------------------
-#  esta seccion es POCO importante
-# el mes 1,2, ..12
-dataset[, kmes := foto_mes %% 100]
-
-# creo un ctr_quarter que tenga en cuenta cuando
-# los clientes hace 3 menos meses que estan
-# ya que seria injusto considerar las transacciones medidas en menor tiempo
-
-dataset[, ctrx_quarter_normalizado := as.numeric(ctrx_quarter) ]
-dataset[cliente_antiguedad == 1, ctrx_quarter_normalizado := ctrx_quarter * 5]
-dataset[cliente_antiguedad == 2, ctrx_quarter_normalizado := ctrx_quarter * 2]
-
-dataset[
-  cliente_antiguedad == 3,
-  ctrx_quarter_normalizado := ctrx_quarter * 1.2
-]
-
-# variable extraida de una tesis de maestria de Irlanda
-#  perdi el link a la tesis, NO es de mi autoria
-dataset[, mpayroll_sobre_edad := mpayroll / cliente_edad]
-
-
-# Por supuesto, usted puede COMENTARIAR todo lo que desee
-dataset[, vm_mfinanciacion_limite := rowSums(cbind(Master_mfinanciacion_limite, Visa_mfinanciacion_limite), na.rm = TRUE)]
-dataset[, vm_Fvencimiento := pmin(Master_Fvencimiento, Visa_Fvencimiento, na.rm = TRUE)]
-dataset[, vm_Finiciomora := pmin(Master_Finiciomora, Visa_Finiciomora, na.rm = TRUE)]
-dataset[, vm_msaldototal := rowSums(cbind(Master_msaldototal, Visa_msaldototal), na.rm = TRUE)]
-dataset[, vm_msaldopesos := rowSums(cbind(Master_msaldopesos, Visa_msaldopesos), na.rm = TRUE)]
-dataset[, vm_msaldodolares := rowSums(cbind(Master_msaldodolares, Visa_msaldodolares), na.rm = TRUE)]
-dataset[, vm_mconsumospesos := rowSums(cbind(Master_mconsumospesos, Visa_mconsumospesos), na.rm = TRUE)]
-dataset[, vm_mconsumosdolares := rowSums(cbind(Master_mconsumosdolares, Visa_mconsumosdolares), na.rm = TRUE)]
-dataset[, vm_mlimitecompra := rowSums(cbind(Master_mlimitecompra, Visa_mlimitecompra), na.rm = TRUE)]
-dataset[, vm_madelantopesos := rowSums(cbind(Master_madelantopesos, Visa_madelantopesos), na.rm = TRUE)]
-dataset[, vm_madelantodolares := rowSums(cbind(Master_madelantodolares, Visa_madelantodolares), na.rm = TRUE)]
-dataset[, vm_fultimo_cierre := pmax(Master_fultimo_cierre, Visa_fultimo_cierre, na.rm = TRUE)]
-dataset[, vm_mpagado := rowSums(cbind(Master_mpagado, Visa_mpagado), na.rm = TRUE)]
-dataset[, vm_mpagospesos := rowSums(cbind(Master_mpagospesos, Visa_mpagospesos), na.rm = TRUE)]
-dataset[, vm_mpagosdolares := rowSums(cbind(Master_mpagosdolares, Visa_mpagosdolares), na.rm = TRUE)]
-dataset[, vm_fechaalta := pmax(Master_fechaalta, Visa_fechaalta, na.rm = TRUE)]
-dataset[, vm_mconsumototal := rowSums(cbind(Master_mconsumototal, Visa_mconsumototal), na.rm = TRUE)]
-dataset[, vm_cconsumos := rowSums(cbind(Master_cconsumos, Visa_cconsumos), na.rm = TRUE)]
-dataset[, vm_cadelantosefectivo := rowSums(cbind(Master_cadelantosefectivo, Visa_cadelantosefectivo), na.rm = TRUE)]
-dataset[, vm_mpagominimo := rowSums(cbind(Master_mpagominimo, Visa_mpagominimo), na.rm = TRUE)]
-dataset[, vmr_Master_mlimitecompra := Master_mlimitecompra / vm_mlimitecompra]
-dataset[, vmr_Visa_mlimitecompra := Visa_mlimitecompra / vm_mlimitecompra]
-dataset[, vmr_msaldototal := vm_msaldototal / vm_mlimitecompra]
-dataset[, vmr_msaldopesos := vm_msaldopesos / vm_mlimitecompra]
-dataset[, vmr_msaldopesos2 := vm_msaldopesos / vm_msaldototal]
-dataset[, vmr_msaldodolares := vm_msaldodolares / vm_mlimitecompra]
-dataset[, vmr_msaldodolares2 := vm_msaldodolares / vm_msaldototal]
-dataset[, vmr_mconsumospesos := vm_mconsumospesos / vm_mlimitecompra]
-dataset[, vmr_mconsumosdolares := vm_mconsumosdolares / vm_mlimitecompra]
-dataset[, vmr_madelantopesos := vm_madelantopesos / vm_mlimitecompra]
-dataset[, vmr_madelantodolares := vm_madelantodolares / vm_mlimitecompra]
-dataset[, vmr_mpagado := vm_mpagado / vm_mlimitecompra]
-dataset[, vmr_mpagospesos := vm_mpagospesos / vm_mlimitecompra]
-dataset[, vmr_mpagosdolares := vm_mpagosdolares / vm_mlimitecompra]
-dataset[, vmr_mconsumototal := vm_mconsumototal / vm_mlimitecompra]
-dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
-
-# valvula de seguridad para evitar valores infinitos
-# paso los infinitos a NULOS
-infinitos <- lapply(
-  names(dataset),
-  function(.name) dataset[, sum(is.infinite(get(.name)))]
-)
-
-infinitos_qty <- sum(unlist(infinitos))
-if (infinitos_qty > 0) {
-  cat(
-    "ATENCION, hay", infinitos_qty,
-    "valores infinitos en tu dataset. Seran pasados a NA\n"
-  )
-  dataset[mapply(is.infinite, dataset)] <- NA
-}
+# # Feature Engineering Intra-mes Manual Artesanal  -----------------------------
+# #  esta seccion es POCO importante
+# # el mes 1,2, ..12
+# dataset[, kmes := foto_mes %% 100]
+# 
+# # creo un ctr_quarter que tenga en cuenta cuando
+# # los clientes hace 3 menos meses que estan
+# # ya que seria injusto considerar las transacciones medidas en menor tiempo
+# 
+# dataset[, ctrx_quarter_normalizado := as.numeric(ctrx_quarter) ]
+# dataset[cliente_antiguedad == 1, ctrx_quarter_normalizado := ctrx_quarter * 5]
+# dataset[cliente_antiguedad == 2, ctrx_quarter_normalizado := ctrx_quarter * 2]
+# 
+# dataset[
+#   cliente_antiguedad == 3,
+#   ctrx_quarter_normalizado := ctrx_quarter * 1.2
+# ]
+# 
+# # variable extraida de una tesis de maestria de Irlanda
+# #  perdi el link a la tesis, NO es de mi autoria
+# dataset[, mpayroll_sobre_edad := mpayroll / cliente_edad]
 
 
-# valvula de seguridad para evitar valores NaN  que es 0/0
-# paso los NaN a 0 , decision polemica si las hay
-# se invita a asignar un valor razonable segun la semantica del campo creado
-nans <- lapply(
-  names(dataset),
-  function(.name) dataset[, sum(is.nan(get(.name)))]
-)
-
-nans_qty <- sum(unlist(nans))
-if (nans_qty > 0) {
-  cat(
-    "ATENCION, hay", nans_qty,
-    "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n"
-  )
-
-  cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
-  dataset[mapply(is.nan, dataset)] <- 0
-}
+# # Por supuesto, usted puede COMENTARIAR todo lo que desee
+# dataset[, vm_mfinanciacion_limite := rowSums(cbind(Master_mfinanciacion_limite, Visa_mfinanciacion_limite), na.rm = TRUE)]
+# dataset[, vm_Fvencimiento := pmin(Master_Fvencimiento, Visa_Fvencimiento, na.rm = TRUE)]
+# dataset[, vm_Finiciomora := pmin(Master_Finiciomora, Visa_Finiciomora, na.rm = TRUE)]
+# dataset[, vm_msaldototal := rowSums(cbind(Master_msaldototal, Visa_msaldototal), na.rm = TRUE)]
+# dataset[, vm_msaldopesos := rowSums(cbind(Master_msaldopesos, Visa_msaldopesos), na.rm = TRUE)]
+# dataset[, vm_msaldodolares := rowSums(cbind(Master_msaldodolares, Visa_msaldodolares), na.rm = TRUE)]
+# dataset[, vm_mconsumospesos := rowSums(cbind(Master_mconsumospesos, Visa_mconsumospesos), na.rm = TRUE)]
+# dataset[, vm_mconsumosdolares := rowSums(cbind(Master_mconsumosdolares, Visa_mconsumosdolares), na.rm = TRUE)]
+# dataset[, vm_mlimitecompra := rowSums(cbind(Master_mlimitecompra, Visa_mlimitecompra), na.rm = TRUE)]
+# dataset[, vm_madelantopesos := rowSums(cbind(Master_madelantopesos, Visa_madelantopesos), na.rm = TRUE)]
+# dataset[, vm_madelantodolares := rowSums(cbind(Master_madelantodolares, Visa_madelantodolares), na.rm = TRUE)]
+# dataset[, vm_fultimo_cierre := pmax(Master_fultimo_cierre, Visa_fultimo_cierre, na.rm = TRUE)]
+# dataset[, vm_mpagado := rowSums(cbind(Master_mpagado, Visa_mpagado), na.rm = TRUE)]
+# dataset[, vm_mpagospesos := rowSums(cbind(Master_mpagospesos, Visa_mpagospesos), na.rm = TRUE)]
+# dataset[, vm_mpagosdolares := rowSums(cbind(Master_mpagosdolares, Visa_mpagosdolares), na.rm = TRUE)]
+# dataset[, vm_fechaalta := pmax(Master_fechaalta, Visa_fechaalta, na.rm = TRUE)]
+# dataset[, vm_mconsumototal := rowSums(cbind(Master_mconsumototal, Visa_mconsumototal), na.rm = TRUE)]
+# dataset[, vm_cconsumos := rowSums(cbind(Master_cconsumos, Visa_cconsumos), na.rm = TRUE)]
+# dataset[, vm_cadelantosefectivo := rowSums(cbind(Master_cadelantosefectivo, Visa_cadelantosefectivo), na.rm = TRUE)]
+# dataset[, vm_mpagominimo := rowSums(cbind(Master_mpagominimo, Visa_mpagominimo), na.rm = TRUE)]
+# dataset[, vmr_Master_mlimitecompra := Master_mlimitecompra / vm_mlimitecompra]
+# dataset[, vmr_Visa_mlimitecompra := Visa_mlimitecompra / vm_mlimitecompra]
+# dataset[, vmr_msaldototal := vm_msaldototal / vm_mlimitecompra]
+# dataset[, vmr_msaldopesos := vm_msaldopesos / vm_mlimitecompra]
+# dataset[, vmr_msaldopesos2 := vm_msaldopesos / vm_msaldototal]
+# dataset[, vmr_msaldodolares := vm_msaldodolares / vm_mlimitecompra]
+# dataset[, vmr_msaldodolares2 := vm_msaldodolares / vm_msaldototal]
+# dataset[, vmr_mconsumospesos := vm_mconsumospesos / vm_mlimitecompra]
+# dataset[, vmr_mconsumosdolares := vm_mconsumosdolares / vm_mlimitecompra]
+# dataset[, vmr_madelantopesos := vm_madelantopesos / vm_mlimitecompra]
+# dataset[, vmr_madelantodolares := vm_madelantodolares / vm_mlimitecompra]
+# dataset[, vmr_mpagado := vm_mpagado / vm_mlimitecompra]
+# dataset[, vmr_mpagospesos := vm_mpagospesos / vm_mlimitecompra]
+# dataset[, vmr_mpagosdolares := vm_mpagosdolares / vm_mlimitecompra]
+# dataset[, vmr_mconsumototal := vm_mconsumototal / vm_mlimitecompra]
+# dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
+# 
+# # valvula de seguridad para evitar valores infinitos
+# # paso los infinitos a NULOS
+# infinitos <- lapply(
+#   names(dataset),
+#   function(.name) dataset[, sum(is.infinite(get(.name)))]
+# )
+# 
+# infinitos_qty <- sum(unlist(infinitos))
+# if (infinitos_qty > 0) {
+#   cat(
+#     "ATENCION, hay", infinitos_qty,
+#     "valores infinitos en tu dataset. Seran pasados a NA\n"
+#   )
+#   dataset[mapply(is.infinite, dataset)] <- NA
+# }
+# 
+# 
+# # valvula de seguridad para evitar valores NaN  que es 0/0
+# # paso los NaN a 0 , decision polemica si las hay
+# # se invita a asignar un valor razonable segun la semantica del campo creado
+# nans <- lapply(
+#   names(dataset),
+#   function(.name) dataset[, sum(is.nan(get(.name)))]
+# )
+# 
+# nans_qty <- sum(unlist(nans))
+# if (nans_qty > 0) {
+#   cat(
+#     "ATENCION, hay", nans_qty,
+#     "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n"
+#   )
+# 
+#   cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
+#   dataset[mapply(is.nan, dataset)] <- 0
+# }
 
 
 
@@ -421,29 +414,29 @@ if (nans_qty > 0) {
 #   aqui deben calcularse los  lags y  lag_delta
 #   Sin lags no hay paraiso !  corta la bocha
 
-campitos <- c( "numero_de_cliente",
-  "foto_mes",
-  "clase_ternaria")
+#campitos <- c( "numero_de_cliente",
+#  "foto_mes",
+#  "clase_ternaria")
 
 
-cols_lagueables <- copy(
-  setdiff(colnames(dataset), campitos)
-)
+#cols_lagueables <- copy(
+#  setdiff(colnames(dataset), campitos)
+#)
 
 # ordeno el dataset, FUNDAMENTAL
-setorder(dataset, numero_de_cliente, foto_mes)
+#setorder(dataset, numero_de_cliente, foto_mes)
 
 # creo los lags de orden 1
-dataset[, paste0(cols_lagueables, "_lag1") := shift(.SD, 1, NA, "lag"),
-  by = numero_de_cliente,
-  .SDcols = cols_lagueables
-]
+#dataset[, paste0(cols_lagueables, "_lag1") := shift(.SD, 1, NA, "lag"),
+#  by = numero_de_cliente,
+#  .SDcols = cols_lagueables
+#]
 
 # agrego los delta lags de orden 1
-for (vcol in cols_lagueables)
-{
-  dataset[, paste0(vcol, "_delta1") := get(vcol) - get(paste0(vcol, "_lag1"))]
-}
+#for (vcol in cols_lagueables)
+#{
+#  dataset[, paste0(vcol, "_delta1") := get(vcol) - get(paste0(vcol, "_lag1"))]
+#}
 
 
 # Training Strategy  ----------------------------------------------
