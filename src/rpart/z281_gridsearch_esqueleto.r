@@ -12,7 +12,11 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
+<<<<<<< HEAD
+PARAM$semilla_primigenia <- 122323
+=======
 PARAM$semilla_primigenia <- 102191
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -94,7 +98,11 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
     semillas, # paso el vector de semillas
     MoreArgs = list(PARAM$training_pct, param_basicos), # aqui paso el segundo parametro
     SIMPLIFY = FALSE,
+<<<<<<< HEAD
+    mc.cores = 1 # en Windows debe ser 1
+=======
     mc.cores = detectCores() # en Windows debe ser 1
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
   )
 
   return(salida)
@@ -103,7 +111,11 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
+<<<<<<< HEAD
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF") # Establezco el Working Directory
+=======
 setwd("~/buckets/b1/") # Establezco el Working Directory
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 # cargo los datos
 
 
@@ -146,10 +158,17 @@ for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
 
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
     param_basicos <- list(
+<<<<<<< HEAD
+      "cp" = -1, # complejidad minima
+      "maxdepth" = vmax_depth, # profundidad máxima del arbol
+      "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
+      "minbucket" = round(vmin_split / 3) # minima cantidad de registros en una hoja
+=======
       "cp" = -0.5, # complejidad minima
       "maxdepth" = vmax_depth, # profundidad máxima del arbol
       "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
       "minbucket" = 5 # minima cantidad de registros en una hoja
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
     )
 
     # Un solo llamado, con la semilla 17
