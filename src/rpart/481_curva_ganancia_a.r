@@ -23,9 +23,9 @@ PARAM$dataset <- "./datasets/competencia_01.csv"
 
 PARAM$semilla_primigenia <- 878777
 
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 20
+PARAM$minsplit <- 1195
+PARAM$minbucket <- 595
+PARAM$maxdepth <- 12
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -82,7 +82,7 @@ modelo <- rpart(
        formula = "clase_ternaria ~ . -fold",
        data = dataset[fold == 1, ],
        xval = 0,
-       cp = -1,
+       cp = -0.3811,
        minsplit = PARAM$minsplit,
        minbucket = PARAM$minbucket,
        maxdepth = PARAM$maxdepth
