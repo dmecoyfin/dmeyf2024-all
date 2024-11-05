@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 990211 
+envg$EXPENV$semilla_primigenia <- 102191
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -260,29 +260,29 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
-TS_strategy_base6 <- function( pinputexps )
+TS_strategy_base8 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202106)
+  param_local$future <- c(202108)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+  param_local$final_train$training <- c(202106, 202105, 202104,
+    202103, 202102, 202101)
 
 
-  param_local$train$training <- c(202102, 202101, 202012,
-    202111, 202010, 202009)
-  param_local$train$validation <- c(202103)
-  param_local$train$testing <- c(202104)
+  param_local$train$training <- c(202104, 202103, 202102,
+    202101)
+  param_local$train$validation <- c(202105)
+  param_local$train$testing <- c(202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
+  param_local$train$undersampling <- 0.25
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -393,40 +393,36 @@ SC_scoring <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
-# proceso EV_conclase  Baseline
+# proceso KA_evaluate_kaggle
 # deterministico, SIN random
 
-EV_evaluate_conclase_gan <- function( pinputexps )
+KA_evaluate_kaggle <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-  param_local$train$positivos <- c( "BAJA+2")
-  param_local$train$gan1 <- 273000
-  param_local$train$gan0 <-  -7000
-  param_local$train$meseta <- 2001
+  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  # para graficar
-  param_local$graficar$envios_desde <-   8000L
-  param_local$graficar$envios_hasta <-  16000L
-  param_local$graficar$ventana_suavizado <- 2001L
+  param_local$envios_desde <-   9000L
+  param_local$envios_hasta <-  13000L
+  param_local$envios_salto <-   500L
+  param_local$competition <- "dm-ey-f-2024-segunda"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
-
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
 # Este es el  Workflow Baseline
-# Que predice 202106 donde SI hay clase completa
+# Que predice 202108 donde NO conozco la clase
 
-wf_junio <- function( pnombrewf )
+wf_agosto_e0 <- function( e0wf )
 {
-  param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
+  param_local <- exp_wf_init( e0wf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
   DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
@@ -446,13 +442,13 @@ wf_junio <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  ts6 <- TS_strategy_base6()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ts8 <- TS_strategy_base8()
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1,2,3), qsemillas=5 )
-  SC_scoring( c(fm, ts6) )
-  EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+  SC_scoring( c(fm, ts8) )
+  KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -460,6 +456,6 @@ wf_junio <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-# llamo al workflow con future = 202106
-wf_junio()
+# llamo al workflow con future = 202108
+wf_agosto_e0()
 
