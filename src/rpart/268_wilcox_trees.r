@@ -10,26 +10,26 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 111667
 PARAM$qsemillas_tope <- 200
 
-PARAM$dataset_nom <- "./datasets/competencia_01.csv"
+PARAM$dataset_nom <- "./datasets/competencia_01_R_datatable.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart1 <- list (
   "cp" = -1,
-  "minsplit" = 550,
-  "minbucket" = 275,
-  "maxdepth" = 4
+  "minsplit" = 1000,
+  "minbucket" = 5,
+  "maxdepth" = 12
 )
 
 
 PARAM$rpart2 <- list (
   "cp" = -1,
-  "minsplit" = 700,
-  "minbucket" = 350,
-  "maxdepth" = 4
+  "minsplit" = 1000,
+  "minbucket" = 5,
+  "maxdepth" = 10
 )
 
 
@@ -152,7 +152,7 @@ MejorArbol <- function( qsemillas_tope, training_pct, param_rpart1, param_rpart2
     wt <- wilcox.test( vgan1, vgan2, paired=TRUE )
     pvalue <- wt$p.value
 
-    cat( isem, res$ganancia1, res$ganancia2, pvalue, "\n" )
+    cat( isem, semillas [isem], res$ganancia1, res$ganancia2, pvalue, "\n" )
     isem <- isem + 1
   }
 
@@ -165,14 +165,15 @@ MejorArbol <- function( qsemillas_tope, training_pct, param_rpart1, param_rpart2
   return( list( "out" = out, 
     "qsemillas" = length(vgan1),
     "m1" = mean( vgan1 ),
-    "m2" = mean( vgan2 )
+    "m2" = mean( vgan2 ),
+    "semilla" = semillas[isem-1]
    ) )
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF") # Establezco el Working Directory
 
 
 # genero numeros primos
@@ -188,8 +189,8 @@ dataset <- fread(PARAM$dataset_nom)
 dataset <- dataset[foto_mes==202104]
 
 
-dir.create("~/buckets/b1/exp/EX2680", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/EX2680")
+dir.create("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF/exp/EX2680", showWarnings = FALSE)
+setwd("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF/exp/EX2680")
 
 
 comparacion <- MejorArbol(
@@ -201,4 +202,5 @@ comparacion <- MejorArbol(
 
 
 print( comparacion )
-
+  
+comparacion
