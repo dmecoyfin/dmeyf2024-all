@@ -10,7 +10,7 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 990211
 PARAM$qsemillas_tope <- 200
 
 PARAM$dataset_nom <- "./datasets/competencia_01.csv"
@@ -172,7 +172,7 @@ MejorArbol <- function( qsemillas_tope, training_pct, param_rpart1, param_rpart2
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/maguf/OneDrive/Documentos/datamining2024") # Establezco el Working Directory
 
 
 # genero numeros primos
@@ -188,8 +188,8 @@ dataset <- fread(PARAM$dataset_nom)
 dataset <- dataset[foto_mes==202104]
 
 
-dir.create("~/buckets/b1/exp/EX2680", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/EX2680")
+dir.create("./exp/EX2680", showWarnings = FALSE)
+setwd("./exp/EX2680")
 
 
 comparacion <- MejorArbol(

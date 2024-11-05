@@ -12,16 +12,15 @@ require("randomForest")
 require("ranger")
 
 PARAM <- list()
-PARAM$experimento <- "clu-randomforest-para-colaborativo-2"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_02.csv"
+PARAM$experimento <- "clu-randomforest"
+PARAM$semilla_primigenia <- 990211   # aqui va SU semilla
+PARAM$dataset <- "C:/Users/maguf/OneDrive/Documentos/datamining2024/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/maguf/OneDrive/Documentos/datamining2024")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
@@ -38,24 +37,28 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "active_quarter","cliente_vip",
+                    "internet","mrentabilidad","mrentabilidad_annual","cproductos","mcuenta_corriente","mcaja_ahorro","mcaja_ahorro_dolares","mcuentas_saldo",
+                    "mautoservicio","ctarjeta_debito_transacciones","ctarjeta_visa_transacciones","mtarjeta_visa_consumo","ctarjeta_master_transacciones","mtarjeta_master_consumo",
+                    "mprestamos_personales","cprestamos_personales",
+                    "mprestamos_prendarios","cprestamos_prendarios","mprestamos_hipotecarios","cprestamos_hipotecarios",
+                    "cplazo_fijo","cinversion1","cinversion2","cseguro_vida",
+                    "mpayroll","mpayroll2","ccuenta_debitos_automaticos","ctarjeta_visa_debitos_automaticos","ctarjeta_master_debitos_automaticos",
+                    "mcomisiones_mantenimiento","ccajeros_propios_descuentos","ctarjeta_visa_descuentos",
+                    "cforex", "cforex_buy","cforex_sell","ccheques_emitidos_rechazados",
+                    "ccallcenter_transacciones","chomebanking_transacciones","ccajas_transacciones",
+                    "catm_trx", "catm_trx_other","cmobile_app_trx","ctrx_quarter",
+                    "Master_delinquency", "Visa_delinquency","Visa_msaldopesos", "Visa_msaldodolares", "Master_msaldopesos", "Master_msaldodolares",
+                    "Visa_mpagado", "Master_mpagado", 
+                    "Master_mlimitecompra", "Visa_mlimitecompra",
+                    "Visa_status", "Master_status")
 
-# Filtro el dataset
+
+# genero el dataset chico
 dchico <- dataset[
-  clase_ternaria == "BAJA+2" & foto_mes %in% c(202101, 202102, 202103, 202104, 202105, 202106), 
-  c("numero_de_cliente", campos_cluster), 
-  with = FALSE
-]
-
-
+  clase_ternaria=="BAJA+2", 
+  c("numero_de_cliente",campos_cluster),
+  with=FALSE]
 
 # arreglo los valores NA
 dchico  <- na.roughfix( dchico )
@@ -67,7 +70,8 @@ dchico  <- na.roughfix( dchico )
 
 set.seed(PARAM$semilla_primigenia)
 
-modelo <- randomForest(
+
+modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
   y= NULL,
   ntree= 1000, #se puede aumentar a 10000
@@ -76,7 +80,7 @@ modelo <- randomForest(
 
 # genero los clusters jerarquicos
 # distancia = 1.0 - proximidad
-hclust.rf <- hclust(
+hclust.rf <- hclust( 
   as.dist ( 1.0 - modelo$proximity),
   method= "ward.D2" )
 
@@ -146,7 +150,7 @@ for( i in 1:(n-1) ){
   for( j in (i+1):n ){
 
   grafico <- ggplot( dchico[azar< muestra],
-      aes_string(x= campos_cluster[i],
+      aes(x= campos_cluster[i],   ####AQUI CORREGI LA FUNCIÓN
                  y= campos_cluster[j],
                  color= "cluster"))  +
       scale_colour_brewer(palette = "Dark2") +
@@ -244,5 +248,4 @@ for( campo in campos_totales ) {
 }
 
 dev.off()
-
 

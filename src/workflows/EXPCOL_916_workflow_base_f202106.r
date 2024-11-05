@@ -17,8 +17,7 @@ envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
-
-envg$EXPENV$semilla_primigenia <- 990211 
+envg$EXPENV$semilla_primigenia <- 990211
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -289,7 +288,7 @@ TS_strategy_base6 <- function( pinputexps )
 }
 #------------------------------------------------------------------------------
 # Hyperparamteter Tuning Baseline
-#  donde la Bayuesian Optimization solo considera 4 hiperparámetros
+#  donde la Bayesian Optimization solo considera 4 hiperparámetros
 #  azaroso, utiliza semilla
 #  puede llegar a recibir  bypass, que por default esta en false
 
@@ -433,15 +432,15 @@ wf_junio <- function( pnombrewf )
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  #FEintra_manual_base()
+  DR_drifting_base(metodo="deflacion")
+  #FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+  #FErf_attributes_base( arbolitos= 20,
+  #  hojas_por_arbol= 16,
+  #  datos_por_hoja= 1000,
+  #  mtry_ratio= 0.2
+  #)
 
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
@@ -450,7 +449,7 @@ wf_junio <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts6) )
   EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 

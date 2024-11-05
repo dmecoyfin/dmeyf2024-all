@@ -13,19 +13,23 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 990211   # aqui va SU semilla
+PARAM$dataset <- "C:/Users/maguf/OneDrive/Documentos/datamining2024/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/maguf/OneDrive/Documentos/datamining2024")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
 
+#campos nuevos
+#dataset$cta_cor <-ifelse(dataset$ccuenta_corriente > 0, 1, 0)#tiene?
+#dataset$cj_ahorro <-ifelse(dataset$ccaja_ahorro > 0, 1, 0)#tiene?
+#dataset$saldo_sueldo <-ifelse(is.na(dataset$mcuentas_saldo) | is.na(dataset$mpayroll), NA,dataset$mcuentas_saldo/dataset$mpayroll) # % sueldo en saldo
+#dataset$saldo_sueldo2 <-ifelse(is.na(dataset$mcuentas_saldo) | is.na(dataset$mpayroll) | is.na(dataset$mpayroll2), NA,dataset$mcuentas_saldo/(dataset$mpayroll + dataset$mpayroll2) ) # % sueldo en saldo
 
 # creo la carpeta donde va el experimento
 dir.create("./exp/", showWarnings = FALSE)
@@ -38,15 +42,13 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "active_quarter","cliente_vip",
+                    "internet","mrentabilidad_annual","cproductos","mcuentas_saldo",
+                    "cdescubierto_preacordado","ctarjeta_debito_transacciones",
+                    "mpayroll","ctrx_quarter","mpayroll2", "mcaja_ahorro", "mtarjeta_visa_consumo",
+  "mtarjeta_master_consumo", "mprestamos_personales","Visa_mpagado", "Master_mpagado", 
+  "Master_mlimitecompra", "Visa_mlimitecompra",
+  "Visa_status", "Master_status", "cdescubierto_preacordado")
 
 
 # genero el dataset chico
@@ -86,7 +88,7 @@ plot( hclust.rf )
 dev.off()
 
 
-kclusters <- 5  # cantidad de clusters
+kclusters <- 8  # cantidad de clusters
 h <- 20
 distintos <- 0
 
