@@ -1,5 +1,4 @@
 # para correr el Google Cloud
-
 # limpio la memoria
 rm(list = ls()) # remove all objects
 gc() # garbage collection
@@ -12,7 +11,7 @@ require("lightgbm")
 PARAM <- list()
 PARAM$experimento <- "KA4210"
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 878777
 
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
@@ -32,7 +31,7 @@ PARAM$finalmodel$max_bin <- 31
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-setwd("~/buckets/b1")
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
 
 
 # cargo el dataset donde voy a entrenar
@@ -87,7 +86,7 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    seed = PARAM$semilla_primigenia
+    seed = ksemilla_azarPARAM$semilla_primigenia
   )
 )
 

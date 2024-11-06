@@ -37,7 +37,7 @@ PARAM <- list()
 
 PARAM$experimento <- "HT4740"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 878777
 PARAM$dataset <- "./datasets/competencia_01.csv"
 PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
 
@@ -52,10 +52,10 @@ PARAM$hyperparametertuning$NEG_ganancia <- -7000
 #  la letra L al final significa ENTERO
 # max.depth 0 significa profundidad infinita
 hs <- makeParamSet(
-  makeIntegerParam("num.trees", lower = 20L, upper = 500L),
-  makeIntegerParam("max.depth", lower = 1L, upper = 30L),
-  makeIntegerParam("min.node.size", lower = 1L, upper = 1000L),
-  makeIntegerParam("mtry", lower = 2L, upper = 50L)
+  makeIntegerParam("num.trees", lower = 100L, upper = 1000L),
+  makeIntegerParam("max.depth", lower = 5L, upper = 30L),
+  makeIntegerParam("min.node.size", lower = 20L, upper = 500),
+  makeIntegerParam("mtry", lower = 10L, upper = 40L)
 )
 
 #------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ ranger_CrossValidation <- function(
     seq(qfolds), # 1 2 3 4 5
     MoreArgs = list(data, param),
     SIMPLIFY = FALSE,
-    mc.cores = detectCores()
+    mc.cores = 1
   ) # dejar esto en  1, porque ranger ya corre en paralelo
 
   data[, fold := NULL] # elimino el campo fold
@@ -197,7 +197,7 @@ EstimarGanancia_ranger <- function(x) {
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
 
 
 # cargo el dataset donde voy a entrenar el modelo
