@@ -276,13 +276,13 @@ TS_strategy_base8 <- function( pinputexps )
 
 
   param_local$train$training <- c(202104, 202103, 202102,
-    202101)
+    202101, 202012, 202011)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.25
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -429,9 +429,9 @@ wf_agosto <- function( pnombrewf )
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
+  #FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  #FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
     hojas_por_arbol= 16,
