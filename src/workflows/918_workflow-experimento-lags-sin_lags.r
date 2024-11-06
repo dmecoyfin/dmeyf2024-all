@@ -133,8 +133,8 @@ FEhist_base <- function( pinputexps)
 
 
   param_local$meta$script <- "/src/wf-etapas/1502_FE_historia_lags.r"
-# generamos lags 1-6 y 12
-  param_local$lags = c(1, 2, 3, 4, 5, 6, 12)
+
+  param_local$lags = c()
   
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- FALSE  # FALSE, no corre nada de lo que sigue
