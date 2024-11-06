@@ -17,15 +17,14 @@ PARAM$semilla_primigenia <- 878777   # aqui va SU semilla
 PARAM$dataset <- "~/datasets/competencia_01.csv"
 
 
-#------------------------------------------------------------------------------
+ #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
 
 # leo el dataset
-# dataset <- fread(PARAM$dataset)
-# leo el dataset
 dataset <- fread("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF/datasets/competencia_01.csv")
+
 
 # creo la carpeta donde va el experimento
 dir.create("./exp/", showWarnings = FALSE)
@@ -38,11 +37,7 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
-  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
-  "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado")
-
+campos_cluster <- setdiff(names(dataset)[sapply(dataset, is.numeric)], "numero_de_cliente")
 
 # genero el dataset chico
 dchico <- dataset[
@@ -81,7 +76,7 @@ plot( hclust.rf )
 dev.off()
 
 
-kclusters <- 5  # cantidad de clusters
+kclusters <- 6  # cantidad de clusters
 h <- 20
 distintos <- 0
 
@@ -102,7 +97,7 @@ while(  h>0  &  !( distintos >=kclusters & distintos <=kclusters ) )
 setorder( dchico, cluster, numero_de_cliente )
 
 fwrite(dchico,
-       file= "dchico.txt",
+       file= "dchico.csv",
        sep= "\t")
 
 #--------------------------------------
@@ -188,7 +183,7 @@ campos_totales <- setdiff( colnames(dwalkingdead),
 
 
 # Genero el grafico intervalo confianza 95%
-pdf("evol_RandomForest_sinic.pdf")
+pdf("evol_RandomForest.pdf")
 
 for( campo in campos_totales ) {
 
@@ -201,7 +196,7 @@ for( campo in campos_totales ) {
     scale_colour_brewer(palette= "Dark2") +
     xlab("periodo") +
     ylab(campo) +
-    geom_smooth( method= "loess", se=FALSE,  na.rm= TRUE )
+    geom_smooth( method= "loess", level= 0.9,  na.rm= TRUE )
 
   print( grafico )
 }
