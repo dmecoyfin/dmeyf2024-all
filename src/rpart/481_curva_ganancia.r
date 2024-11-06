@@ -16,16 +16,16 @@ require("yaml")
 require("ggplot2")
 
 
-# cambiar aqui los parametros cp:-0.588298729539491	minsplit:11	minbucket:4	maxdepth:11	5	99323000	55
+# cambiar aqui los parametros
 PARAM <- list()
 
 PARAM$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 994391
 
-PARAM$minsplit <- 1185
-PARAM$minbucket <- 150
-PARAM$maxdepth <- 7
+PARAM$minsplit <- 1559
+PARAM$minbucket <- 371
+PARAM$maxdepth <- 15
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -55,8 +55,7 @@ particionar <- function(data, division, agrupa = "", campo = "fold",
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-
+setwd("/mnt/storage/work/dmeyf/") # Establezco el Working Directory
 
 
 # cargo los datos

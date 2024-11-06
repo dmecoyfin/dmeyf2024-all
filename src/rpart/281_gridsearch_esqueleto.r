@@ -9,11 +9,10 @@ require("data.table")
 require("rpart")
 require("parallel")
 require("primes")
-library(pbmcapply)
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 994391
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -87,26 +86,24 @@ ArbolEstimarGanancia <- function(semilla, training_pct, param_basicos) {
 }
 #------------------------------------------------------------------------------
 
-
 ArbolesMontecarlo <- function(semillas, param_basicos) {
 
   # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
   #  tantas veces como valores tenga el vector  PARAM$semillas
-  tiempo_ejecucion <- system.time({
-    salida <- pbmcmapply(ArbolEstimarGanancia,
-      semillas, # paso el vector de semillas
-      MoreArgs = list(PARAM$training_pct, param_basicos), # aqui paso el segundo parametro
-      SIMPLIFY = FALSE,
-      mc.cores = 1 # detectCores() # en Windows debe ser 1
-    )
-  })
+  salida <- mcmapply(ArbolEstimarGanancia,
+    semillas, # paso el vector de semillas
+    MoreArgs = list(PARAM$training_pct, param_basicos), # aqui paso el segundo parametro
+    SIMPLIFY = FALSE,
+    mc.cores = detectCores() # en Windows debe ser 1
+  )
+
   return(salida)
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/") # Establezco el Working Directory
+setwd("/mnt/storage/work/dmeyf/") # Establezco el Working Directory
 # cargo los datos
 
 
@@ -125,54 +122,64 @@ dataset <- dataset[foto_mes==202104]
 
 # creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
-
-dir.create("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/exp/HT2810", showWarnings = FALSE)
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/exp/HT2810")
+dir.create("./exp/HT2810/", showWarnings = FALSE)
+setwd( "./exp/HT2810/" )
 
 
 # genero la data.table donde van los resultados detallados del Grid Search
 # un registro para cada combinacion de < semilla, parametros >
 tb_grid_search_detalle <- data.table(
-  semilla = integer(),
-  cp = numeric(),
-  maxdepth = integer(),
-  minsplit = integer(),
-  minbucket = integer(),
-  ganancia_test = numeric()
+ semilla = integer(),
+ cp = numeric(),
+ maxdepth = integer(),
+ minsplit = integer(),
+ minbucket = integer(),
+ ganancia_test = numeric()
 )
+
+# tb_grid_search_detalle <- data.table(
+#   cp = numeric(),
+#   maxdepth = integer(),
+#   minsplit = integer(),
+#   minbucket = integer()
+# )
 
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50)) {
-    for (minbucket in c(500, 400, 300, 200, 100, 50, 10)) {
-      # notar como se agrega
-      
-      # vminsplit  minima cantidad de registros en un nodo para hacer el split
-      param_basicos <- list(
-        "cp" = -0.5, # complejidad minima
-        "maxdepth" = vmax_depth, # profundidad máxima del arbol
-        "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-        "minbucket" = minbucket # minima cantidad de registros en una hoja
-      )
-      print(param_basicos)
-  
-      # Un solo llamado, con la semilla 17
-      ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-  
-      # agrego a la tabla
-      tb_grid_search_detalle <- rbindlist( 
-        list( tb_grid_search_detalle,
-              rbindlist(ganancias) )
-      )
+for (vcp in c(-1, -0.5, 0.5, 1)) {
+  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
+    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+      for (vmin_bucket in c(trunc(vmin_split/3), trunc(vmin_split/2))) {
+        # notar como se agrega
+
+        # vminsplit  minima cantidad de registros en un nodo para hacer el split
+        param_basicos <- list(
+          "cp" = vcp, # complejidad minima
+          "maxdepth" = vmax_depth, # profundidad máxima del arbol
+          "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
+          "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
+        )
+
+        # Un solo llamado, con la semilla 17
+        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+
+        # agrego a la tabla
+        tb_grid_search_detalle <- rbindlist(
+         list( tb_grid_search_detalle,
+               rbindlist(ganancias) )
+        )
+        #tb_grid_search_detalle <- rbindlist(list(tb_grid_search_detalle, param_basicos), use.names = TRUE, fill = TRUE)
+      }
     }
   }
-
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
-          file = "gridsearch_detalle.txt",
-          sep = "\t" )
+         file = "gridsearch_detalle.txt",
+         sep = "\t" )
+  # fwrite( tb_grid_search_detalle,
+  #         file = "parametros_lista.txt",
+  #         sep = "\t" )
 }
 
 #----------------------------
