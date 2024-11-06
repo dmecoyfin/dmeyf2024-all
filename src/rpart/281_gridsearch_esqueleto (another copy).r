@@ -128,21 +128,21 @@ setwd( "./exp/HT2810/" )
 
 # genero la data.table donde van los resultados detallados del Grid Search
 # un registro para cada combinacion de < semilla, parametros >
-tb_grid_search_detalle <- data.table(
- semilla = integer(),
- cp = numeric(),
- maxdepth = integer(),
- minsplit = integer(),
- minbucket = integer(),
- ganancia_test = numeric()
-)
+#tb_grid_search_detalle <- data.table(
+#  semilla = integer(),
+#  cp = numeric(),
+#  maxdepth = integer(),
+#  minsplit = integer(),
+#  minbucket = integer(),
+#  ganancia_test = numeric()
+#)
 
-# tb_grid_search_detalle <- data.table(
-#   cp = numeric(),
-#   maxdepth = integer(),
-#   minsplit = integer(),
-#   minbucket = integer()
-# )
+tb_grid_search_detalle <- data.table(
+  cp = numeric(),
+  maxdepth = integer(),
+  minsplit = integer(),
+  minbucket = integer()
+)
 
 
 # itero por los loops anidados para cada hiperparametro
@@ -162,24 +162,24 @@ for (vcp in c(-1, -0.5, 0.5, 1)) {
         )
 
         # Un solo llamado, con la semilla 17
-        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+        #ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
 
         # agrego a la tabla
-        tb_grid_search_detalle <- rbindlist(
-         list( tb_grid_search_detalle,
-               rbindlist(ganancias) )
-        )
-        #tb_grid_search_detalle <- rbindlist(list(tb_grid_search_detalle, param_basicos), use.names = TRUE, fill = TRUE)
+        #tb_grid_search_detalle <- rbindlist( 
+        #  list( tb_grid_search_detalle,
+        #        rbindlist(ganancias) )
+        #)
+        tb_grid_search_detalle <- rbindlist(list(tb_grid_search_detalle, param_basicos), use.names = TRUE, fill = TRUE)
       }
     }
   }
   # grabo cada vez TODA la tabla en el loop mas externo
+  #fwrite( tb_grid_search_detalle,
+  #        file = "gridsearch_detalle.txt",
+  #        sep = "\t" )
   fwrite( tb_grid_search_detalle,
-         file = "gridsearch_detalle.txt",
-         sep = "\t" )
-  # fwrite( tb_grid_search_detalle,
-  #         file = "parametros_lista.txt",
-  #         sep = "\t" )
+          file = "parametros_lista.txt",
+          sep = "\t" )
 }
 
 #----------------------------

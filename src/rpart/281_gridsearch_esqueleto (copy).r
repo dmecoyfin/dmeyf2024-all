@@ -128,21 +128,21 @@ setwd( "./exp/HT2810/" )
 
 # genero la data.table donde van los resultados detallados del Grid Search
 # un registro para cada combinacion de < semilla, parametros >
-tb_grid_search_detalle <- data.table(
- semilla = integer(),
- cp = numeric(),
- maxdepth = integer(),
- minsplit = integer(),
- minbucket = integer(),
- ganancia_test = numeric()
-)
+#tb_grid_search_detalle <- data.table(
+#  semilla = integer(),
+#  cp = numeric(),
+#  maxdepth = integer(),
+#  minsplit = integer(),
+#  minbucket = integer(),
+#  ganancia_test = numeric()
+#)
 
-# tb_grid_search_detalle <- data.table(
-#   cp = numeric(),
-#   maxdepth = integer(),
-#   minsplit = integer(),
-#   minbucket = integer()
-# )
+tb_grid_search_detalle <- data.table(
+  cp = numeric(),
+  maxdepth = integer(),
+  minsplit = integer(),
+  minbucket = integer()
+)
 
 
 # itero por los loops anidados para cada hiperparametro
@@ -150,7 +150,7 @@ tb_grid_search_detalle <- data.table(
 for (vcp in c(-1, -0.5, 0.5, 1)) {
   for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
     for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-      for (vmin_bucket in c(trunc(vmin_split/3), trunc(vmin_split/2))) {
+      for (vmin_bucket in c(2, 5, 10, 20, 50, 100, 200, 300)) {
         # notar como se agrega
 
         # vminsplit  minima cantidad de registros en un nodo para hacer el split
@@ -162,24 +162,24 @@ for (vcp in c(-1, -0.5, 0.5, 1)) {
         )
 
         # Un solo llamado, con la semilla 17
-        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+        #ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
 
         # agrego a la tabla
-        tb_grid_search_detalle <- rbindlist(
-         list( tb_grid_search_detalle,
-               rbindlist(ganancias) )
-        )
-        #tb_grid_search_detalle <- rbindlist(list(tb_grid_search_detalle, param_basicos), use.names = TRUE, fill = TRUE)
+        #tb_grid_search_detalle <- rbindlist( 
+        #  list( tb_grid_search_detalle,
+        #        rbindlist(ganancias) )
+        #)
+        tb_grid_search_detalle <- rbindlist(list(tb_grid_search_detalle, param_basicos), use.names = TRUE, fill = TRUE)
       }
     }
   }
   # grabo cada vez TODA la tabla en el loop mas externo
+  #fwrite( tb_grid_search_detalle,
+  #        file = "gridsearch_detalle.txt",
+  #        sep = "\t" )
   fwrite( tb_grid_search_detalle,
-         file = "gridsearch_detalle.txt",
-         sep = "\t" )
-  # fwrite( tb_grid_search_detalle,
-  #         file = "parametros_lista.txt",
-  #         sep = "\t" )
+          file = "parametros_lista.txt",
+          sep = "\t" )
 }
 
 #----------------------------

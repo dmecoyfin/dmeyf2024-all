@@ -1,6 +1,3 @@
-# 799891, 799921, 799961, 799991, 800011
-
-
 rm(list = ls()) # Borro todos los objetos
 gc() # Garbage Collection
 
@@ -8,7 +5,7 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 799891
+PARAM$semilla <- 401953
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
@@ -43,9 +40,7 @@ particionar <- function(
 # Aqui comienza el programa
 
 # Establezco el Working Directory, elija una carpeta de su 
-# setwd("~/buckets/b1/")
-
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("/mnt/storage/work/dmeyf/")
 
 # cargo el dataset
 dataset <- fread("./datasets/competencia_01.csv")

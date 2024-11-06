@@ -12,7 +12,7 @@ require("randomForest")
 require("ranger")
 
 PARAM <- list()
-PARAM$experimento <- "clu-randomforest"
+PARAM$experimento <- "clu-randomforest-todasvars-4clusters"
 PARAM$semilla_primigenia <- 994391   # aqui va SU semilla
 PARAM$dataset <- "/mnt/storage/work/dmeyf/datasets/competencia_01.csv"
 
@@ -37,16 +37,9 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
-  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
-  "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado",
-  "Visa_mlimitecompra", "Visa_mpagominimo", "Visa_msaldototal",
-  "Visa_Fvencimiento", "Visa_mpagado", "Visa_fultimo_cierre",
-  "Visa_msaldopesos", "Visa_mfinanciacion_limite", "mpasivos_margen",
-  "mcuentas_saldo", "Visa_msaldopesos", "mcuenta_corriente", "Visa_mpagominimo",
-  "ctarjeta_master", "mcomisiones_otras", "ctarjeta_visa", "mcuenta_corriente", "Visa_fechaalta")
-
+campos_cluster <- colnames(dataset)
+campos_cluster <- setdiff(campos_cluster, "clase_ternaria")
+campos_cluster <- setdiff(campos_cluster, "numero_de_cliente")
 
 # genero el dataset chico
 dchico <- dataset[
@@ -67,7 +60,7 @@ set.seed(PARAM$semilla_primigenia)
 modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
   y= NULL,
-  ntree= 1000, #se puede aumentar a 10000
+  ntree= 10000, #se puede aumentar a 10000
   proximity= TRUE,
   oob.prox=  TRUE )
 
@@ -85,7 +78,7 @@ plot( hclust.rf )
 dev.off()
 
 
-kclusters <- 5  # cantidad de clusters
+kclusters <- 4  # cantidad de clusters
 h <- 20
 distintos <- 0
 
@@ -137,27 +130,27 @@ n <- length(campos_cluster)
 # voy a graficar en escala logaritmica
 # cuidado con 
 
-pdf("bivariado.pdf")
+#pdf("bivariado.pdf")
 
-for( i in 1:(n-1) ){
-  for( j in (i+1):n ){
+#for( i in 1:(n-1) ){
+#  for( j in (i+1):n ){
 
-  grafico <- ggplot( dchico[azar< muestra],
-      aes_string(x= campos_cluster[i],
-                 y= campos_cluster[j],
-                 color= "cluster"))  +
-      scale_colour_brewer(palette = "Dark2") +
-      geom_point(alpha = 0.50) +
-      xlab(campos_cluster[i]) +
+#  grafico <- ggplot( dchico[azar< muestra],
+#      aes_string(x= campos_cluster[i],
+#                 y= campos_cluster[j],
+#                 color= "cluster"))  +
+#      scale_colour_brewer(palette = "Dark2") +
+#      geom_point(alpha = 0.50) +
+#      xlab(campos_cluster[i]) +
       # scale_x_continuous(trans = pseudolog10_trans) +
-      ylab(campos_cluster[j]) 
+ #     ylab(campos_cluster[j]) 
       # scale_y_continuous(trans = pseudolog10_trans)
 
-   print( grafico )
-  }
-}
+#   print( grafico )
+#  }
+#}
 
-dev.off()
+#dev.off()
 
 # -----------------------------------------------------------------------------
 # Ahora incorporo la evolucion historica antes de la BAJA

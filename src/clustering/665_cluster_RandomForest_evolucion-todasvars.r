@@ -12,7 +12,7 @@ require("randomForest")
 require("ranger")
 
 PARAM <- list()
-PARAM$experimento <- "clu-randomforest"
+PARAM$experimento <- "clu-randomforest-todasvars"
 PARAM$semilla_primigenia <- 994391   # aqui va SU semilla
 PARAM$dataset <- "/mnt/storage/work/dmeyf/datasets/competencia_01.csv"
 
@@ -37,16 +37,9 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
-  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
-  "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado",
-  "Visa_mlimitecompra", "Visa_mpagominimo", "Visa_msaldototal",
-  "Visa_Fvencimiento", "Visa_mpagado", "Visa_fultimo_cierre",
-  "Visa_msaldopesos", "Visa_mfinanciacion_limite", "mpasivos_margen",
-  "mcuentas_saldo", "Visa_msaldopesos", "mcuenta_corriente", "Visa_mpagominimo",
-  "ctarjeta_master", "mcomisiones_otras", "ctarjeta_visa", "mcuenta_corriente", "Visa_fechaalta")
-
+campos_cluster <- colnames(dataset)
+campos_cluster <- setdiff(campos_cluster, "clase_ternaria")
+campos_cluster <- setdiff(campos_cluster, "numero_de_cliente")
 
 # genero el dataset chico
 dchico <- dataset[

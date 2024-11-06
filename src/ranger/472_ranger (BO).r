@@ -20,10 +20,10 @@ PARAM$semilla_primigenia <- 994391
 
 # hiperparámetros de Random Forest
 PARAM$ranger <- list(
-  "num.trees" = 500, # cantidad de arboles
-  "mtry" = 13, # cantidad de atributos que participan en cada split
-  "min.node.size" = 5, # tamaño minimo de las hojas
-  "max.depth" = 10 # 0 significa profundidad infinita
+  "num.trees" = 287, # cantidad de arboles
+  "mtry" = 6, # cantidad de atributos que participan en cada split
+  "min.node.size" = 179, # tamaño minimo de las hojas
+  "max.depth" = 24 # 0 significa profundidad infinita
 )
 
 #------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ entrega <- as.data.table(list(
 
 
 
-nom_arch_kaggle <- "KA4720_001.csv"
+nom_arch_kaggle <- "KA4720_001BO.csv"
 
 # genero el archivo para Kaggle
 fwrite(entrega,
