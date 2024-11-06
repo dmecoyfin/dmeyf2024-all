@@ -276,13 +276,13 @@ TS_strategy_base8 <- function( pinputexps )
 
 
   param_local$train$training <- c(202104, 202103, 202102,
-    202101)
+    202101, 202012, 202011)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.25
+  param_local$train$undersampling <- 0.3
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -329,19 +329,28 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    #bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    #pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    #neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
-    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
-    max_drop = 50, # <=0 means no limit
-    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    #drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    #max_drop = 50, # <=0 means no limit
+    #skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
     extra_trees = FALSE,
+    
     # Parte variable
-    learning_rate = c( 0.01, 0.1 ),
+    bagging_fraction = c(0.1, 1),
+    pos_bagging_fraction = c(0.1, 1),
+    neg_bagging_fraction = c(0.1, 1),
+    
+    drop_rate = c(0.1, 1),
+    skip_drop = c(0.1, 1),
+    max_drop = c( 0L, 100L, "integer" ),
+    
+    learning_rate = c( 0.01, 0.05 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
     min_data_in_leaf = c( 100L, 10000L, "integer" )
@@ -420,7 +429,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+k1 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -443,7 +452,7 @@ wf_agosto <- function( pnombrewf )
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 100 )  # iteraciones inteligentes
 
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
@@ -457,5 +466,5 @@ wf_agosto <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto()
+k1()
 
