@@ -1428,6 +1428,7 @@ def create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_se
     data = data.with_columns(  pl.col('cmobile_app_trx').cast(pl.Float32)  )
     # redusco dataset eliminando registros muy viejos
     # data = data.filter(pl.col('foto_mes') > 202100)
+    last_date_to_consider= 201910
     data = data.filter(pl.col('foto_mes') > last_date_to_consider)
    
     original_columns= data.columns
@@ -1452,10 +1453,18 @@ def create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_se
     data = time_features(data)
     data.write_parquet(exp_folder+'data_x_w0_time.parquet' )
     
+    feature_importance_df_ranking, feature_importance_df_bool = get_top_and_least_important_boruta( data,ganancia_acierto,  mes_train, mes_test  )
+    features_finales = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==True ]['feature'].to_list()   
+    data= data[['numero_de_cliente','foto_mes','clase_ternaria']+ features_finales]
+
+
+    
     lag_flag, delta_lag_flag = True, True
     data= add_lags_diff(data, lag_flag, delta_lag_flag )
-    #features_above_canritos, features_above_canritos = get_top_and_least_important_y_canaritos( data, N_top, N_least, N_least_ampliado,  mes_train, mes_test  )
+    
     feature_importance_df_ranking, feature_importance_df_bool = get_top_and_least_important_boruta( data,ganancia_acierto,  mes_train, mes_test  )
+    features_finales = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==True ]['feature'].to_list()   
+    data= data[['numero_de_cliente','foto_mes','clase_ternaria']+ features_finales]
     
     #data = time_features(data)
     #data_reg = regression_per_client(data ,features_below_canritos) #muy lento Usae el codigo de R
@@ -1668,6 +1677,7 @@ else:
 
 lag_flag, delta_lag_flag = True, True
 #original_columns, data_x,  top_15_feature_names , least_15_features, least_ampliado = create_data(last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
+ds()
 original_columns,original_columns_inta_mes,  data_x,  features_finales, feature_importance_df_ranking, feature_importance_df_bool =create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
 
 joblib.dump( [ original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool], '/home/a_reinaldomedina/buckets/b2/exp/Python_optuna1/dataset_202000s_elsatic.joblib')
