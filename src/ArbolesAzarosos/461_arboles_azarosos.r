@@ -14,20 +14,17 @@ require("yaml")
 PARAM <- list()
 PARAM$experimento <- "KA4610"
 
-
-# 799891, 799921, 799961, 799991, 800011
-
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 994391
 
 # parametros rpart
 
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 500,
-  "minbucket" = 200,
-  "maxdepth" = 6
+  "minsplit" = 50,
+  "minbucket" = 5,
+  "maxdepth" = 12
 )
 
 # parametros  arbol
@@ -40,13 +37,13 @@ PARAM$feature_fraction <- 0.5
 #  a mas arboles mas tiempo de proceso y MEJOR MODELO,
 #  pero ganancias marginales
 PARAM$num_trees_max <- 512
-PARAM$grabar <- c(256, 512)
+PARAM$grabar <- c(1, 4, 8, 16, 32, 64, 128, 256, 512)
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("/mnt/storage/work/dmeyf/") # Establezco el Working Directory
 
 
 # cargo los datos
