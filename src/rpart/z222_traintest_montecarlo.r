@@ -7,7 +7,11 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
+<<<<<<< HEAD
+PARAM$semillas <- c(122323, 131413, 202001, 878777, 994321)
+=======
 PARAM$semillas <- c(102191, 200177, 410551, 552581, 892237)
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 
 PARAM$dataset_nom <- "./datasets/competencia_01.csv"
 
@@ -94,7 +98,11 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
+<<<<<<< HEAD
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF") # Establezco el Working Directory
+=======
 setwd("~/buckets/b1/") # Establezco el Working Directory
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 
 # cargo los datos
 dataset <- fread(PARAM$dataset_nom)
@@ -108,7 +116,11 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
   MoreArgs = list(PARAM), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
+<<<<<<< HEAD
+  mc.cores = 1 # debe ser 1 si se trabaja con Windows
+=======
   mc.cores = detectCores()  # debe ser 1 si se trabaja con Windows
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
 )
 
 # muestro la lista de las salidas en testing
@@ -127,3 +139,7 @@ cat( "ganancia promedio: ", tb_salida[, mean(ganancia_test)], "\n" )
 cat(  "ganancia desvio estandar: ", tb_salida[, sd(ganancia_test)], "\n" )
 
 # desvio estandar Distribucion Binomial   sqrt( n * p * (1-p) )
+<<<<<<< HEAD
+
+=======
+>>>>>>> 01da2cfe30e15f07355e454cebc73e329874e9fb
