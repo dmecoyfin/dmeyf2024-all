@@ -34,15 +34,15 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$semilla_primigenia <- 799891
-PARAM$experimento <- "HT4220_4"
+PARAM$semilla_primigenia <- 878777
+PARAM$experimento <- "HT4220lag"
 
-PARAM$input$dataset <- "/home/piquelinxbox/datasets/competencia_01.csv"
-PARAM$input$training <- c(202101, 202102, 202103, 202104) # los meses en los que vamos a entrenar
+PARAM$input$dataset <- "./datasets/competencia_01_lag1.csv"
+PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
 # undersampling de 1.0  implica tomar TODOS los datos
-PARAM$trainingstrategy$undersampling <- 1.0
+PARAM$trainingstrategy$undersampling <- 1
 
 PARAM$hyperparametertuning$iteraciones <- 150
 PARAM$hyperparametertuning$xval_folds <- 5
@@ -53,12 +53,11 @@ PARAM$hyperparametertuning$NEG_ganancia <- -7000
 
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.01, upper = 0.1),
-  makeIntegerParam("num_leaves", lower = 8L, upper = 2048L),
-  makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
-  makeIntegerParam("min_data_in_leaf", lower = 700L, upper = 8000L),
-  makeIntegerParam("envios", lower = 5000L, upper = 15000L),
-  makeNumericParam("lambda_l2 ", lower = 0.0, upper = 0.5)
+  makeNumericParam("learning_rate", lower = 0.01, upper = 0.05),
+  makeIntegerParam("num_leaves", lower = 50L, upper = 1024L),
+  makeNumericParam("feature_fraction", lower = 0.5, upper = 1.0),
+  makeIntegerParam("min_data_in_leaf", lower = 10L, upper = 8000L),
+  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
 
 #------------------------------------------------------------------------------
@@ -212,7 +211,7 @@ EstimarGanancia_lightgbm <- function(x) {
 # Aqui empieza el programa
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/ferna/OneDrive/_Maestria/2do_Cuatri/DMEF")
 
 
 # genero numeros primos
@@ -260,7 +259,7 @@ dataset[
 # los campos que se van a utilizar
 campos_buenos <- setdiff(
   colnames(dataset),
-  c("clase_ternaria", "clase01", "azar", "training")
+  c("clase_ternaria", "clase01", "azar", "training", "cprestamos_personales","mprestamos_personales")
 )
 
 # defino los datos que forma parte del training
