@@ -420,12 +420,12 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_base_2024_11_01 <- function( pnombrewf )
+wf_agosto_base_iteracion_3 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_4bis.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_3bis.csv.gz")
 
   # Etapas preprocesamiento
 #  CA_catastrophe_base( metodo="MachineLearning")
@@ -439,7 +439,7 @@ wf_agosto_base_2024_11_01 <- function( pnombrewf )
 #    mtry_ratio= 0.2
 #  )
 
-   CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+   CN_canaritos_asesinos_base(ratio=0.2, desvio=3.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
@@ -457,4 +457,4 @@ wf_agosto_base_2024_11_01 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_base_2024_11_01()
+wf_agosto_base_iteracion_3()
