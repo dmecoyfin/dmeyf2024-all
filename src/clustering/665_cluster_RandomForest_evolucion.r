@@ -13,15 +13,14 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 994391   # aqui va SU semilla
+PARAM$dataset <- "/mnt/storage/work/dmeyf/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("/mnt/storage/work/dmeyf/")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
@@ -38,15 +37,15 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
+  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
+  "mtarjeta_master_consumo", "mprestamos_personales",
+  "Visa_status", "Master_status", "cdescubierto_preacordado",
+  "Visa_mlimitecompra", "Visa_mpagominimo", "Visa_msaldototal",
+  "Visa_Fvencimiento", "Visa_mpagado", "Visa_fultimo_cierre",
+  "Visa_msaldopesos", "Visa_mfinanciacion_limite", "mpasivos_margen",
+  "mcuentas_saldo", "Visa_msaldopesos", "mcuenta_corriente", "Visa_mpagominimo",
+  "ctarjeta_master", "mcomisiones_otras", "ctarjeta_visa", "mcuenta_corriente", "Visa_fechaalta")
 
 
 # genero el dataset chico
