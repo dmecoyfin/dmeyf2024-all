@@ -420,7 +420,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_junio_ts1 <- function( pnombrewf )
+wf_junio_ts2 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -448,7 +448,7 @@ wf_junio_ts1 <- function( pnombrewf )
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
-  #KA_evaluate_kaggle()  # genera archivos para Kaggle
+  KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -457,5 +457,5 @@ wf_junio_ts1 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_junio_ts1()
+wf_junio_ts2()
 
