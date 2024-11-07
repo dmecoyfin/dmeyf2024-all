@@ -8,7 +8,7 @@ gc() # garbage collection
 
 require("data.table")
 require("rlist")
-# require("ulimit")  # para controlar la memoria
+require("ulimit")  # para controlar la memoria
 
 
 # para que se detenga ante el primer error
@@ -25,12 +25,11 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230_75_s3"
+PARAM$experimento <- "PP7230"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-PARAM$semilla_azar <- 799961 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 903761 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
@@ -42,12 +41,12 @@ PARAM$trainingstrategy$testing <- c(202104)
 PARAM$trainingstrategy$validation <- c(202103)
 PARAM$trainingstrategy$training <- c(202102)
 
-# acá me tengo que meter si quiero hacer el loop
+
 PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
 PARAM$trainingstrategy$future <- c(202106)
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 0.25
+PARAM$trainingstrategy$training_undersampling <- 1.0
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
@@ -90,7 +89,7 @@ vdolar_oficial <- c(
    91.474000,  93.997778,  96.635909,
    98.526000,  99.613158, 100.619048
 )
-  
+
 vUVA <- c(
   0.9669867858358365, 0.9323750098728378, 0.8958202912590305,
   0.8631993702994263, 0.8253893405524657, 0.7928918905364516
@@ -123,7 +122,7 @@ Corregir_interpolar <- function(pcampo, pmeses) {
 AsignarNA_campomeses <- function(pcampo, pmeses) {
 
   if( pcampo %in% colnames( dataset ) ) {
-  
+
     dataset[ foto_mes %in% pmeses, paste0(pcampo) := NA ]
   }
 }
@@ -167,11 +166,11 @@ Corregir_Rotas <- function(dataset, pmetodo) {
 
   Corregir_atributo("mtarjeta_master_descuentos",
     c(202102), pmetodo)
-  
-  Corregir_atributo("ccajas_depositos",
-                    c(202105), pmetodo)
 
-  cat( "fin Corregir_rotas()\n")
+  Corregir_atributo("ccajas_depositos",
+    c(202105), pmetodo)
+
+    cat( "fin Corregir_rotas()\n")
 }
 #------------------------------------------------------------------------------
 
@@ -233,7 +232,7 @@ drift_estandarizar <- function(campos_drift) {
   for (campo in campos_drift)
   {
     cat(campo, " ")
-    dataset[, paste0(campo, "_normal") := 
+    dataset[, paste0(campo, "_normal") :=
       (get(campo) -mean(campo, na.rm=TRUE)) / sd(get(campo), na.rm=TRUE),
       by = "foto_mes"]
 
@@ -245,14 +244,14 @@ drift_estandarizar <- function(campos_drift) {
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-# Limito la memoria, para que ningun alumno debe sufrir que el R 
+# Limito la memoria, para que ningun alumno debe sufrir que el R
 #  aborte sin avisar si no hay suficiente memoria
-#  la salud mental de los alumnos es el bien mas preciado 
-# action_limitar_memoria( 4 )
+#  la salud mental de los alumnos es el bien mas preciado
+action_limitar_memoria( 4 )
 
 
  # tabla de indices financieros
-tb_indices <- as.data.table( list( 
+tb_indices <- as.data.table( list(
   "IPC" = vIPC,
   "dolar_blue" = vdolar_blue,
   "dolar_oficial" = vdolar_oficial,
@@ -264,9 +263,7 @@ tb_indices$foto_mes <- vfoto_mes
 
 tb_indices
 
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/")
-# setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/buckets/b1/") # Establezco el Working Directory
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
@@ -283,11 +280,11 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 # Catastrophe Analysis  -------------------------------------------------------
 # corrijo las variables que con el script Catastrophe Analysis detecte que
-# estaban rotas
+#   estaban rotas
 
 # ordeno dataset
 setorder(dataset, numero_de_cliente, foto_mes)
-# corrijo usando el metodo MachineLearning
+# corrijo usando el metido MachineLearning
 Corregir_Rotas(dataset, "MachineLearning")
 
 
