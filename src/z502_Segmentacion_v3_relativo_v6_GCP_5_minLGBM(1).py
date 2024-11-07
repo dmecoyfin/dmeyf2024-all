@@ -975,9 +975,10 @@ def get_top_and_least_important_boruta( data, ganancia_acierto,  mes_train, mes_
     
        
     data = data.with_columns(pl.col('Master_Finiciomora').cast(pl.Float64))    
+    
+    
     df_train_3 = data.filter(pl.col('foto_mes') == mes_train)
     df_train_3= subsample_data_time_polars(df_train_3, 0.1, 'CONTINUA', 'clase_ternaria', random_state)      
-    df_train_3 = data.filter(pl.col('foto_mes') == mes_train)
     df_test = data.filter(pl.col('foto_mes') == mes_test)
     
     y_train = df_train_3['clase_ternaria'].to_pandas().map(lambda x: 0 if x == "CONTINUA" else 1)
@@ -1430,6 +1431,8 @@ def create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_se
     #data_reg = regression_per_client(data ,features_below_canritos) #muy lento Usae el codigo de R
     data = div_sum_top_features_polars(data, feature_importance_df_ranking['feature'][:50].to_list())
     
+    
+    
     #print_nan_columns(data, 0.75, original_columns)
     data= add_moth_encode( data)
     #print_nan_columns(data, 0.75, original_columns)
@@ -1439,10 +1442,12 @@ def create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_se
     data= convert_to_int_float32_polars(data)
     #features_above_canritos, features_above_canritos = get_top_and_least_important_y_canaritos( data, N_top, N_least, N_least_ampliado,  mes_train, mes_test  )
     feature_importance_df_ranking, feature_importance_df_bool = get_top_and_least_important_boruta( data,ganancia_acierto,  mes_train, mes_test  )
-    data= data[['numero_de_cliente','foto_mes','clase_ternaria']+ feature_importance_df_bool['feature'][:50].to_list()]
+    features_finales = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==True ]['feature'].to_list()
+    #features_below_canritos = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==False ]['feature'].to_list()
+    data= data[['numero_de_cliente','foto_mes','clase_ternaria']+ features_finales]
     #data = drop_columns_nan_zero(data, 0.75, original_columns)
     #data_x=data
-    return original_columns,original_columns_inta_mes,  data,  features_above_canritos, features_below_canritos
+    return original_columns,original_columns_inta_mes,  data,  features_finales, feature_importance_df_ranking, feature_importance_df_bool
 
 
 # fin preparacion de datos.
@@ -1599,11 +1604,9 @@ path_set_con_ternaria = '/home/reinaldo/7a310714-2a6d-44bd-bd76-c6a65540eb82/DME
 #path_set_con_features_eng = '/home/reinaldo/7a310714-2a6d-44bd-bd76-c6a65540eb82/DMEF/datasets/competencia_02_features_eng.joblib'
 
 
-path_set_crudo = "/home/medina_robledo/Documents/competencia_02_crudo.csv"
-path_set_con_ternaria = "/home/medina_robledo/Documents/competencia_02.csv"
-path_set_crudo = "/home/medina_robledo/buckets/b1/datasets/competencia_02_crudo.csv"
-path_set_con_ternaria = "/home/medina_robledo/buckets/b1/datasets/competencia_02.csv"
-exp_folder = '/home/medina_robledo/buckets/b1/exp/escopeta_1/'
+path_set_crudo = "/home/a_reinaldomedina/buckets/b2/datasets/competencia_02_crudo.csv"
+path_set_con_ternaria = "/home/a_reinaldomedina/buckets/b2/datasets/competencia_02.csv"
+exp_folder = '/home/a_reinaldomedina/buckets/b2/exp/Python_optuna1/'
 
 """
 if not os.path.exists(path_set_con_features_eng):
@@ -1621,7 +1624,7 @@ else:
     original_columns, data_x,  top_15_feature_names , least_15_features, least_ampliado= joblib.load( path_set_con_features_eng)
     data_x = pl.read_parquet(path_set_con_features_eng)
 """
-ds()
+
 lag_flag, delta_lag_flag = True, True
 #original_columns, data_x,  top_15_feature_names , least_15_features, least_ampliado = create_data(last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
 original_columns,original_columns_inta_mes,  data,  features_above_canritos, features_below_canritos=create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
