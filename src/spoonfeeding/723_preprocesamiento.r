@@ -8,7 +8,7 @@ gc() # garbage collection
 
 require("data.table")
 require("rlist")
-# require("ulimit")  # para controlar la memoria
+require("ulimit")  # para controlar la memoria
 
 
 # para que se detenga ante el primer error
@@ -25,12 +25,11 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230_75_s3"
+PARAM$experimento <- "PP7230"
 
-PARAM$input$dataset <- "./datasets/competencia_01.csv"
+PARAM$input$dataset <- "./datasets/competencia_01_R.csv"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-PARAM$semilla_azar <- 799961 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
@@ -42,12 +41,12 @@ PARAM$trainingstrategy$testing <- c(202104)
 PARAM$trainingstrategy$validation <- c(202103)
 PARAM$trainingstrategy$training <- c(202102)
 
-# acá me tengo que meter si quiero hacer el loop
+
 PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
 PARAM$trainingstrategy$future <- c(202106)
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 0.25
+PARAM$trainingstrategy$training_undersampling <- 1.0
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
@@ -167,9 +166,6 @@ Corregir_Rotas <- function(dataset, pmetodo) {
 
   Corregir_atributo("mtarjeta_master_descuentos",
     c(202102), pmetodo)
-  
-  Corregir_atributo("ccajas_depositos",
-                    c(202105), pmetodo)
 
   cat( "fin Corregir_rotas()\n")
 }
@@ -248,7 +244,7 @@ drift_estandarizar <- function(campos_drift) {
 # Limito la memoria, para que ningun alumno debe sufrir que el R 
 #  aborte sin avisar si no hay suficiente memoria
 #  la salud mental de los alumnos es el bien mas preciado 
-# action_limitar_memoria( 4 )
+action_limitar_memoria( 4 )
 
 
  # tabla de indices financieros
@@ -264,9 +260,7 @@ tb_indices$foto_mes <- vfoto_mes
 
 tb_indices
 
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/")
-# setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/buckets/b1/") # Establezco el Working Directory
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
@@ -283,11 +277,11 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 # Catastrophe Analysis  -------------------------------------------------------
 # corrijo las variables que con el script Catastrophe Analysis detecte que
-# estaban rotas
+#   eestaban rotas
 
 # ordeno dataset
 setorder(dataset, numero_de_cliente, foto_mes)
-# corrijo usando el metodo MachineLearning
+# corrijo usando el metido MachineLearning
 Corregir_Rotas(dataset, "MachineLearning")
 
 
