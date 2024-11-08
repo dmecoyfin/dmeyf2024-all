@@ -1,5 +1,3 @@
-# para correr el Google Cloud
-
 # limpio la memoria
 rm(list = ls()) # remove all objects
 gc() # garbage collection
@@ -10,35 +8,37 @@ require("lightgbm")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4215"
+PARAM$experimento <- "KA4210"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 750317
 
-
-PARAM$input$dataset <- "./competencia_01.csv"
+#Cambiar ruta
+PARAM$input$dataset <- "C:/Users/glova/OneDrive/Documentos/EyF/Video09212024/competencia_01.csv"
 PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 411
-PARAM$finalmodel$learning_rate <- 0.0517855437293863
-PARAM$finalmodel$feature_fraction <- 0.991184304587602
-PARAM$finalmodel$min_data_in_leaf <- 3568
-PARAM$finalmodel$num_leaves <- 313
+PARAM$finalmodel$num_iterations <- 613
+PARAM$finalmodel$learning_rate <- 0.01
+PARAM$finalmodel$feature_fraction <- 0.5489793063
+PARAM$finalmodel$min_data_in_leaf <- 1014
+PARAM$finalmodel$num_leaves <- 928
 
 
 PARAM$finalmodel$max_bin <- 31
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
+# Cambiar ruta
 # Aqui empieza el programa
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-setwd("~/datasets/") # Establezco el Working Directory
+setwd("C:/Users/glova/OneDrive/Documentos/EyF/buckets/b13")
 
 
 # cargo el dataset donde voy a entrenar
 dataset <- fread(PARAM$input$dataset, stringsAsFactors = TRUE)
 
+# Eliminar las columnas 'cprestamos_personales' y 'mprestamos_personales'
+dataset[, c("cprestamos_personales", "mprestamos_personales") := NULL]
 
 #--------------------------------------
 
@@ -88,7 +88,7 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    seed = 799891
+    seed = PARAM$semilla_primigenia
   )
 )
 
@@ -135,7 +135,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(500, 20000, by = 500)
+cortes <- seq(9000, 13000, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
