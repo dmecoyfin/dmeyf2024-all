@@ -25,9 +25,9 @@ PARAM <- list()
 PARAM$experimento <- "HT4480"
 
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 103301
 
-PARAM$BO_iter <- 900 #cantidad de iteraciones de la Bayesian Optimization
+PARAM$BO_iter <- 100 #cantidad de iteraciones de la Bayesian Optimization
 
 # la letra L al final de 1L significa ENTERO
 PARAM$hs <- makeParamSet(
@@ -143,7 +143,7 @@ ArbolesCrossValidation <- function(param_rpart, qfolds, pagrupa, semilla) {
     seq(qfolds), # 1 2 3 4 5
     MoreArgs = list(param_rpart),
     SIMPLIFY = FALSE,
-    mc.cores = 1 # detectCores()
+    mc.cores = 1
   )
 
   dataset[, fold := NULL]
@@ -196,8 +196,8 @@ EstimarGanancia <- function(x) {
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-# Establezco el Working Directoryprograma
-setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
+# Establezco el Working Directory
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 
 # cargo los datos

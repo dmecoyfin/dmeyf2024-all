@@ -100,11 +100,12 @@ graficar_drift <- function(campo, pmes0, pmes1) {
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 
 # cargo dataset
 dataset <- fread( "./datasets/competencia_01.csv" )
+
 
 dir.create("./exp/", showWarnings = FALSE)
 dir.create("./exp/DR3161/", showWarnings = FALSE)

@@ -10,7 +10,7 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 103301
 PARAM$qsemillas <- 20
 
 # dataset
@@ -123,7 +123,7 @@ DosArbolesEstimarGanancia <- function(semilla, training_pct, param_rpart1, param
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/") # Establezco el Working Directory
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf") # Establezco el Working Directory
 
 
 # genero numeros primos
@@ -141,26 +141,18 @@ dataset <- dataset[foto_mes==202104]
 
 
 
-dir.create("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/exp/EX2410", showWarnings = FALSE)
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/exp/EX2410")
-
-# Carga el paquete
-library(pbmcapply)
+dir.create("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf/exp/EX2410", showWarnings = FALSE)
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf/exp/EX2410")
 
 
-# Medir el tiempo de ejecución
-tiempo_ejecucion <- system.time({
-  # Uso de pbmcmapply en lugar de mcmapply para agregar barra de progreso
-  salidas <- pbmcmapply(DosArbolesEstimarGanancia,
-                        PARAM$semillas, # paso el vector de semillas
-                        MoreArgs = list(PARAM$training_pct, PARAM$rpart1, PARAM$rpart2), # aqui paso el segundo parametro
-                        SIMPLIFY = FALSE,
-                        mc.cores = 1 #detectCores()
-  )
-})
-
-# Mostrar el tiempo de ejecución
-print(tiempo_ejecucion)
+# la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
+#  tantas veces como valores tenga el vector  PARAM$semillas
+salidas <- mcmapply(DosArbolesEstimarGanancia,
+  PARAM$semillas, # paso el vector de semillas
+  MoreArgs = list(PARAM$training_pct, PARAM$rpart1, PARAM$rpart2), # aqui paso el segundo parametro
+  SIMPLIFY = FALSE,
+  mc.cores = 1
+)
 
 
 # paso la lista a vector
@@ -174,7 +166,7 @@ tb_salida <- rbindlist(salidas)
 grafico <- ggplot( tb_salida, aes(x=ganancia1)) + geom_density(alpha=0.25)  +
              geom_density(data=tb_salida, aes(x=ganancia2), fill="purple", color="purple",  alpha=0.10)
 
-pdf("densidad_dos.pdf")
+pdf("densidad_dos_20.pdf")
 print(grafico)
 dev.off()
 

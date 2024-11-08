@@ -8,7 +8,7 @@ gc() # garbage collection
 
 require("data.table")
 require("rlist")
-# require("ulimit")  # para controlar la memoria
+require("ulimit")  # para controlar la memoria
 
 
 # para que se detenga ante el primer error
@@ -22,29 +22,37 @@ options(error = function() {
 
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
-#  muy pronto esto se leera desde un archivo formato .yaml
+#  muy pronto esto se leerasi desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP02723_us_ft_025"
+PARAM$experimento <- "PP7230V2"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-PARAM$semilla_azar <- 799891 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 103301 # Aqui poner su  primer  semilla
 
-
+# Corrección del drifting por deflación 
 PARAM$driftingcorreccion <- "ninguno"
+
 PARAM$clase_minoritaria <- c("BAJA+1","BAJA+2")
 
 # los meses en los que vamos a entrenar
 #  la magia estara en experimentar exhaustivamente
+#PARAM$trainingstrategy$testing <- c(202104)
+#PARAM$trainingstrategy$validation <- c(202103)
+#PARAM$trainingstrategy$training <- c(202102)
+## Cambiar la estrategia de entrenamiento
+PARAM$trainingstrategy$training <- c(202103)
 PARAM$trainingstrategy$testing <- c(202104)
-PARAM$trainingstrategy$validation <- c(202103)
-PARAM$trainingstrategy$training <- c(202102, 202101)
 
-# acá me tengo que meter si quiero hacer el loop
-PARAM$trainingstrategy$final_train <- c(202104,202103,202102)
+
+
+#PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
+#PARAM$trainingstrategy$future <- c(202106)
+##cambiamos la estrategia
+PARAM$trainingstrategy$final_train <- c(202104)
 PARAM$trainingstrategy$future <- c(202106)
+
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
 PARAM$trainingstrategy$training_undersampling <- 0.25
@@ -52,7 +60,7 @@ PARAM$trainingstrategy$training_undersampling <- 0.25
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
 #   si se asigna un valor menor a 1.0
-PARAM$trainingstrategy$finaltrain_undersampling <- 0.25
+PARAM$trainingstrategy$finaltrain_undersampling <- 1.0
 
 #------------------------------------------------------------------------------
 # limita el uso de memoria RAM a  Total_hardware - GB_min
@@ -167,9 +175,6 @@ Corregir_Rotas <- function(dataset, pmetodo) {
 
   Corregir_atributo("mtarjeta_master_descuentos",
     c(202102), pmetodo)
-  
-  Corregir_atributo("ccajas_depositos",
-                    c(202105), pmetodo)
 
   cat( "fin Corregir_rotas()\n")
 }
@@ -248,7 +253,7 @@ drift_estandarizar <- function(campos_drift) {
 # Limito la memoria, para que ningun alumno debe sufrir que el R 
 #  aborte sin avisar si no hay suficiente memoria
 #  la salud mental de los alumnos es el bien mas preciado 
-# action_limitar_memoria( 4 )
+action_limitar_memoria( 4 )
 
 
  # tabla de indices financieros
@@ -264,12 +269,14 @@ tb_indices$foto_mes <- vfoto_mes
 
 tb_indices
 
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/")
-# setwd("~/buckets/b1/") # Establezco el Working Directory
+#setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")# Establezco el Working Directory
+setwd("~/buckets/b1/exp/") 
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
+
+## Elimino los campos cprestamos_personales y mprestamos_personales
+dataset[, c("cprestamos_personales", "mprestamos_personales") := NULL]
 
 
 
@@ -283,11 +290,11 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 # Catastrophe Analysis  -------------------------------------------------------
 # corrijo las variables que con el script Catastrophe Analysis detecte que
-# estaban rotas
+#   eestaban rotas
 
 # ordeno dataset
 setorder(dataset, numero_de_cliente, foto_mes)
-# corrijo usando el metodo MachineLearning
+# corrijo usando el metido MachineLearning
 Corregir_Rotas(dataset, "MachineLearning")
 
 
@@ -340,28 +347,15 @@ dataset[
 #  perdi el link a la tesis, NO es de mi autoria
 dataset[, mpayroll_sobre_edad := mpayroll / cliente_edad]
 
+# **Incorporación: Ratios Financieros**
+dataset[, ratio_payroll_saldo := mpayroll / (1 + mcuentas_saldo)]
+dataset[, ratio_visa_consumo := mtarjeta_visa_consumo / (1 + ctarjeta_visa)]
+dataset[, ratio_productos := cproductos / (1 + mpasivos_margen)]
 
-# En un mundo prolijo, estas variables se eliminan
-#  durante la creacion del dataset
-# https://www.youtube.com/watch?v=eitDnP0_83k
-dataset[, cprestamos_personales := NULL ]
-# dataset[, cprestamos_personales_lag1 := NULL ]
-# dataset[, cprestamos_personales_delta1 := NULL ]
-
-dataset[, mprestamos_personales := NULL ]
-# dataset[, mprestamos_personales_lag1 := NULL ]
-# dataset[, mprestamos_personales_delta1 := NULL ]
-
-dataset[, cplazo_fijo := NULL ]
-# dataset[, cplazo_fijo_lag1 := NULL ]
-# dataset[, cplazo_fijo_delta1 := NULL ]
-
-dataset[, ctarjeta_debito := NULL ]
-# dataset[, ctarjeta_debito_lag1 := NULL ]
-# dataset[, ctarjeta_debito_delta1 := NULL ]
-
-
-
+# **Incorporación: Interacciones entre Variables**
+dataset[, interaccion_transacciones := ctrx_quarter_normalizado * cproductos]
+dataset[, interaccion_margen := mactivos_margen * mpasivos_margen]
+dataset[, interaccion_saldo_payroll := mcuentas_saldo * mpayroll]
 
 # Por supuesto, usted puede COMENTARIAR todo lo que desee
 dataset[, vm_mfinanciacion_limite := rowSums(cbind(Master_mfinanciacion_limite, Visa_mfinanciacion_limite), na.rm = TRUE)]
@@ -426,17 +420,16 @@ nans <- lapply(
   function(.name) dataset[, sum(is.nan(get(.name)))]
 )
 
+nans_qty <- sum(unlist(nans))
+if (nans_qty > 0) {
+  cat(
+    "ATENCION, hay", nans_qty,
+    "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n"
+  )
 
-# nans_qty <- sum(unlist(nans))
-# if (nans_qty > 0) {
-#  cat(
-#    "ATENCION, hay", nans_qty,
-#    "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n"
-#  )
-#
-#  cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
-#  dataset[mapply(is.nan, dataset)] <- 0
-# }
+  cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
+  dataset[mapply(is.nan, dataset)] <- 0
+}
 
 
 
@@ -468,6 +461,11 @@ for (vcol in cols_lagueables)
   dataset[, paste0(vcol, "_delta1") := get(vcol) - get(paste0(vcol, "_lag1"))]
 }
 
+# **Incorporación: Aceleración (Delta-Lags de Orden 2)**
+for (vcol in cols_lagueables) {
+  dataset[, paste0(vcol, "_delta2") := get(paste0(vcol, "_delta1")) - 
+            shift(get(paste0(vcol, "_delta1")), 1, type = "lag")]
+}
 
 # Training Strategy  ----------------------------------------------
 
@@ -475,9 +473,9 @@ dataset[, part_future := 0L ]
 dataset[ foto_mes %in% PARAM$trainingstrategy$future,
   part_future := 1L]
 
-dataset[, part_validation := 0L ]
-dataset[ foto_mes %in% PARAM$trainingstrategy$validation,
-  part_validation := 1L]
+#dataset[, part_validation := 0L ]
+#dataset[ foto_mes %in% PARAM$trainingstrategy$validation,
+#  part_validation := 1L]
 
 dataset[, part_testing := 0L ]
 dataset[ foto_mes %in% PARAM$trainingstrategy$testing,

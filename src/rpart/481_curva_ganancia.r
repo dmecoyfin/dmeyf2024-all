@@ -16,16 +16,22 @@ require("yaml")
 require("ggplot2")
 
 
-# cambiar aqui los parametros cp:-0.588298729539491	minsplit:11	minbucket:4	maxdepth:11	5	99323000	55
+# cambiar aqui los parametros
 PARAM <- list()
 
 PARAM$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 103301
 
-PARAM$minsplit <- 1185
-PARAM$minbucket <- 150
-PARAM$maxdepth <- 7
+#PARAM$minsplit <- 300
+#PARAM$minbucket <- 20
+#PARAM$maxdepth <- 11
+
+
+PARAM$minsplit <- 2204
+PARAM$minbucket <- 1095
+PARAM$maxdepth <- 11
+
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -55,8 +61,7 @@ particionar <- function(data, division, agrupa = "", campo = "fold",
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 
 # cargo los datos
@@ -82,8 +87,8 @@ particionar(dataset,
 modelo <- rpart(
        formula = "clase_ternaria ~ . -fold",
        data = dataset[fold == 1, ],
-       xval = 0,
-       cp = -1,
+       xval = 5,
+       cp = -0.9686,
        minsplit = PARAM$minsplit,
        minbucket = PARAM$minbucket,
        maxdepth = PARAM$maxdepth

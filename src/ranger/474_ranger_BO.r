@@ -37,7 +37,7 @@ PARAM <- list()
 
 PARAM$experimento <- "HT4740"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 102191
 PARAM$dataset <- "./datasets/competencia_01.csv"
 PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
 
@@ -197,7 +197,7 @@ EstimarGanancia_ranger <- function(x) {
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("~/buckets/b1/") # Establezco el Working Directory
 
 
 # cargo el dataset donde voy a entrenar el modelo

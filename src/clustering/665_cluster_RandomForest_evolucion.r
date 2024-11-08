@@ -13,15 +13,14 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 103301   # aqui va SU semilla
+PARAM$dataset <- "C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
@@ -38,15 +37,10 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
+  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
+  "mtarjeta_master_consumo", "mprestamos_personales",
+  "Visa_status", "Master_status", "cdescubierto_preacordado")
 
 
 # genero el dataset chico
@@ -244,3 +238,6 @@ for( campo in campos_totales ) {
 dev.off()
 
 
+# Contar el número de observaciones por cluster
+tamanio_clusters <- dchico[, .N, by = cluster]
+print(tamanio_clusters)

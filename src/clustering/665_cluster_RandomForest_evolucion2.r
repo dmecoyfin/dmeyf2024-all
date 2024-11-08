@@ -12,16 +12,15 @@ require("randomForest")
 require("ranger")
 
 PARAM <- list()
-PARAM$experimento <- "clu-randomforest-para-colaborativo-2"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_02.csv"
+PARAM$experimento <- "clu-randomforest"
+PARAM$semilla_primigenia <- 103301   # aqui va SU semilla
+PARAM$dataset <- "C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
@@ -38,24 +37,23 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
+  "internet","mrentabilidad_annual","mactivos_margen", "mpasivos_margen", 
+  "cproductos", "tcuentas", "mcuenta_corriente","mcuentas_saldo",
+  "ctarjeta_visa","ctarjeta_master","Master_mlimitecompra","Visa_mlimitecompra",
+  "cprestamos_prendarios","ccaja_seguridad", "chomebanking_transacciones",
+  "Master_Finiciomora","Master_mpagospesos","Visa_mfinanciacion_limite",
+  "Visa_Finiciomora", "Master_mfinanciacion_limite",
+  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
+  "mtarjeta_master_consumo", "mprestamos_personales",
+  "Visa_status", "Master_status", "cdescubierto_preacordado")
 
-# Filtro el dataset
+
+# genero el dataset chico
 dchico <- dataset[
-  clase_ternaria == "BAJA+2" & foto_mes %in% c(202101, 202102, 202103, 202104, 202105, 202106), 
-  c("numero_de_cliente", campos_cluster), 
-  with = FALSE
-]
-
-
+  clase_ternaria=="BAJA+2", 
+  c("numero_de_cliente",campos_cluster),
+  with=FALSE]
 
 # arreglo los valores NA
 dchico  <- na.roughfix( dchico )
@@ -67,7 +65,7 @@ dchico  <- na.roughfix( dchico )
 
 set.seed(PARAM$semilla_primigenia)
 
-modelo <- randomForest(
+modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
   y= NULL,
   ntree= 1000, #se puede aumentar a 10000
@@ -76,7 +74,7 @@ modelo <- randomForest(
 
 # genero los clusters jerarquicos
 # distancia = 1.0 - proximidad
-hclust.rf <- hclust(
+hclust.rf <- hclust( 
   as.dist ( 1.0 - modelo$proximity),
   method= "ward.D2" )
 
@@ -246,3 +244,15 @@ for( campo in campos_totales ) {
 dev.off()
 
 
+# Contar el número de observaciones por cluster
+tamanio_clusters <- dchico[, .N, by = cluster]
+print(tamanio_clusters)
+
+
+
+library(dplyr)
+
+# Contar los valores únicos en la columna 'id_cliente'
+unique_id_cliente_count <- dataset %>% summarise(unique_count = n_distinct(numero_de_cliente))
+
+print(unique_id_cliente_count)

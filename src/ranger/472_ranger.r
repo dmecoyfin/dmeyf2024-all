@@ -15,20 +15,21 @@ PARAM <- list()
 PARAM$experimento <- "KA4720"
 
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 103301
+
 
 # hiperparámetros de Random Forest
 PARAM$ranger <- list(
-  "num.trees" = 1000, # cantidad de arboles
+  "num.trees" = 500, # cantidad de arboles
   "mtry" = 12, # cantidad de atributos que participan en cada split
-  "min.node.size" = 3, # tamaño minimo de las hojas
+  "min.node.size" = 20, # tamaño minimo de las hojas
   "max.depth" = 15 # 0 significa profundidad infinita
 )
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf") # Establezco el Working Directory
 
 
 # cargo los datos

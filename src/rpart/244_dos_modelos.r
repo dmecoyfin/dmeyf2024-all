@@ -10,7 +10,7 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 103301
 PARAM$qsemillas <- 100
 
 # dataset
@@ -123,7 +123,7 @@ DosArbolesEstimarGanancia <- function(semilla, training_pct, param_rpart1, param
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 
 # genero numeros primos
@@ -141,8 +141,9 @@ dataset <- dataset[foto_mes==202104]
 
 
 
-dir.create("~/buckets/b1/exp/EX2440", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/EX2440")
+dir.create("~/maest_2024/eyf/exp/EX2440", showWarnings = FALSE)
+setwd("~/maest_2024/eyf/exp/EX2440")
+
 
 
 # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
@@ -151,7 +152,7 @@ salidas <- mcmapply(DosArbolesEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
   MoreArgs = list(PARAM$training_pct, PARAM$rpart1, PARAM$rpart2), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
-  mc.cores = detectCores()
+  mc.cores = 1
 )
 
 
@@ -176,7 +177,7 @@ print( tb_salida[ , list( "arbol1" = mean( ganancia1),  "arbol2" = mean(ganancia
 print( tb_salida[ , list( "prob( m1 > m2)" = sum(ganancia1 > ganancia2 )/ .N ) ]  )
 
 
-# wt <- wilcox.test(  tb_salida$ganancia1,  tb_salida$ganancia2 )
-# cat( "Wilcoxon Test p-value ", wt$p.value, "\n" )
+wt <- wilcox.test(  tb_salida$ganancia1,  tb_salida$ganancia2 )
+cat( "Wilcoxon Test p-value ", wt$p.value, "\n" )
 
 

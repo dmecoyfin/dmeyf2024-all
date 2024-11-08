@@ -138,30 +138,34 @@ tb_grid_search_detalle <- data.table(
 )
 
 
-# itero por los loops anidados para cada hiperparametro
-
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    # notar como se agrega
-
-    # vminsplit  minima cantidad de registros en un nodo para hacer el split
-    param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
-      "maxdepth" = vmax_depth, # profundidad máxima del arbol
-      "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
-    )
-
-    # Un solo llamado, con la semilla 17
-    ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-
-    # agrego a la tabla
-    tb_grid_search_detalle <- rbindlist( 
-      list( tb_grid_search_detalle,
-            rbindlist(ganancias) )
-    )
-
+# Loops para recorrer TODOS los hiperparámetros con minbucket ajustado
+for (vcp in seq(0.01, 0.05, by = 0.01)) {       # Loop para cp
+  for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {  # Loop para maxdepth
+    for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {  # Loop para minsplit
+      
+      # minbucket ahora toma valores entre un tercio y la mitad de minsplit
+      for (vmin_bucket in seq(floor(vmin_split / 3), floor(vmin_split / 2), by = 50)) {  
+        
+        # Ajustar los hiperparámetros en cada iteración
+        param_basicos <- list(
+          "cp" = vcp,              # Complejidad mínima
+          "maxdepth" = vmax_depth,  # Profundidad máxima
+          "minsplit" = vmin_split,  # Tamaño mínimo de nodo para hacer split
+          "minbucket" = vmin_bucket # Mínima cantidad de registros en una hoja
+        )
+        
+        # Ejecutar Montecarlo con las semillas generadas
+        ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+        
+        # Agregar resultados a la tabla
+        tb_grid_search_detalle <- rbindlist(
+          list(tb_grid_search_detalle,
+               rbindlist(ganancias))
+        )
+      }
+    }
   }
+
   # grabo cada vez TODA la tabla en el loop mas externo
   fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",

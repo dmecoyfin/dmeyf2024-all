@@ -1,5 +1,3 @@
-# 799891, 799921, 799961, 799991, 800011
-
 rm(list = ls()) # Borro todos los objetos
 gc() # Garbage Collection
 
@@ -9,7 +7,7 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(799891, 799921, 799961, 799991, 800011)
+PARAM$semillas <- c(103301, 100183, 100189, 333331, 900001)
 
 PARAM$dataset_nom <- "./datasets/competencia_01.csv"
 
@@ -96,8 +94,7 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-# setwd("~/buckets/b1/") # Establezco el Working Directory
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")  # Establezco el Working Directory
 
 # cargo los datos
 dataset <- fread(PARAM$dataset_nom)
@@ -111,7 +108,7 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
   MoreArgs = list(PARAM), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
-  mc.cores = 1 #detectCores()  # debe ser 1 si se trabaja con Windows
+  mc.cores = 1  # debe ser 1 si se trabaja con Windows
 )
 
 # muestro la lista de las salidas en testing
@@ -124,11 +121,7 @@ tb_salida <- rbindlist(salidas)
 print( tb_salida )
 
 # finalmente calculo la media (promedio)  de las ganancias
-cat( "Testing Total: ", tb_salida[, mean(testing)], "\n" )
-cat( "Testing BAJA+2: ", tb_salida[, mean(testing_pos)], "\n" )
-cat( "Estimulos: ", tb_salida[, mean(envios)], "\n" )
-cat( "Aciertos: ", tb_salida[, mean(aciertos)], "\n" )
-cat( "Ganancia: ", tb_salida[, mean(ganancia_test)], "\n" )
+cat( "ganancia promedio: ", tb_salida[, mean(ganancia_test)], "\n" )
 
 # calculo todos los promedios
 cat(  "ganancia desvio estandar: ", tb_salida[, sd(ganancia_test)], "\n" )

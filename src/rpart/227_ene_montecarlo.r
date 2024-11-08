@@ -6,11 +6,10 @@ require("rpart")
 require("parallel")
 require("primes")
 
-# 799891, 799921, 799961, 799991, 800011
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 103301
 PARAM$qsemillas <- 50
 
 # dataset
@@ -72,7 +71,7 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
   # cada columna es el vector de probabilidades
 
 
-  # calculo la ganancia en testing que es fold==2
+  # calculo la ganancia en testing  qu es fold==2
   ganancia_test <- dataset[
     fold == 2,
     sum(ifelse(prediccion[, "BAJA+2"] > 0.025,
@@ -100,8 +99,7 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas") # Establezco el Working Directory
-
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf") # Establezco el Working Directory
 
 # genero numeros primos
 primos <- generate_primes(min = 100000, max = 1000000)
@@ -123,7 +121,7 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   PARAM$semillas, # paso el vector de semillas
   MoreArgs = list(PARAM), # aqui paso el segundo parametro
   SIMPLIFY = FALSE,
-  mc.cores = 1 #detectCores()
+  mc.cores = 1
 )
 
 # muestro la lista de las salidas en testing
@@ -138,5 +136,6 @@ for( i in seq(10, 50, 10) )
 {
   cat( i, "\t", tb_salida[ 1:i, mean(ganancia_test)], "\n" )
 }
+
 
 cat( "desvio : " , tb_salida[ , sd(ganancia_test) ], "\n" )
