@@ -1,4 +1,5 @@
 # Este script esta pensado para correr en Google Cloud
+install.packages("lightgbm")
 
 # se entrena con clase_binaria2  POS =  { BAJA+1, BAJA+2 }
 # Optimizacion Bayesiana de hiperparametros de  lightgbm,
@@ -34,12 +35,11 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$semilla_primigenia <- 799891
-PARAM$experimento <- "HT4220_clus"
+PARAM$semilla_primigenia <- 100109
+PARAM$experimento <- "HT4220"
 
-# PARAM$input$dataset <- "/home/piquelinxbox/datasets/competencia_01.csv"
-PARAM$input$dataset <- "/home/piquelinxbox/buckets/b1/exp/PP7230_25_s1/dataset.csv.gz"
-PARAM$input$training <- c(202102, 202103) # los meses en los que vamos a entrenar
+PARAM$input$dataset <- "C:/Users/glova/OneDrive/Documentos/EyF/Video09212024/competencia_01.csv"
+PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
 # undersampling de 1.0  implica tomar TODOS los datos
@@ -55,11 +55,15 @@ PARAM$hyperparametertuning$NEG_ganancia <- -7000
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
   makeNumericParam("learning_rate", lower = 0.01, upper = 0.1),
-  makeIntegerParam("num_leaves", lower = 8L, upper = 2048L),
-  makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
-  makeIntegerParam("min_data_in_leaf", lower = 700L, upper = 8000L),
-  makeIntegerParam("envios", lower = 5000L, upper = 15000L),
-  makeNumericParam("lambda_l2 ", lower = 0.0, upper = 0.5)
+  makeIntegerParam("num_leaves", lower = 8L, upper = 512L),
+  makeNumericParam("feature_fraction", lower = 0.2, upper = 1.0),
+  makeNumericParam("bagging_fraction", lower = 0.5, upper = 1.0),
+  makeIntegerParam("bagging_freq", lower = 1L, upper = 10L),
+  makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
+  makeNumericParam("min_gain_to_split", lower = 0, upper = 10),
+  makeNumericParam("lambda_l1", lower = 0.0, upper = 10.0),
+  makeNumericParam("lambda_l2", lower = 0.0, upper = 10.0),
+  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
 
 #------------------------------------------------------------------------------
@@ -213,7 +217,7 @@ EstimarGanancia_lightgbm <- function(x) {
 # Aqui empieza el programa
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/glova/OneDrive/Documentos/EyF/buckets/b13") # Establezco el Working Directory
 
 
 # genero numeros primos
@@ -226,6 +230,10 @@ ksemilla_azar2 <- PARAM$semillas[2]
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
+
+# Eliminar las columnas 'cprestamos_personales' y 'mprestamos_personales'
+dataset[, c("cprestamos_personales", "mprestamos_personales") := NULL]
+
 
 # creo la carpeta donde va el experimento
 dir.create("./exp/", showWarnings = FALSE)
