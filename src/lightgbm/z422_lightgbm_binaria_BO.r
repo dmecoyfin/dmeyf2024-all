@@ -1,4 +1,5 @@
 # Este script esta pensado para correr en Google Cloud
+install.packages("lightgbm")
 
 # se entrena con clase_binaria2  POS =  { BAJA+1, BAJA+2 }
 # Optimizacion Bayesiana de hiperparametros de  lightgbm,
@@ -37,7 +38,7 @@ PARAM <- list()
 PARAM$semilla_primigenia <- 102191
 PARAM$experimento <- "HT4220"
 
-PARAM$input$dataset <- "./datasets/competencia_01.csv"
+PARAM$input$dataset <- "C:/Users/glova/OneDrive/Documentos/EyF/Video09212024/competencia_01.csv"
 PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
@@ -211,7 +212,7 @@ EstimarGanancia_lightgbm <- function(x) {
 # Aqui empieza el programa
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/glova/OneDrive/Documentos/EyF/buckets/b13") # Establezco el Working Directory
 
 
 # genero numeros primos
@@ -224,6 +225,10 @@ ksemilla_azar2 <- PARAM$semillas[2]
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
+
+# Eliminar las columnas 'cprestamos_personales' y 'mprestamos_personales'
+dataset[, c("cprestamos_personales", "mprestamos_personales") := NULL]
+
 
 # creo la carpeta donde va el experimento
 dir.create("./exp/", showWarnings = FALSE)
@@ -329,6 +334,5 @@ if (!file.exists(kbayesiana)) {
 } else {
   run <- mboContinue(kbayesiana) # retomo en caso que ya exista
 }
-
 
 cat("\n\nLa optimizacion Bayesiana ha terminado\n")
