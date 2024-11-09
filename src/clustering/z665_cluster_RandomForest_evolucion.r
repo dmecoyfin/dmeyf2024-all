@@ -13,14 +13,14 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 102191   # aqui va SU semilla
-PARAM$dataset <- "~/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 113149   # aqui va SU semilla
+PARAM$dataset <- "./datasets/competencia_01_polars.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-setwd("~/buckets/b1")
+setwd("C:/Users/Gastón/maestria/DM_EF")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
@@ -31,7 +31,7 @@ dir.create("./exp/", showWarnings = FALSE)
 dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings= FALSE)
 
 # Establezco el Working Directory DEL EXPERIMENTO
-setwd(paste0("./exp/", PARAM$experimento, "/"))
+#setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 
 # campos arbitrarios, solo como ejemplo
