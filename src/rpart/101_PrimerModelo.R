@@ -7,10 +7,10 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas") # Establezco el Working Directory
+setwd("C:/Users/Gastón/maestria/DM_EF") # Establezco el Working Directory
 
 # cargo el dataset que tiene la clase calculada !
-dataset <- fread("./datasets/competencia_01.csv")
+dataset <- fread("./datasets/competencia_01_polars.csv")
 
 dtrain <- dataset[foto_mes <= 202104] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202106] # defino donde voy a aplicar el modelo
@@ -20,20 +20,19 @@ dapply <- dataset[foto_mes == 202106] # defino donde voy a aplicar el modelo
 modelo <- rpart(
     formula = "clase_ternaria ~ .",
     data = dtrain, # los datos donde voy a entrenar
-    xval = 0,
-    cp = -0.5, # esto significa no limitar la complejidad de los splits
-    maxdepth = 10,  # profundidad maxima del arbol
-    minsplit = 600, # minima cantidad de registros para que se haga el split
-    minbucket = 200, # tamaño minimo de una hoja
+    xval = 5,
+    cp = -0.613407262423258, # esto significa no limitar la complejidad de los splits
+    minsplit = 1209, # minima cantidad de registros para que se haga el split
+    minbucket = 600, # tamaño minimo de una hoja
+    maxdepth = 7  # profundidad maxima del arbol
 )
 
 
 # grafico el arbol
-# prp(modelo,
-#    extra = 101, digits = -5,
-#    branch = 1, type = 4, varlen = 0, faclen = 0
-# )
-
+prp(modelo,
+    extra = 101, digits = -5,
+    branch = 1, type = 4, varlen = 0, faclen = 0
+)
 
 
 # aplico el modelo a los datos nuevos
@@ -61,7 +60,7 @@ dir.create("./exp/KA2001")
 
 # solo los campos para Kaggle
 fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/10_600_200.csv",
+        file = "./exp/KA2001/K101_002.csv",
         sep = ","
 )
 
