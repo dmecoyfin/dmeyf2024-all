@@ -3,11 +3,17 @@
 #Cargar los dataset
 
 # Poner los nombres de los archivos
+archivo0<- "dataset.campos.txt"
 archivo1 <- "datasets_nuevas_variables_iter_1.txt"
 archivo2 <- "datasets_nuevas_variables_iter_2.txt"
 
 #data1 tiene que ser el que ya tiene las variables en funcion de las variables originales y es la iteración anterior a data2
 #data2 el que quiero traducir
+original <- read.table(archivo0, header = TRUE)
+original <- original[c(2)]
+original$explicacion <- original$campo
+original$explicacion_final <- original$campo
+colnames(original)[1] <- "nombre"
 data1 <- read.csv(archivo1)
 data2 <- read.csv(archivo2)
 data2 <- data2[c(1,2)]
@@ -105,6 +111,6 @@ for (i in seq_along(data2$explicacion)) {
 
 # Guardar el data frame data2 en un archivo de texto
 data1$explicacion_final <- data1$explicacion
-data_final <- rbind(data1,data2[c(1,2,7)])
+data_final <- rbind(original,data1,data2[c(1,2,7)])
 write.table(data_final, file = "variables_traducidas.txt", sep = ",", row.names = FALSE, col.names = TRUE)
 write.table(data2, file = archivo2, sep = ",", row.names = FALSE, col.names = TRUE)

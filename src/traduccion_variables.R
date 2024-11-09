@@ -3,13 +3,15 @@
 #Cargar los dataset
 
 # Poner los nombres de los archivos
-archivo1 <- "datasets_nuevas_variables_iter_3.txt"
-archivo2 <- "datasets_nuevas_variables_iter_4-2.txt"
+#archivo1 <- "datasets_nuevas_variables_iter_2.txt"
+archivo2 <- "datasets_nuevas_variables_iter_3.txt"
 
 #data1 tiene que ser el que ya tiene las variables en funcion de las variables originales y es la iteración anterior a data2
 #data2 el que quiero traducir
 data1 <- read.csv(archivo1)
 data2 <- read.csv(archivo2)
+data2 <- data2[c(1,2)]
+
 data_final <- read.csv("variables_traducidas.txt")
 
 # Inicializar las columnas var1 y var2 con valores NA
@@ -40,11 +42,11 @@ data2$explicacion_var1_en_data1 <- NA
 # Iterar sobre cada valor de var1 en data2
 for (i in 1:nrow(data2)) {
   # Buscar la coincidencia del valor de var1 en el nombre de data1
-  match_index <- match(data2$var1[i], data1$nombre)
+  match_index <- match(data2$var1[i], data_final$nombre)
   
   # Si hay una coincidencia, asignar el valor correspondiente de explicacion a la nueva variable
   if (!is.na(match_index)) {
-    data2$explicacion_var1_en_data1[i] <- data1$explicacion_final[match_index]
+    data2$explicacion_var1_en_data1[i] <- data_final$explicacion_final[match_index]
   }
 }
 
@@ -56,11 +58,11 @@ data2$explicacion_var2_en_data1 <- NA
 # Iterar sobre cada valor de var2 en data2
 for (i in 1:nrow(data2)) {
   # Buscar la coincidencia del valor de var1 en el nombre de data1
-  match_index <- match(data2$var2[i], data1$nombre)
+  match_index <- match(data2$var2[i], data_final$nombre)
   
   # Si hay una coincidencia, asignar el valor correspondiente de explicacion a la nueva variable
   if (!is.na(match_index)) {
-    data2$explicacion_var2_en_data1[i] <- data1$explicacion_final[match_index]
+    data2$explicacion_var2_en_data1[i] <- data_final$explicacion_final[match_index]
   }
 }
 # Ahora data2 tendrá la columna explicacion_var1_en_data1 y explicacion_var2_en_data1 con los valores correspondientes de explicacion con las variables originales
