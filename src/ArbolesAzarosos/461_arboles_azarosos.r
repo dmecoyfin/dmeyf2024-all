@@ -14,19 +14,16 @@ require("yaml")
 PARAM <- list()
 PARAM$experimento <- "KA4610"
 
-
-# 799891, 799921, 799961, 799991, 800011
-
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 102191
 
 # parametros rpart
 
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 500,
-  "minbucket" = 200,
+  "minsplit" = 100,
+  "minbucket" = 10,
   "maxdepth" = 6
 )
 
@@ -39,18 +36,18 @@ PARAM$feature_fraction <- 0.5
 # voy a generar 128 arboles,
 #  a mas arboles mas tiempo de proceso y MEJOR MODELO,
 #  pero ganancias marginales
-PARAM$num_trees_max <- 512
-PARAM$grabar <- c(256, 512)
+PARAM$num_trees_max <- 256
+PARAM$grabar <- c(1, 2, 4, 8, 16, 32, 64, 128, 256)
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/Gastón/maestria/DM_EF") # Establezco el Working Directory
 
 
 # cargo los datos
-dataset <- fread("./datasets/competencia_01.csv")
+dataset <- fread("./datasets/competencia_01_polars.csv")
 
 # defino los dataset de entrenamiento y aplicacion
 dtrain <- dataset[foto_mes == 202104]
