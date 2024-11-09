@@ -13,15 +13,14 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 799891   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 113149   # aqui va SU semilla
+PARAM$dataset <- "./datasets/competencia_01_polars.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("~/buckets/b1")
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("C:/Users/Gastón/maestria/DM_EF")
 
 # leo el dataset
 dataset <- fread(PARAM$dataset)
@@ -32,26 +31,21 @@ dir.create("./exp/", showWarnings = FALSE)
 dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings= FALSE)
 
 # Establezco el Working Directory DEL EXPERIMENTO
-setwd(paste0("./exp/", PARAM$experimento, "/"))
+#setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c( "cliente_antiguedad", "mtarjeta_master_consumo", 
-                     "cdescubierto_preacordado", "cseguro_accidentes_personales",
-  "Master_mconsumosdolares",  "ctrx_quarter",  "mpayroll",  "mcaja_ahorro",
-  "cpayroll_trx",  "mcuentas_saldo",  "mprestamos_personales",  "cprestamos_personales",
-  "Visa_mfinanciacion_limite",  "mcuenta_corriente",  "mtarjeta_visa_consumo",
-  "mpasivos_margen",  "mrentabilidad_annual",  "Master_status",  "ctarjeta_master",
-  "mrentabilidad",  "Visa_msaldototal",  "mactivos_margen",  "Visa_mpagominimo",
-  "Visa_status",  "Visa_msaldopesos",  "ccomisiones_mantenimiento",  "mcomisiones_mantenimiento",
-  "Visa_fechaalta",  "cliente_edad")
+campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
+                    "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
+                    "mtarjeta_master_consumo", "mprestamos_personales",
+                    "Visa_status", "Master_status", "cdescubierto_preacordado")
 
 
 # genero el dataset chico
 dchico <- dataset[
-  clase_ternaria=="BAJA+2", 
+  clase_ternaria == "BAJA+2", 
   c("numero_de_cliente",campos_cluster),
   with=FALSE]
 
@@ -68,7 +62,7 @@ set.seed(PARAM$semilla_primigenia)
 modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
   y= NULL,
-  ntree= 1000, #se puede aumentar a 10000
+  ntree= 10000, #se puede aumentar a 10000
   proximity= TRUE,
   oob.prox=  TRUE )
 
@@ -165,7 +159,7 @@ dev.off()
 
 # leo la historia ( desde donde hay,  202101 )
 dhistoria <- fread(PARAM$dataset)
-thewalkingdead <- dhistoria[ clase_ternaria =="BAJA+2", unique(numero_de_cliente) ]
+thewalkingdead <- dhistoria[ clase_ternaria == "BAJA+2", unique(numero_de_cliente) ]
 
 dwalkingdead <- dhistoria[ numero_de_cliente %in% thewalkingdead ]
 
@@ -244,3 +238,6 @@ for( campo in campos_totales ) {
 dev.off()
 
 
+
+table(dchico$cluster)
+prop.table(table(dchico$cluster)) * 100
