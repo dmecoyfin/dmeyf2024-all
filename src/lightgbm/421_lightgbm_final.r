@@ -10,21 +10,21 @@ require("lightgbm")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4215"
+PARAM$experimento <- "KA4210"
 
-PARAM$semilla_primigenia <- 799891
+PARAM$semilla_primigenia <- 113311
 
 
-PARAM$input$dataset <- "./competencia_01.csv"
+PARAM$input$dataset <- "./datasets/competencia_01_R.csv"
 PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 411
-PARAM$finalmodel$learning_rate <- 0.0517855437293863
-PARAM$finalmodel$feature_fraction <- 0.991184304587602
-PARAM$finalmodel$min_data_in_leaf <- 3568
-PARAM$finalmodel$num_leaves <- 313
+PARAM$finalmodel$num_iterations <- 1526
+PARAM$finalmodel$learning_rate <- 0.010045
+PARAM$finalmodel$feature_fraction <- 0.7685    
+PARAM$finalmodel$min_data_in_leaf <- 3103      
+PARAM$finalmodel$num_leaves <- 555             
 
 
 PARAM$finalmodel$max_bin <- 31
@@ -32,8 +32,7 @@ PARAM$finalmodel$max_bin <- 31
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-# setwd("E:/Users/Piquelin/Documents/Maestría_DataMining/Economia_y_finanzas/")
-setwd("~/datasets/") # Establezco el Working Directory
+setwd("~/buckets/b1")
 
 
 # cargo el dataset donde voy a entrenar
@@ -50,9 +49,56 @@ dataset[, clase01 := ifelse(clase_ternaria %in% c("BAJA+2", "BAJA+1"), 1L, 0L)]
 #--------------------------------------
 
 # los campos que se van a utilizar
-campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria", "clase01"))
+######## campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria", "clase01"))
+
+# Leer los archivos de importancia desde la carpeta del experimento
+######## impo_1 <- fread("./exp/HT4220/impo_1.txt")
+######## impo_35 <- fread("./exp/HT4220/impo_35.txt")
+######## impo_36 <- fread("./exp/HT4220/impo_36.txt")
+
+# Seleccionar las variables con un 'Gain' significativo (ajusta el umbral si es necesario)
+######## importantes <- unique(c(
+########   impo_1[Gain > 0.01, Feature],
+########   impo_35[Gain > 0.01, Feature],
+########   impo_36[Gain > 0.01, Feature]
+######## ))
 
 #--------------------------------------
+# Los campos que se van a utilizar
+# Utilizar solo las variables importantes que están en el dataset,
+# excluyendo las columnas 'clase_ternaria' y 'clase01'
+######## campos_buenos <- intersect(
+########   setdiff(colnames(dataset), c("clase_ternaria", "clase01")),
+########   importantes
+######## )
+
+
+
+# Listar todos los archivos impo_XX.txt en la carpeta del experimento
+archivos_impo <- list.files(path = "./exp/HT4220/", pattern = "impo_\\d+\\.txt$", full.names = TRUE)
+
+# Leer y combinar todos los archivos de importancia
+lista_impo <- lapply(archivos_impo, fread)
+
+# Unir todas las tablas en una sola
+importancia_combinada <- rbindlist(lista_impo)
+
+# Seleccionar las variables con un 'Gain' significativo (ajusta el umbral si es necesario)
+importantes <- unique(importancia_combinada[Gain > 0.01, Feature])
+
+#--------------------------------------
+# Los campos que se van a utilizar
+# Utilizar solo las variables importantes que están en el dataset,
+# excluyendo las columnas 'clase_ternaria' y 'clase01'
+campos_buenos <- intersect(
+  setdiff(colnames(dataset), c("clase_ternaria", "clase01")),
+  importantes
+)
+#--------------------------------------
+
+
+#--------------------------------------
+
 
 
 # establezco donde entreno
@@ -88,7 +134,7 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    seed = 799891
+    seed = PARAM$semilla_primigenia
   )
 )
 
@@ -98,8 +144,8 @@ tb_importancia <- as.data.table(lgb.importance(modelo))
 archivo_importancia <- "impo.txt"
 
 fwrite(tb_importancia,
-  file = archivo_importancia,
-  sep = "\t"
+       file = archivo_importancia,
+       sep = "\t"
 )
 
 #--------------------------------------
@@ -124,8 +170,8 @@ tb_entrega[, prob := prediccion]
 
 # grabo las probabilidad del modelo
 fwrite(tb_entrega,
-  file = "prediccion.txt",
-  sep = "\t"
+       file = "prediccion.txt",
+       sep = "\t"
 )
 
 # ordeno por probabilidad descendente
@@ -135,14 +181,14 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(500, 20000, by = 500)
+cortes <- c(12099)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
-
+  
   fwrite(tb_entrega[, list(numero_de_cliente, Predicted)],
-    file = paste0(PARAM$experimento, "_", envios, ".csv"),
-    sep = ","
+         file = paste0(PARAM$experimento, "_", envios, ".csv"),
+         sep = ","
   )
 }
 
