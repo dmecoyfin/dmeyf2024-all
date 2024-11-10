@@ -18,7 +18,8 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 113311
+# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
+envg$EXPENV$semilla_primigenia <- 102191
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -392,6 +393,32 @@ SC_scoring <- function( pinputexps )
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
+#-----------------------------------------------------------------------------
+# proceso EV_conclase  Baseline
+# deterministico, SIN random
+
+EV_evaluate_conclase_gan <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+  
+  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
+  
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
+  
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 117000
+  param_local$train$gan0 <-  -3000
+  param_local$train$meseta <- 2001
+  
+  # para graficar
+  param_local$graficar$envios_desde <-  9000L
+  param_local$graficar$envios_hasta <-  13000L
+  param_local$graficar$ventana_suavizado <- 2001L
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
 #------------------------------------------------------------------------------
 # proceso KA_evaluate_kaggle
 # deterministico, SIN random
@@ -430,7 +457,7 @@ wf_agosto <- function( pnombrewf )
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
@@ -448,6 +475,9 @@ wf_agosto <- function( pnombrewf )
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
+  
+  # EV_evaluate_conclase_gan()
+  
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
@@ -458,3 +488,4 @@ wf_agosto <- function( pnombrewf )
 
 # llamo al workflow con future = 202108
 wf_agosto()
+
