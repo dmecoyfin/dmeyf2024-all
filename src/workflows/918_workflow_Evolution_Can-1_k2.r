@@ -227,7 +227,7 @@ FEhist_base <- function( pinputexps)
   #return( exp_correr_script( param_local ) ) # linea fija
 #}
 #------------------------------------------------------------------------------
-Canaritos Asesinos   Baseline
+# Canaritos Asesinos   Baseline
 #  azaroso, utiliza semilla
 
 CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
@@ -237,7 +237,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 
   param_local$meta$script <- "/src/wf-etapas/z1601_CN_canaritos_asesinos.r"
 
-   Parametros de un LightGBM que se genera para estimar la column importance
+ #  Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$training <- c( 202101, 202102, 202103)
@@ -420,18 +420,18 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_base_can <- function( pnombrewf )
+wf_agosto_k2_can <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_2.csv.gz")
 
   # Etapas preprocesamiento
-  CA_catastrophe_base( metodo="MachineLearning")
+  # CA_catastrophe_base( metodo="MachineLearning")
   # FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
-  FEhist_base()
+  # DR_drifting_base(metodo="deflacion")
+  # FEhist_base()
 
   # FErf_attributes_base( arbolitos= 20,
   #   hojas_por_arbol= 16,
@@ -457,4 +457,4 @@ wf_agosto_base_can <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_base_can()
+wf_agosto_k2_can()
