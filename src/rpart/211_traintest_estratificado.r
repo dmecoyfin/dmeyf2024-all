@@ -1,6 +1,3 @@
-# 799891, 799921, 799961, 799991, 800011
-
-
 rm(list = ls()) # Borro todos los objetos
 gc() # Garbage Collection
 
@@ -8,7 +5,7 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 799891
+PARAM$semilla <- 111667
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
@@ -43,12 +40,10 @@ particionar <- function(
 # Aqui comienza el programa
 
 # Establezco el Working Directory, elija una carpeta de su 
-# setwd("~/buckets/b1/")
-
-setwd("C:/Users/jfgonzalez/Documents/Documentación_maestría/Economía_y_finanzas")
+setwd("/Users/jorgefernandez/Documents/Cienciadedatos/DMenEyF")
 
 # cargo el dataset
-dataset <- fread("./datasets/competencia_01.csv")
+dataset <- fread("./datasets/competencia_01_R_datatable.csv")
 
 # trabajo, por ahora, solo con 202104
 dataset <- dataset[foto_mes==202104]
@@ -69,7 +64,7 @@ modelo <- rpart("clase_ternaria ~ .",
   xval = 0,
   control = PARAM$rpart # aqui van los parametros
 )
-
+#https://docs.google.com/document/d/1D9etChDIYwapnjilmUyQA2CUcWsFoHKJ1M8T5p6_AWo/edit#bookmark=id.ftlu6lu395mt
 
 # aplico el modelo a los datos de testing
 prediccion <- predict(modelo, # el modelo que genere recien
@@ -93,7 +88,7 @@ ganancia_test <- dataset[fold == 2 & prob_baja2 > 0.025, sum(ganancia)]
 # escalo la ganancia como si fuera todo el dataset
 ganancia_test_normalizada <- ganancia_test / (( 100 - PARAM$training_pct ) / 100 )
 
-estimulos <- dataset[fold == 2 & prob_baja2 > 0.025, .N]
+estimulos <- dataset[fold == 2 & prob_baja2 > 0.025, .N] #.N me da la cantidad de datos que cumplen (data.table)
 aciertos <- dataset[fold == 2 & prob_baja2 > 0.025 & clase_ternaria == "BAJA+2", .N]
 
 
