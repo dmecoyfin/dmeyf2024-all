@@ -18,7 +18,8 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 111667
+# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
+envg$EXPENV$semilla_primigenia <- 799991
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -94,17 +95,17 @@ CA_catastrophe_base <- function( pinputexps, metodo )
 # Feature Engineering Intra Mes   Baseline
 # deterministico, SIN random
 
-#FEintra_manual_base <- function( pinputexps )
-#{
-#  if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
+FEintra_manual_base <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
- # param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
 
-#  param_local$semilla <- NULL  # no usa semilla, es deterministico
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-#  return( exp_correr_script( param_local ) ) # linea fija
-#}
+  return( exp_correr_script( param_local ) ) # linea fija
+}
 #------------------------------------------------------------------------------
 # Data Drifting Baseline
 # deterministico, SIN random
@@ -167,65 +168,65 @@ FEhist_base <- function( pinputexps)
 #  atencion, parmetros para generar variables, NO para buen modelo
 #  azaroso, utiliza semilla
 
-#FErf_attributes_base <- function( pinputexps,
- # arbolitos,
- # hojas_por_arbol,
- # datos_por_hoja,
- # mtry_ratio
-#)
-#{
-#  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+FErf_attributes_base <- function( pinputexps,
+  arbolitos,
+  hojas_por_arbol,
+  datos_por_hoja,
+  mtry_ratio
+)
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
 
- # param_local$meta$script <- "/src/wf-etapas/z1311_FE_rfatributes.r"
+  param_local$meta$script <- "/src/wf-etapas/z1311_FE_rfatributes.r"
 
   # Parametros de un LightGBM que se genera para estimar la column importance
-  #param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  #param_local$train$training <- c( 202101, 202102, 202103)
+  param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
+  param_local$train$training <- c( 202101, 202102, 202103)
 
   # parametros para que LightGBM se comporte como Random Forest
-  #param_local$lgb_param <- list(
+  param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-   # num_iterations = arbolitos,
-   # num_leaves  = hojas_por_arbol,
-   # min_data_in_leaf = datos_por_hoja,
-   # feature_fraction_bynode  = mtry_ratio,
+    num_iterations = arbolitos,
+    num_leaves  = hojas_por_arbol,
+    min_data_in_leaf = datos_por_hoja,
+    feature_fraction_bynode  = mtry_ratio,
 
     # para que LightGBM emule Random Forest
-    #boosting = "rf",
-    #bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
-    #bagging_freq = 1.0,
-   # feature_fraction = 1.0,
+    boosting = "rf",
+    bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
+    bagging_freq = 1.0,
+    feature_fraction = 1.0,
 
     # genericos de LightGBM
-    #max_bin = 31L,
-    #objective = "binary",
-    #first_metric_only = TRUE,
-    #boost_from_average = TRUE,
-    #feature_pre_filter = FALSE,
-    #force_row_wise = TRUE,
-    #verbosity = -100,
-    #max_depth = -1L,
-    #min_gain_to_split = 0.0,
-    #min_sum_hessian_in_leaf = 0.001,
-    #lambda_l1 = 0.0,
-    #lambda_l2 = 0.0,
+    max_bin = 31L,
+    objective = "binary",
+    first_metric_only = TRUE,
+    boost_from_average = TRUE,
+    feature_pre_filter = FALSE,
+    force_row_wise = TRUE,
+    verbosity = -100,
+    max_depth = -1L,
+    min_gain_to_split = 0.0,
+    min_sum_hessian_in_leaf = 0.001,
+    lambda_l1 = 0.0,
+    lambda_l2 = 0.0,
 
-    #pos_bagging_fraction = 1.0,
-    #neg_bagging_fraction = 1.0,
-    #is_unbalance = FALSE,
-    #scale_pos_weight = 1.0,
+    pos_bagging_fraction = 1.0,
+    neg_bagging_fraction = 1.0,
+    is_unbalance = FALSE,
+    scale_pos_weight = 1.0,
 
-    #drop_rate = 0.1,
-    #max_drop = 50,
-    #skip_drop = 0.5,
+    drop_rate = 0.1,
+    max_drop = 50,
+    skip_drop = 0.5,
 
-    #extra_trees = FALSE
-  #)
+    extra_trees = FALSE
+  )
 
 
-  #return( exp_correr_script( param_local ) ) # linea fija
-#}
+  return( exp_correr_script( param_local ) ) # linea fija
+}
 #------------------------------------------------------------------------------
 # Canaritos Asesinos   Baseline
 #  azaroso, utiliza semilla
@@ -237,21 +238,21 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 
   param_local$meta$script <- "/src/wf-etapas/z1601_CN_canaritos_asesinos.r"
 
- #  Parametros de un LightGBM que se genera para estimar la column importance
+  # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$training <- c( 202101, 202102, 202103)
   param_local$train$validation <- c( 202105 )
   param_local$train$undersampling <- 0.1
   param_local$train$gan1 <- 273000
-   param_local$train$gan0 <-  -7000
+  param_local$train$gan0 <-  -7000
 
 
   # ratio varia de 0.0 a 2.0
   # desvio varia de -4.0 a 4.0
- param_local$CanaritosAsesinos$ratio <- ratio
+  param_local$CanaritosAsesinos$ratio <- ratio
   # desvios estandar de la media, para el cutoff
- param_local$CanaritosAsesinos$desvios <- desvio
+  param_local$CanaritosAsesinos$desvios <- desvio
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -313,7 +314,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    boosting = "dart", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
@@ -327,27 +328,39 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 1000, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    # bagging_fraction = 0.5, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    # neg_bagging_fraction = 0.5, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
-    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
-    max_drop = 50, # <=0 means no limit
-    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    # drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    max_drop = -1, #50 , # <=0 means no limit
+    # skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    
+    
+    # # quantized me rompió 
+    # use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
+    # num_grad_quant_bins =  4,
+    # quant_train_renew_leaf = TRUE,
 
     extra_trees = FALSE,
+    
     # Parte variable
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    min_data_in_leaf = c( 100L, 10000L, "integer" ),
+    bagging_fraction = c(0.1, 0.9),
+    neg_bagging_fraction = c(0.1, 0.9),
+    drop_rate = c( 0.1, 0.5 ),
+    skip_drop = c(0.2, 0.9)
+    
   )
 
-
+  
   # iteraciones de la Optimizacion Bayesiana
   param_local$bo_iteraciones <- bo_iteraciones
 
@@ -420,35 +433,35 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto_k3_can <- function( pnombrewf )
+wf_ipp_bagg_ka <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_3.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
 
   # Etapas preprocesamiento
-  # CA_catastrophe_base( metodo="MachineLearning")
-  # FEintra_manual_base()
-  # DR_drifting_base(metodo="deflacion")
-  # FEhist_base()
+  CA_catastrophe_base( metodo="MachineLearning")
+  FEintra_manual_base()
+  DR_drifting_base(metodo="pollo-parrillero")
+  FEhist_base()
 
-  # FErf_attributes_base( arbolitos= 20,
-  #   hojas_por_arbol= 16,
-  #   datos_por_hoja= 1000,
-  #   mtry_ratio= 0.2
- # )
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 16,
+    datos_por_hoja= 1000,
+    mtry_ratio= 0.2
+  )
 
-  CN_canaritos_asesinos_base(ratio=0.2, desvio= -1.0)
+  # CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  # ts8 <- TS_strategy_base8()
-  # ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ts8 <- TS_strategy_base8()
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   # Etapas finales
-  #  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  #  SC_scoring( c(fm, ts8) )
-  #  KA_evaluate_kaggle()  # genera archivos para Kaggle
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1,2,3), qsemillas=20 )
+  SC_scoring( c(fm, ts8) )
+  # KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -457,4 +470,5 @@ wf_agosto_k3_can <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto_k3_can()
+wf_ipp_bagg_ka()
+
