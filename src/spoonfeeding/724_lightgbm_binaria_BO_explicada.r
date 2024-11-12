@@ -33,10 +33,10 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento_data <- "PP7230_2024_10_12_C"
-PARAM$experimento <- "HT7240_2024_10_12"
+PARAM$experimento_data <- "PP7230"
+PARAM$experimento <- "HT7240"
 
-PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 111667 # Aqui poner su  primer  semilla
 
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
@@ -137,7 +137,7 @@ vcant_optima <- c()
 fganancia_lgbm_meseta <- function(probs, datos) {
   vlabels <- get_field(datos, "label")
   vpesos <- get_field(datos, "weight")
-
+#Se utiliza get_field para extraer las columnas label y weight de datos. Estas dos variables serán utilizadas para calcular la ganancia.  
 
   GLOBAL_arbol <<- GLOBAL_arbol + 1
   tbl <- as.data.table(list(
@@ -146,6 +146,7 @@ fganancia_lgbm_meseta <- function(probs, datos) {
       PARAM$hyperparametertuning$POS_ganancia,
       PARAM$hyperparametertuning$NEG_ganancia  )
   ))
+#Se crea una tabla con las probabilidades (probs) y las ganancias (gan). Si la etiqueta (vlabels) es 1 y el peso (vpesos) es mayor a 1, se usa la ganancia positiva (PARAM$hyperparametertuning$POS_ganancia), de lo contrario, se usa la ganancia negativa (PARAM$hyperparametertuning$NEG_ganancia).  
 
   setorder(tbl, -prob)
   tbl[, posicion := .I]
