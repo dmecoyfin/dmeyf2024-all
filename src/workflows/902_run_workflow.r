@@ -1,7 +1,7 @@
-require("rlang", quietly=TRUE) 
+require("rlang")
 
 # workflow que voy a correr
-PARAM <- "src/workflows/918_workflow-experimento-lags-1al6-sin_deltas.r"
+PARAM <- "src/workflows/918_workflow-experimento-lags-1al6-12.r"
 
 envg <- env()
 

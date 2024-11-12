@@ -132,11 +132,13 @@ FEhist_base <- function( pinputexps)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
+  param_local$meta$script <- "/src/wf-etapas/1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag6 <- FALSE # no me engraso con los lags de orden 6
+  param_local$lag12 <- FALSE # no me engraso con los lags de orden 12
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -420,7 +422,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_agosto_lag1 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -457,5 +459,5 @@ wf_agosto <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto()
+wf_agosto_lag1()
 
