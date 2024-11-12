@@ -128,8 +128,8 @@ generarmodelo <- function( idcompetencia, kcompetencia, param )
 # aqui empieza el programa
 
 # creo la carpeta donde voy a trabajar
-dir.create("~/buckets/b1/exp/KA2000", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/KA2000")
+dir.create("~/buckets/b1/exp/KA2001", showWarnings = FALSE)
+setwd("~/buckets/b1/exp/KA2001")
 
 # creo el contador
 if( !file.exists( "contador.yml" ) )
