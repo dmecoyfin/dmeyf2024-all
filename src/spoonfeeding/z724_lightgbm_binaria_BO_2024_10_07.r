@@ -33,10 +33,10 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento_data <- "PP7230_2024_10_12_C"
-PARAM$experimento <- "HT7240_2024_10_12"
+PARAM$experimento_data <- "PP7230"
+PARAM$experimento <- "HT7240"
 
-PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 102191 # Aqui poner su  primer  semilla
 
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
