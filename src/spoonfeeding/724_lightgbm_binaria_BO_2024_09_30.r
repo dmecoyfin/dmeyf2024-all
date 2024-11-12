@@ -33,10 +33,10 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento_data <- "PP7230_2024_10_12_C"
-PARAM$experimento <- "HT7240_2024_10_12"
+PARAM$experimento_data <- "PP7230"
+PARAM$experimento <- "HT7240_2024_09_30"
 
-PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 111667 # Aqui poner su  primer  semilla
 
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
@@ -82,12 +82,13 @@ PARAM$bo_lgb <- makeParamSet(
   makeNumericParam("learning_rate", lower = 0.02, upper = 0.3),
   makeNumericParam("feature_fraction", lower = 0.01, upper = 1.0),
   makeIntegerParam("num_leaves", lower = 8L, upper = 4096L),
-  makeIntegerParam("min_data_in_leaf", lower = 10L, upper = 50000L)
+  makeIntegerParam("min_data_in_leaf", lower = 10L, upper = 50000L),
+  makeIntegerParam("num_boost_round", lower = 10L, upper = 1000L)
 )
 
 # si usted es ambicioso, y tiene paciencia, podria subir este valor a 100
 #  si se llama J.T. dejelo en 50 para no sufrir
-PARAM$bo_iteraciones <- 50 # iteraciones de la Optimizacion Bayesiana
+PARAM$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
 
 
 #------------------------------------------------------------------------------
