@@ -33,10 +33,10 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento_data <- "PP7230_2024_10_12_C"
-PARAM$experimento <- "HT7240_2024_10_12"
+PARAM$experimento_data <- "PP7230_2024_10_07"
+PARAM$experimento <- "HT7240_2024_10_07"
 
-PARAM$semilla_azar <- 111661 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 111667 # Aqui poner su  primer  semilla
 
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
@@ -315,7 +315,8 @@ campos_buenos <- setdiff(
   colnames(dataset),
   c("clase_ternaria", "clase01",
     "part_training", "part_validation", "part_testing",
-    "part_final_train", "part_future")
+    "part_final_train", "part_future",
+    "cprestamos_personales", "mprestamos_personales")
 )
 
 
