@@ -20,11 +20,11 @@ PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 613
-PARAM$finalmodel$learning_rate <- 0.01
-PARAM$finalmodel$feature_fraction <- 0.5489793063
-PARAM$finalmodel$min_data_in_leaf <- 1014
-PARAM$finalmodel$num_leaves <- 928
+PARAM$finalmodel$num_iterations <- 250
+PARAM$finalmodel$learning_rate <- 0.57
+PARAM$finalmodel$feature_fraction <- 0.63
+PARAM$finalmodel$min_data_in_leaf <- 31500
+PARAM$finalmodel$num_leaves <- 525
 
 
 PARAM$finalmodel$max_bin <- 31
@@ -33,10 +33,6 @@ PARAM$finalmodel$max_bin <- 31
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 setwd("/mnt/storage/work/dmeyf/")
-
-# cargo MI semilla, que esta en MI bucket
-#tabla_semillas <- fread( "./datasets//mis_semillas.txt" )
-#ksemilla_azar <- tabla_semillas[ 1, semilla ]  # 1 es mi primer semilla
 
 
 # cargo el dataset donde voy a entrenar
