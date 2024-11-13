@@ -247,7 +247,7 @@ switch(envg$PARAM$metodo,
   "rank_cero_fijo" = drift_rank_cero_fijo(campos_monetarios),
   "deflacion"      = drift_deflacion(campos_monetarios),
   "dolar_blue"     = drift_dolarblue(campos_monetarios),
-  "dolar_oficial"  = drift_dolaroficial(campos_monetarios),
+  "dolar_oficial"  = drift_dolar_oficial(campos_monetarios),
   "UVA"            = drift_UVA(campos_monetarios),
   "estandarizar"   = drift_estandarizar(campos_monetarios)
 )

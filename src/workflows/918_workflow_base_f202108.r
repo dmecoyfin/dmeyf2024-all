@@ -267,18 +267,18 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202106)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
+  param_local$final_train$training <- c(202105, 202104,
     202103, 202102, 202101)
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
+  param_local$train$training <- c(202103, 202102,
     202101, 202012, 202011)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
+  param_local$train$validation <- c(202104)
+  param_local$train$testing <- c(202105)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -430,14 +430,14 @@ wf_agosto <- function( pnombrewf )
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
   #FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  DR_drifting_base(metodo="dolar_oficial")
+  #FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+  #FErf_attributes_base( arbolitos= 20,
+   # hojas_por_arbol= 16,
+  #  datos_por_hoja= 1000,
+   # mtry_ratio= 0.2
+  #)
 
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
@@ -446,9 +446,12 @@ wf_agosto <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=10 )
   SC_scoring( c(fm, ts8) )
-  KA_evaluate_kaggle()  # genera archivos para Kaggle
+  
+  EV_evaluate_conclase_gan()
+  
+  #KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
