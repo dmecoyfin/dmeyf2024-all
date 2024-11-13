@@ -36,7 +36,7 @@ PARAM <- list()
 PARAM$experimento_data <- "PP7230"
 PARAM$experimento <- "HT7240"
 
-PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 878777 # Aqui poner su  primer  semilla
 
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
@@ -87,7 +87,7 @@ PARAM$bo_lgb <- makeParamSet(
 
 # si usted es ambicioso, y tiene paciencia, podria subir este valor a 100
 #  si se llama J.T. dejelo en 50 para no sufrir
-PARAM$bo_iteraciones <- 50 # iteraciones de la Optimizacion Bayesiana
+PARAM$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
 
 
 #------------------------------------------------------------------------------
