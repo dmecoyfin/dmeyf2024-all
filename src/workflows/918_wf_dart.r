@@ -314,7 +314,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
-    boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
+    boosting = "dart", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
     metric = "custom",
     first_metric_only = TRUE,
@@ -328,7 +328,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 1000, # un numero muy grande, lo limita early_stopping_rounds
 
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
@@ -351,8 +351,8 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     # Parte variable
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    num_leaves = c( 500L, 4096L,  "integer" ),
+    min_data_in_leaf = c( 1000L, 10000L, "integer" )
     
     
   )
@@ -403,6 +403,32 @@ SC_scoring <- function( pinputexps )
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
+#-----------------------------------------------------------------------------
+# proceso EV_conclase  Baseline
+# deterministico, SIN random
+
+EV_evaluate_conclase_gan <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+  
+  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
+  
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
+  
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 117000
+  param_local$train$gan0 <-  -3000
+  param_local$train$meseta <- 2001
+  
+  # para graficar
+  param_local$graficar$envios_desde <-  9000L
+  param_local$graficar$envios_hasta <-  13000L
+  param_local$graficar$ventana_suavizado <- 2001L
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
 #------------------------------------------------------------------------------
 # proceso KA_evaluate_kaggle
 # deterministico, SIN random
@@ -431,7 +457,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_base <- function( pnombrewf )
+wf_pajaritos <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -459,14 +485,18 @@ wf_base <- function( pnombrewf )
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1,2,3), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
+  
+  # EV_evaluate_conclase_gan()
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
+
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_base()
+wf_pajaritos()
 
