@@ -420,12 +420,12 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_variables_evolutivas_iter_3 <- function( pnombrewf )
+wf_variables_evolutivas_iter_4 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_3.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_4.csv.gz")
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
@@ -457,4 +457,4 @@ wf_variables_evolutivas_iter_3 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_variables_evolutivas_iter_3()
+wf_variables_evolutivas_iter_4()
