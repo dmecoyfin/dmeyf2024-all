@@ -27,9 +27,9 @@ PARAM <- list()
 
 PARAM$experimento <- "PP7230"
 
-PARAM$input$dataset <- "./datasets/competencia_01_R.csv"
+PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 111667 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
