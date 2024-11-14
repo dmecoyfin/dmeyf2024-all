@@ -99,6 +99,10 @@ for (i in 1:length(variables_importantes)) {
 
 setwd("~/buckets/b1/datasets")
 
+
+## lightGBM sobre dataset nuevo
+
+
 # grabo las variables
 cat( "escritura de variables nuevas\n")
 cat( "Iniciando grabado de variables nuevas\n" )
