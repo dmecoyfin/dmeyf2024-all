@@ -1,7 +1,18 @@
-#C. Funciones.
+import lightgbm as lgb
+import numpy as np
+import yaml
+
+# Cargar configuración desde el archivo YAML
+def load_config(yaml_file):
+    with open(yaml_file, "r") as file:
+        config = yaml.safe_load(file)
+    return config
+
+config = load_config("config.yaml")
+
 def lgb_gan_eval(y_pred, data):
     weight = data.get_weight()
-    ganancia = np.where(weight == 1.00002, ganancia_acierto, 0) - np.where(weight < 1.00002, costo_estimulo, 0)
+    ganancia = np.where(weight == 1.00002, config['ganancia_acierto'], 0) - np.where(weight < 1.00002, config['costo_estimulo'], 0)
     ganancia = ganancia[np.argsort(y_pred)[::-1]]
     ganancia = np.cumsum(ganancia)
 
@@ -65,5 +76,36 @@ def objective(trial):
     return max_gan * 5
 
 def ganancia_prob(y_pred, y_true, prop = 1):
-  ganancia = np.where(y_true == 1, ganancia_acierto, 0) - np.where(y_true == 0, costo_estimulo, 0)
+  ganancia = np.where(y_true == 1, config['ganancia_acierto'], 0) - np.where(y_true == 0, config['costo_estimulo'], 0)
   return ganancia[y_pred >= 0.025].sum() / prop
+
+
+def prepare_df_del_columns(data,d_columns):
+    data = data.drop(d_columns, axis=1)
+    return data
+
+def prepare_df_1(data,mes_train,mes_test):
+    data['clase_peso'] = 1.0
+
+    data.loc[data['clase_ternaria'] == 'BAJA+2', 'clase_peso'] = 1.00002
+    data.loc[data['clase_ternaria'] == 'BAJA+1', 'clase_peso'] = 1.00001
+
+    data['clase_binaria1'] = 0
+    data['clase_binaria2'] = 0
+    data['clase_binaria1'] = np.where(data['clase_ternaria'] == 'BAJA+2', 1, 0)
+    data['clase_binaria2'] = np.where(data['clase_ternaria'] == 'CONTINUA', 0, 1)
+    #solari
+    #train_data = data[data['foto_mes'].isin(mes_train)]
+    train_data = data[data['foto_mes'].isin(mes_train)]
+    test_data = data[data['foto_mes'] == mes_test]
+
+    X_train = train_data.drop(['clase_ternaria', 'clase_peso', 'clase_binaria1','clase_binaria2'], axis=1)
+    y_train_binaria1 = train_data['clase_binaria1']
+    y_train_binaria2 = train_data['clase_binaria2']
+    w_train = train_data['clase_peso']
+
+    X_test = test_data.drop(['clase_ternaria', 'clase_peso', 'clase_binaria1','clase_binaria2'], axis=1)
+    y_test_binaria1 = test_data['clase_binaria1']
+    y_test_class = test_data['clase_ternaria']
+    w_test = test_data['clase_peso']
+    return X_train, y_train_binaria1, y_train_binaria2, w_train, X_test, y_test_binaria1, y_test_class, w_test
