@@ -40,7 +40,9 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
   "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
   "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado")
+  "Visa_status", "Master_status", "cdescubierto_preacordado",
+  "mrentabilidad", "cproductos","mactivos_margen", "mpasivos_margen",
+  "minversion1_pesos", "minversion2")
 
 
 # genero el dataset chico
