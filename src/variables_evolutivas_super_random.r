@@ -149,6 +149,14 @@ for (k in 1:10){
     variables <- setdiff(names(dataset), variables_a_excluir)
 }
 
+variables_character <- names(which(sapply(dataset, is.character)))
+
+variables_character <- setdiff(variables_character, "clase_ternaria")
+
+dataset[,(variable_character) := NULL]
+
+
+
 infinitos <- lapply(
   names(dataset),
   function(.name) dataset[, sum(is.infinite(get(.name)))]
@@ -195,17 +203,15 @@ setwd("~/buckets/b1/datasets")
 cat( "escritura de variables nuevas\n")
 cat( "Iniciando grabado de variables nuevas\n" )
 # Crea el nombre del archivo usando la iteración k
-nombre_archivo <- paste0("nuevas_variables_random_iter_", k, ".txt")
 
 # Guarda el archivo
-fwrite(nuevas_variables_random, file = nombre_archivo, logical01 = TRUE, sep = ",")
+fwrite(nuevas_variables_random, file = "nuevas_variables_super_random.txt", logical01 = TRUE, sep = ",")
 cat( "Finalizado grabado de nuevas variables\n" )
 
 # grabo el dataset
 cat( "escritura del dataset nuevo\n")
 cat( "Iniciando grabado del dataset nuevo\n" )
-nombre_dataset <- paste0("dataset_random_iter_", k, ".csv.gz")
 
 # Guarda el archivo
-fwrite(dataset, file = nombre_dataset, logical01 = TRUE, sep = ",")
+fwrite(dataset, file = , logical01 = TRUE, sep = ",")
 cat( "Finalizado grabado del dataset nuevo\n" )
