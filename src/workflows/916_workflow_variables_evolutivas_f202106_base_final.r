@@ -135,7 +135,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -144,7 +144,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
+  param_local$Tendencias1$promedio <- TRUE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
 
@@ -154,7 +154,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
+  param_local$Tendencias2$promedio <- TRUE
   param_local$Tendencias2$ratioavg <- FALSE
   param_local$Tendencias2$ratiomax <- FALSE
 
@@ -424,33 +424,33 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202106 donde SI hay clase completa
 
-wf_junio_variables_evolutivas_super_random_feintra <- function( pnombrewf )
+wf_junio_variables_evolutivas_base_final <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_super_random_FEintra.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-#  FEintra_manual_base()
-#  DR_drifting_base(metodo="deflacion")
-#  FEhist_base()
+  FEintra_manual_base()
+  DR_drifting_base(metodo="rank_cero_fijo")
+  FEhist_base()
 
-#  FErf_attributes_base( arbolitos= 20,
-#    hojas_por_arbol= 16,
-#    datos_por_hoja= 1000,
-#    mtry_ratio= 0.2
-#  )
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 16,
+    datos_por_hoja= 1000,
+    mtry_ratio= 0.2
+  )
 
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=0.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=-1.0)
 
   # Etapas modelado
   ts6 <- TS_strategy_base6()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 42 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=10 )
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts6) )
   EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
@@ -461,4 +461,4 @@ wf_junio_variables_evolutivas_super_random_feintra <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_junio_variables_evolutivas_super_random_feintra()
+wf_junio_variables_evolutivas_base_final()
