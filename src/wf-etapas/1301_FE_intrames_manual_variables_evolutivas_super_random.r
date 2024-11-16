@@ -211,14 +211,14 @@ AgregarVariables_IntraMes <- function(dataset) {
   # Aqui debe usted agregar sus propias nuevas variables
   # Crear la variable mpasivos_margen_lag1 como un lag de orden 1 de mpasivos_margen
   
-  dataset[, iter_7_var_73 := (minversion2_+_cplazo_fijo) + ((cplazo_fijo) + (Visa_msaldopesos_x_ccomisiones_otras))]
+  dataset[, iter_7_var_73 := (minversion2 + cplazo_fijo) + ((cplazo_fijo) + (Visa_msaldopesos * ccomisiones_otras))]
 
   dataset[, iter_8_var_34 := (ccajas_consultas + mtarjeta_visa_consumo) / (mcomisiones_mantenimiento)]
 
   dataset[, iter_1_var_11 := mrentabilidad_annual + mcomisiones_otras]
 
   dataset[, iter_6_var_1 := (ccuenta_corriente + thomebanking) / 
-                            ((Visa_msaldopesos x ccomisiones_otras) + (ccheques_depositados x Visa_msaldototal))
+                            ((Visa_msaldopesos * ccomisiones_otras) + (ccheques_depositados * Visa_msaldototal))]
 
   dataset[, iter_2_var_42 := Visa_mpagominimo + mextraccion_autoservicio]
 
@@ -233,10 +233,10 @@ AgregarVariables_IntraMes <- function(dataset) {
   dataset[, iter_3_var_84 := (ctransferencias_recibidas) / (tcallcenter / cforex_buy)]
 
   dataset[, iter_6_var_70 := (((Master_fultimo_cierre + mtarjeta_visa_consumo) + (ccheques_depositados)) + 
-                             ((Visa_msaldototal + cplazo_fijo) x (cforex x Master_Fvencimiento))) x 
-                             ((ccuenta_corriente + Visa_msaldototal) + (minversion1_dolares))
+                             ((Visa_msaldototal + cplazo_fijo) * (cforex x Master_Fvencimiento))) * 
+                             ((ccuenta_corriente + Visa_msaldototal) + (minversion1_dolares))]
 
-  dataset[, iter_2_var_29 := (catm_trx_other + cmobile_app_trx) / (mrentabilidad x mcaja_ahorro)
+  dataset[, iter_2_var_29 := (catm_trx_other + cmobile_app_trx) / (mrentabilidad * mcaja_ahorro)]
 
   dataset[, iter_1_var_6 := mpayroll / ctrx_quarter]
 

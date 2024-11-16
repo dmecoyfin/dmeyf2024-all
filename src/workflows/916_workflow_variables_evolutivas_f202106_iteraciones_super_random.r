@@ -99,6 +99,21 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
+  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
+
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
+
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+#------------------------------------------------------------------------------
+# Feature Engineering Intra Mes   Baseline
+# deterministico, SIN random
+
+FEintra_manual_propio <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
+
+
   param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual_variables_evolutivas_super_random.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
@@ -434,6 +449,7 @@ wf_junio_variables_evolutivas_iteraciones_super_random <- function( pnombrewf )
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
+  FEintra_manual_propio()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
