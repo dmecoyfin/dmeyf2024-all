@@ -66,7 +66,7 @@ AgregarVariables_IntraMes <- function(dataset) {
   dataset[, iter_3_var_84 := (ctransferencias_recibidas) / (tcallcenter / cforex_buy)]
 
   dataset[, iter_6_var_70 := (((Master_fultimo_cierre + mtarjeta_visa_consumo) + (ccheques_depositados)) + 
-                             ((Visa_msaldototal + cplazo_fijo) * (cforex x Master_Fvencimiento))) * 
+                             ((Visa_msaldototal + cplazo_fijo) * (cforex * Master_Fvencimiento))) * 
                              ((ccuenta_corriente + Visa_msaldototal) + (minversion1_dolares))]
 
   dataset[, iter_2_var_29 := (catm_trx_other + cmobile_app_trx) / (mrentabilidad * mcaja_ahorro)]
