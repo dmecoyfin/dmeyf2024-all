@@ -210,8 +210,9 @@ AgregarVariables_IntraMes <- function(dataset) {
 
   # Aqui debe usted agregar sus propias nuevas variables
   # Calcular los pesos directamente, sin conservar columnas intermedias
+  library(lubridate)
   mes_reciente <- as.Date("2021-05-01")  # Fecha del mes más reciente
-  datos[, pesos := 0.95^(interval(as.Date(paste0(fotomes, "01"), "%Y%m%d"), mes_reciente) %/% months(1))]
+  dataset[, pesos := 0.95^(interval(as.Date(paste0(foto_mes, "01"), "%Y%m%d"), mes_reciente) %/% months(1))]
 
   
   # valvula de seguridad para evitar valores infinitos
