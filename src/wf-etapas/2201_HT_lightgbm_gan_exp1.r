@@ -498,20 +498,12 @@ campos_buenos <- setdiff(
   c("clase01", envg$PARAM$dataset_metadata$clase, "fold_train", "fold_validate", "fold_test","pesos")
 )
 
-# Combinar pesos existentes con la columna 'peso_adicional'
-cat("creación de pesos combinados\n")
-dataset[, peso_combinado := ifelse(
-  get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$positivos, 
-  1.0000001, 
-  1.0
-) * pesos]
-
 # La partición de train siempre va
 cat("creación dtrain\n")
 dtrain <- lgb.Dataset(
   data = data.matrix(dataset[fold_train == 1, campos_buenos, with = FALSE]),
   label = dataset[fold_train == 1, clase01],
-  weight = dataset[fold_train == 1, peso_combinado],
+  weight = dataset[fold_train == 1, pesos],
   free_raw_data = FALSE
 )
 
