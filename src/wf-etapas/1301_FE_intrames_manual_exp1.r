@@ -209,12 +209,10 @@ AgregarVariables_IntraMes <- function(dataset) {
     dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
 
   # Aqui debe usted agregar sus propias nuevas variables
-  #auxiliar y pesos
-  if( atributos_presentes( c("vm_mpagominimo", "vm_mlimitecompra") ))
-    dataset[, auxiliar := vm_mpagominimo / vm_mlimitecompra]
-  
-  if( atributos_presentes( c("vm_mpagominimo", "vm_mlimitecompra") ))
-    dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
+  # Calcular los pesos directamente, sin conservar columnas intermedias
+  mes_reciente <- as.Date("2021-05-01")  # Fecha del mes más reciente
+  datos[, pesos := 0.95^(interval(as.Date(paste0(fotomes, "01"), "%Y%m%d"), mes_reciente) %/% months(1))]
+
   
   # valvula de seguridad para evitar valores infinitos
   # paso los infinitos a NULOS

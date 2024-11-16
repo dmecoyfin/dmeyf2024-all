@@ -1,7 +1,7 @@
 require("rlang", quietly=TRUE) 
 
 # workflow que voy a correr
-PARAM <- "src/exp-colaborativos/lp_918_workflow_pesosbase_f202106.r"
+PARAM <- "src/exp-colaborativos/lp_918_workflow_pesos_exp1_f202106.r"
 
 envg <- env()
 
