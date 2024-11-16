@@ -181,7 +181,7 @@ FErf_attributes_base <- function( pinputexps,
 
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  param_local$train$training <- c( 202101, 202102, 202103, 202104)
+  param_local$train$training <- c( 202101, 202102, 202103)
 
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
@@ -240,7 +240,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
   param_local$train$positivos <- c( "BAJA+2")
-  param_local$train$training <- c( 202101, 202102, 202103, 202104)
+  param_local$train$training <- c( 202101, 202102, 202103)
   param_local$train$validation <- c( 202105 )
   param_local$train$undersampling <- 0.1
   param_local$train$gan1 <- 273000
@@ -260,7 +260,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
-TS_strategy_base8 <- function( pinputexps )
+TS_strategy_base6 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
@@ -276,11 +276,11 @@ TS_strategy_base8 <- function( pinputexps )
     202008,202007,202006, 202005,202004,202003,202002,202001, 201912)
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
+  param_local$train$training <- c(202103, 202102,
     202101, 202012, 202011, 202010, 202009,
     202008,202007,202006, 202005, 202004,202003,202002,202001, 201912,201911)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
+  param_local$train$validation <- c(202104)
+  param_local$train$testing <- c(202105)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -395,6 +395,33 @@ SC_scoring <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# proceso EV_conclase  Baseline
+# deterministico, SIN random
+
+EV_evaluate_conclase_gan <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+  
+  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
+  
+  param_local$semilla <- NULL  # no usa semilla, es deterministico
+  
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 273000
+  param_local$train$gan0 <-  -7000
+  param_local$train$meseta <- 2001
+  
+  # para graficar
+  param_local$graficar$envios_desde <-   8000L
+  param_local$graficar$envios_hasta <-  16000L
+  param_local$graficar$ventana_suavizado <- 2001L
+  
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+
+#------------------------------------------------------------------------------
 # proceso KA_evaluate_kaggle
 # deterministico, SIN random
 
@@ -448,8 +475,9 @@ wf_pesos_exp1 <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=10 )
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts8) )
+  EV_evaluate_conclase_gan()
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
