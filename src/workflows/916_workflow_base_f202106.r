@@ -429,15 +429,15 @@ wf_junio <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset.csv.gz")
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  #FEintra_manual_base()
+  DR_drifting_base(metodo="dolar_oficial")
+  #FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
+  FErf_attributes_base( arbolitos= 100,
     hojas_por_arbol= 16,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
@@ -450,7 +450,7 @@ wf_junio <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas= 10 )
   SC_scoring( c(fm, ts6) )
   EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
