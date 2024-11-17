@@ -424,12 +424,12 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202106 donde SI hay clase completa
 
-wf_expcol_grupob_wcvn_l01 <- function( pnombrewf )
+wf_expcol_grupob_wcvn_l02 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/datasets_competencia_02.csv.gz")
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
@@ -441,7 +441,7 @@ wf_expcol_grupob_wcvn_l01 <- function( pnombrewf )
   #  hojas_por_arbol= 16,
   #  datos_por_hoja= 1000,
   #  mtry_ratio= 0.2
-  )
+  #)
 
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
@@ -461,5 +461,5 @@ wf_expcol_grupob_wcvn_l01 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_expcol_grupob_wcvn_l01()
+wf_expcol_grupob_wcvn_l02()
 
