@@ -443,7 +443,7 @@ wf_junio_k2 <- function( pnombrewf )
     #mtry_ratio= 0.2
   #)
 
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=-1.5)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=-2)
 
   # Etapas modelado
   ts6 <- TS_strategy_base6()
