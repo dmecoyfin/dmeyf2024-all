@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 100019
+envg$EXPENV$semilla_primigenia <- 543217
 #semillas leo : 100019, 543217, 789101, 890123, 987653
 
 # leo el unico parametro del script
@@ -425,7 +425,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202106 donde SI hay clase completa
 
-wf_expcol_grupob_wcvn_l03 <- function( pnombrewf )
+wf_expcol_grupob_wcvn_543217 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -462,5 +462,5 @@ wf_expcol_grupob_wcvn_l03 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_expcol_grupob_wcvn_l03()
+wf_expcol_grupob_wcvn_543217()
 
