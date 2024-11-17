@@ -38,14 +38,14 @@ dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings= FALSE)
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
 campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
-  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
-  "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado")
+                    "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
+                    "mtarjeta_master_consumo", "mprestamos_personales",
+                    "Visa_status", "Master_status", "cdescubierto_preacordado")
 
 
 # genero el dataset chico
 dchico <- dataset[
-  clase_ternaria=="BAJA+2", 
+  clase_ternaria == "BAJA+2", 
   c("numero_de_cliente",campos_cluster),
   with=FALSE]
 
@@ -62,7 +62,7 @@ set.seed(PARAM$semilla_primigenia)
 modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
   y= NULL,
-  ntree= 1000, #se puede aumentar a 10000
+  ntree= 10000, #se puede aumentar a 10000
   proximity= TRUE,
   oob.prox=  TRUE )
 
@@ -159,7 +159,7 @@ dev.off()
 
 # leo la historia ( desde donde hay,  202101 )
 dhistoria <- fread(PARAM$dataset)
-thewalkingdead <- dhistoria[ clase_ternaria =="BAJA+2", unique(numero_de_cliente) ]
+thewalkingdead <- dhistoria[ clase_ternaria == "BAJA+2", unique(numero_de_cliente) ]
 
 dwalkingdead <- dhistoria[ numero_de_cliente %in% thewalkingdead ]
 
@@ -238,3 +238,6 @@ for( campo in campos_totales ) {
 dev.off()
 
 
+
+table(dchico$cluster)
+prop.table(table(dchico$cluster)) * 100
