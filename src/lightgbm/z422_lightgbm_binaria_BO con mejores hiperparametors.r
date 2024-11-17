@@ -35,7 +35,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 100109
 PARAM$experimento <- "HT4220"
 
 PARAM$input$dataset <- "C:/Users/glova/OneDrive/Documentos/EyF/Video09212024/competencia_01.csv"
@@ -54,10 +54,15 @@ PARAM$hyperparametertuning$NEG_ganancia <- -7000
 
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
-  makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
-  makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
+  makeNumericParam("learning_rate", lower = 0.01, upper = 0.1),
+  makeIntegerParam("num_leaves", lower = 8L, upper = 512L),
+  makeNumericParam("feature_fraction", lower = 0.2, upper = 1.0),
+  makeNumericParam("bagging_fraction", lower = 0.5, upper = 1.0),
+  makeIntegerParam("bagging_freq", lower = 1L, upper = 10L),
   makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
+  makeNumericParam("min_gain_to_split", lower = 0, upper = 10),
+  makeNumericParam("lambda_l1", lower = 0.0, upper = 10.0),
+  makeNumericParam("lambda_l2", lower = 0.0, upper = 10.0),
   makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
 
@@ -334,5 +339,6 @@ if (!file.exists(kbayesiana)) {
 } else {
   run <- mboContinue(kbayesiana) # retomo en caso que ya exista
 }
+
 
 cat("\n\nLa optimizacion Bayesiana ha terminado\n")
