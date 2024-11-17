@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 113311
+envg$EXPENV$semilla_primigenia <- 102191
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -144,7 +144,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
+  param_local$Tendencias1$promedio <- TRUE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
 
@@ -249,9 +249,9 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 
   # ratio varia de 0.0 a 2.0
   # desvio varia de -4.0 a 4.0
-  param_local$CanaritosAsesinos$ratio <- ratio
+  param_local$CanaritosAsesinos$ratio <- 0.2
   # desvios estandar de la media, para el cutoff
-  param_local$CanaritosAsesinos$desvios <- desvio
+  param_local$CanaritosAsesinos$desvios <- 0
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -272,11 +272,11 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+    202103, 202102, 202101,202012, 202011, 202010, 202009)
 
 
   param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101, 202012, 202011, 202010, 202009,  202008, 202007)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
@@ -458,3 +458,4 @@ wf_agosto <- function( pnombrewf )
 
 # llamo al workflow con future = 202108
 wf_agosto()
+
