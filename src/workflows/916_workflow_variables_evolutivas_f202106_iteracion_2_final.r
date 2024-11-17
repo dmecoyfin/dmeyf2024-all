@@ -436,7 +436,7 @@ wf_junio_variables_evolutivas_iteracion_2_final <- function( pnombrewf )
   CN_canaritos_asesinos_base(ratio=0.2, desvio=0.0)
 #  FEintra_manual_base()
 #  DR_drifting_base(metodo="deflacion")
-  FEhist_base()
+#  FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
     hojas_por_arbol= 16,
