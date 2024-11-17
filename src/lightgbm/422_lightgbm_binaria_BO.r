@@ -34,7 +34,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$semilla_primigenia <- 113311
+PARAM$semilla_primigenia <- 103301
 PARAM$experimento <- "HT4220"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
@@ -59,6 +59,15 @@ hs <- makeParamSet(
   makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
   makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
+
+#hs <- makeParamSet(
+#  makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
+#  makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
+#  makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
+#  makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
+#  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
+#)
+
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
@@ -211,7 +220,7 @@ EstimarGanancia_lightgbm <- function(x) {
 # Aqui empieza el programa
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")
 
 
 # genero numeros primos
