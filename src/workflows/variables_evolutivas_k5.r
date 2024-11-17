@@ -2,7 +2,7 @@ require( "data.table" )
 
 #Especificar carpeta donde guarda el dataset los canarios asesinos.
 #Si va a ser la primer iteracion, especificar carpeta del dataset original
-setwd("~/buckets/b1/expw/CN-0011") # Establezco el Working Directory
+setwd("~/buckets/b1/expw/CN-0006") # Establezco el Working Directory
 
 #Nombre del dataset
 dataset <- fread("dataset.csv.gz")
@@ -17,7 +17,7 @@ impo_1 <- fread("impo_1.txt")
 variables_importantes <- impo_1[1:20, Feature] #Selecciono las 20 variables mas importantes
 
 #ACA HAY QUE EMPEZAR UN MEGA BUCLE
-k=1
+k=5
 #AQUI COMIENZO A CREAR NUEVAS VARIABLES-----------------------------------------
 
 # Inicializa nuevas_variables como un data.table vacío
@@ -98,10 +98,6 @@ for (i in 1:length(variables_importantes)) {
 }
 
 setwd("~/buckets/b1/datasets")
-
-
-## lightGBM sobre dataset nuevo
-
 
 # grabo las variables
 cat( "escritura de variables nuevas\n")
