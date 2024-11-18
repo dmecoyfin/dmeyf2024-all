@@ -1,6 +1,6 @@
 # esqueleto de grid search con Montecarlo Cross Validation
 # se espera que los alumnos completen lo que falta
-#   para recorrer TODOS cuatro los hiperparametros
+# para recorrer TODOS cuatro los hiperparametros
 
 rm(list = ls()) # Borro todos los objetos
 gc() # Garbage Collection
@@ -12,17 +12,17 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 113149
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
-PARAM$dataset_nom <- "./datasets/competencia_01.csv"
+PARAM$dataset_nom <- "./DM_EF/datasets/competencia_01_polars.csv"
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
 #  que consiste en una particion estratificada segun agrupa
-# particionar( data=dataset, division=c(70,30), agrupa=clase_ternaria, seed=semilla)
+#  particionar( data=dataset, division=c(70,30), agrupa=clase_ternaria, seed=semilla)
 #   crea una particion 70, 30
 
 particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, seed = NA) {
@@ -94,7 +94,7 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
     semillas, # paso el vector de semillas
     MoreArgs = list(PARAM$training_pct, param_basicos), # aqui paso el segundo parametro
     SIMPLIFY = FALSE,
-    mc.cores = detectCores() # en Windows debe ser 1
+    mc.cores = 1 # en Windows debe ser 1
   )
 
   return(salida)
@@ -103,7 +103,7 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/Gastón/maestria/") # Establezco el Working Directory
 # cargo los datos
 
 
@@ -123,7 +123,7 @@ dataset <- dataset[foto_mes==202104]
 # creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
 dir.create("~/buckets/b1/exp/HT2810/", showWarnings = FALSE)
-setwd( "~/buckets/b1/exp/HT2810/" )
+#setwd( "~/buckets/b1/exp/HT2810/" )
 
 
 # genero la data.table donde van los resultados detallados del Grid Search
@@ -142,31 +142,35 @@ tb_grid_search_detalle <- data.table(
 
 for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
   for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
+    for (vmin_bucket in c(400, 200, 100, 50, 20, 10)) {
+      for (cp in c(-1, -0.05, 0.05, 1)) {
     # notar como se agrega
 
-    # vminsplit  minima cantidad de registros en un nodo para hacer el split
-    param_basicos <- list(
-      "cp" = -0.5, # complejidad minima
+      # vminsplit  minima cantidad de registros en un nodo para hacer el split
+      param_basicos <- list(
+      "cp" = cp, # complejidad minima
       "maxdepth" = vmax_depth, # profundidad máxima del arbol
       "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 5 # minima cantidad de registros en una hoja
+      "minbucket" = vmin_bucket # minima cantidad de registros en una hoja
     )
 
-    # Un solo llamado, con la semilla 17
-    ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+      # Un solo llamado, con la semilla 17
+      ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
 
-    # agrego a la tabla
-    tb_grid_search_detalle <- rbindlist( 
+      # agrego a la tabla
+      tb_grid_search_detalle <- rbindlist( 
       list( tb_grid_search_detalle,
             rbindlist(ganancias) )
     )
 
-  }
+    }
 
-  # grabo cada vez TODA la tabla en el loop mas externo
-  fwrite( tb_grid_search_detalle,
+    # grabo cada vez TODA la tabla en el loop mas externo
+    fwrite( tb_grid_search_detalle,
           file = "gridsearch_detalle.txt",
           sep = "\t" )
+    }
+  }
 }
 
 #----------------------------
