@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expwEXP1/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flowEXP1/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
@@ -99,7 +99,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual_exp1.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -299,7 +299,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/2201_HT_lightgbm_gan_exp1.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -363,7 +363,7 @@ FM_final_models_lightgbm <- function( pinputexps, ranks, qsemillas )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2301_FM_final_models_lightgbm.r"
+  param_local$meta$script <- "/src/wf-etapas/2301_FM_final_models_lightgbm_exp1.r"
 
   # Que modelos quiero, segun su posicion en el ranking de la Bayesian Optimizacion, ordenado por metrica descendente
   param_local$modelos_rank <- ranks
@@ -426,7 +426,7 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202106 donde SI hay clase completa
 
-wf_junio_exp0lp <- function( pnombrewf )
+wf_junio_exp1lp <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -452,7 +452,7 @@ wf_junio_exp0lp <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=10 )
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts6) )
   EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
@@ -463,5 +463,5 @@ wf_junio_exp0lp <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202106
-wf_junio_exp0lp()
+wf_junio_exp1lp()
 
