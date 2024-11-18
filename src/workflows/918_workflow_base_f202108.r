@@ -135,7 +135,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -267,18 +267,18 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202106)
+  param_local$future <- c(202108)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202105, 202104,
+  param_local$final_train$training <- c(202106, 202105, 202104,
     202103, 202102, 202101)
 
 
-  param_local$train$training <- c(202103, 202102,
+  param_local$train$training <- c(202104, 202103, 202102,
     202101, 202012, 202011)
-  param_local$train$validation <- c(202104)
-  param_local$train$testing <- c(202105)
+  param_local$train$validation <- c(202105)
+  param_local$train$testing <- c(202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -393,25 +393,6 @@ SC_scoring <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
-
-EV_evaluate_conclase_gan <- function( pinputexps )
-{
-  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
-  param_local$semilla <- NULL # no usa semilla, es deterministico
-  param_local$train$positivos <- c( "BAJA+2")
-  param_local$train$gan1 <- 117000
-  param_local$train$gan0 <- -3000
-  param_local$train$meseta <- 401
-  # para graficar
-  param_local$graficar$envios_desde <- 1000L
-  param_local$graficar$envios_hasta <- 5000L
-  param_local$graficar$ventana_suavizado <- 401L
-  return( exp_correr_script( param_local ) ) # linea fija
-}
-
-
-#------------------------------------------------------------------------------
 # proceso KA_evaluate_kaggle
 # deterministico, SIN random
 
@@ -439,7 +420,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-modelorf1 <- function( pnombrewf )
+wf_agosto <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -448,27 +429,26 @@ modelorf1 <- function( pnombrewf )
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
-  #FEintra_manual_base()
-  DR_drifting_base(metodo="dolar_oficial")
-  #FEhist_base()
+  FEintra_manual_base()
+  DR_drifting_base(metodo="rank_cero_fijo")
+  FEhist_base()
 
-  #FErf_attributes_base( arbolitos= 20,
-   # hojas_por_arbol= 16,
-  #  datos_por_hoja= 1000,
-   # mtry_ratio= 0.2
-  #)
+  FErf_attributes_base( arbolitos= 25,
+    hojas_por_arbol= 16,
+    datos_por_hoja= 1000,
+    mtry_ratio= 0.2
+  )
 
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=10 )
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
-  EV_evaluate_conclase_gan()
-  #KA_evaluate_kaggle()  # genera archivos para Kaggle
+  KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -477,5 +457,5 @@ modelorf1 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-modelorf1()
+wf_agosto()
 
