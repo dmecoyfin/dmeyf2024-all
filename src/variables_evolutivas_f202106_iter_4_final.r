@@ -2,7 +2,7 @@ require( "data.table" )
 
 #Especificar carpeta donde guarda el dataset los canarios asesinos.
 #Si va a ser la primer iteracion, especificar carpeta del dataset original
-setwd("~/buckets/b1/expw/CN-0038") # Establezco el Working Directory
+setwd("~/buckets/b1/expw/CN-0039") # Establezco el Working Directory
 
 #Nombre del dataset
 dataset <- fread("dataset.csv.gz")
@@ -17,14 +17,14 @@ impo_1 <- fread("impo_1.txt")
 variables_importantes <- impo_1[1:20, Feature] #Selecciono las 20 variables mas importantes
 
 #ACA HAY QUE EMPEZAR UN MEGA BUCLE
-k=33
+k=4
 #AQUI COMIENZO A CREAR NUEVAS VARIABLES-----------------------------------------
 
 # Inicializa nuevas_variables como un data.table vacío
 nuevas_variables <- data.table()
 
 # Bucle para crear nuevas variables y agregar al dataset
-l=4
+l=1
 for (i in 1:length(variables_importantes)) {
   for (j in i:length(variables_importantes)) {
     # Multiplica las columnas
