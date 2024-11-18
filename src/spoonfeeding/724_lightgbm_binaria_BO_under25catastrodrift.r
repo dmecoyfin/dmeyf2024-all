@@ -1,15 +1,9 @@
-# script dedicado a Joaquín Sebastian Tschopp
-# que permite que training y final_train tengan distinta cantidad de registros
-# PARAM$trainingstrategy$training <- c(202102, 202103)
-# PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
-
 # Este script esta pensado para correr en Google Cloud
 #   8 vCPU
 # 128 GB memoria RAM
 
 # se entrena con clase_binaria2  POS =  { BAJA+1, BAJA+2 }
 # Optimizacion Bayesiana de hiperparametros de  lightgbm,
-# solo < training, testing >
 
 # limpio la memoria
 rm(list = ls()) # remove all objects
@@ -18,7 +12,6 @@ gc() # garbage collection
 require("data.table")
 require("rlist")
 require("ulimit")  # para controlar la memoria
-require("primes")
 
 require("lightgbm")
 
@@ -40,14 +33,10 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento_data <- "PP7230"  #"PP7430" lo cambio pero hay que arreglarlo !!!!!
-PARAM$experimento <- "HT7440"
+PARAM$experimento_data <- "PP7230"
+PARAM$experimento <- "HT7240"
 
-PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
-
-# por ahora 1 para que no me llueva una catarata de preguntas de alumnos
-#  justo antes del cierre de la primera competencia
-PARAM$semillas_cantidad <- 1
+PARAM$semilla_azar <- 990211 # Aqui poner su  primer  semilla
 
 PARAM$hyperparametertuning$POS_ganancia <- 273000
 PARAM$hyperparametertuning$NEG_ganancia <- -7000
@@ -69,6 +58,7 @@ PARAM$lgb_basicos <- list(
   lambda_l1 = 0.0, # lambda_l1 >= 0.0
   lambda_l2 = 0.0, # lambda_l2 >= 0.0
   max_bin = 31L, # lo debo dejar fijo, no participa de la BO
+  num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
   bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
   pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
@@ -80,24 +70,24 @@ PARAM$lgb_basicos <- list(
   max_drop = 50, # <=0 means no limit
   skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
-  extra_trees = FALSE,
+  extra_trees = TRUE, # Magic Sauce
 
   seed = PARAM$semilla_azar
 )
 
 
-# Aqui se cargan los hiperparametros VIRTUALES
-#  que se optimzan en la Bayesian Optimization utilizo los calculados en HT4220_mejor.txt !!!!!!!!!
+# Aqui se cargan los hiperparametros que se optimizan
+#  en la Bayesian Optimization
 PARAM$bo_lgb <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.01, upper = 0.1),
-  makeNumericParam("feature_fraction", lower = 0.5, upper = 0.8),
-  makeNumericParam("leaf_size_log", lower = -10.0, upper = -6.0),
-  makeNumericParam("coverage_log", lower = -8.0, upper = -3.0),
-  makeNumericParam("num_iterations_log", lower = 6.0, upper = 8.0)
+  makeNumericParam("learning_rate", lower = 0.02, upper = 0.3),
+  makeNumericParam("feature_fraction", lower = 0.01, upper = 1.0),
+  makeIntegerParam("num_leaves", lower = 8L, upper = 4096L),
+  makeIntegerParam("min_data_in_leaf", lower = 10L, upper = 50000L)
 )
 
-
-PARAM$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
+# si usted es ambicioso, y tiene paciencia, podria subir este valor a 100
+#  si se llama J.T. dejelo en 50 para no sufrir
+PARAM$bo_iteraciones <- 50 # iteraciones de la Optimizacion Bayesiana
 
 
 #------------------------------------------------------------------------------
@@ -144,6 +134,53 @@ GLOBAL_arbol <- 0L
 GLOBAL_gan_max <- -Inf
 vcant_optima <- c()
 
+fganancia_lgbm_meseta <- function(probs, datos) {
+  vlabels <- get_field(datos, "label")
+  vpesos <- get_field(datos, "weight")
+
+
+  GLOBAL_arbol <<- GLOBAL_arbol + 1
+  tbl <- as.data.table(list(
+    "prob" = probs,
+    "gan" = ifelse(vlabels == 1 & vpesos > 1,
+      PARAM$hyperparametertuning$POS_ganancia,
+      PARAM$hyperparametertuning$NEG_ganancia  )
+  ))
+
+  setorder(tbl, -prob)
+  tbl[, posicion := .I]
+  tbl[, gan_acum := cumsum(gan)]
+
+  tbl[, gan_suavizada :=
+    frollmean(
+      x = gan_acum, n = 2001, align = "center",
+      na.rm = TRUE, hasNA = TRUE
+    )]
+
+  gan <- tbl[, max(gan_suavizada, na.rm = TRUE)]
+
+
+  pos <- which.max(tbl[, gan_suavizada])
+  vcant_optima <<- c(vcant_optima, pos)
+
+  if (GLOBAL_arbol %% 10 == 0) {
+    if (gan > GLOBAL_gan_max) GLOBAL_gan_max <<- gan
+
+    cat("\r")
+    cat(
+      "Validate ", GLOBAL_iteracion, " ", " ",
+      GLOBAL_arbol, "  ", gan, "   ", GLOBAL_gan_max, "   "
+    )
+  }
+
+
+  return(list(
+    "name" = "ganancia",
+    "value" = gan,
+    "higher_better" = TRUE
+  ))
+}
+#------------------------------------------------------------------------------
 
 EstimarGanancia_lightgbm <- function(x) {
   gc()
@@ -152,71 +189,57 @@ EstimarGanancia_lightgbm <- function(x) {
   # hago la union de los parametros basicos y los moviles que vienen en x
   param_completo <- c(PARAM$lgb_basicos, x)
 
-  # hago la transformacion de leaf_size_log y  coverage
-  if( "leaf_size_log"  %in% names(param_completo) )
-  {
-    # primero defino el tamaño de las hojas
-    param_completo$min_data_in_leaf <- pmax( 1,  round( nrow(dtrain) * ( 2.0 ^ param_completo$leaf_size_log ))  )
-    # luego la cantidad de hojas en funcion del valor anterior, el coverage, y la cantidad de registros
-    param_completo$num_leaves <- pmin( 131072, 
-     pmax( 2,  round( ((2.0^param_completo$coverage_log)) * nrow( dtrain ) / param_completo$min_data_in_leaf ) ) )
-  }
-
-  if( "num_iterations_log"  %in% names(param_completo) )
-  {
-    param_completo$num_iterations <- pmax( 2L, as.integer( round( 2.0 ^ param_completo$num_iterations_log ) ) )
-  }
-
+  param_completo$early_stopping_rounds <-
+    as.integer(200 + 4 / param_completo$learning_rate)
 
   GLOBAL_arbol <<- 0L
   GLOBAL_gan_max <<- -Inf
   vcant_optima <<- c()
-  ganancia_test_normalizada <- c()
-  cantidad_test_normalizada <- c()
+  set.seed(PARAM$lgb_semilla, kind = "L'Ecuyer-CMRG")
+  modelo_train <- lgb.train(
+    data = dtrain,
+    valids = list(valid = dvalidate),
+    eval = fganancia_lgbm_meseta,
+    param = param_completo,
+    verbose = -100
+  )
 
-  for( semilla in ksemillas )
-  {
-    cat( semilla, " " )
-    param_completo$seed <- semilla
-
-    modelo_train <- lgb.train(
-      data = dtrain,
-      param = param_completo,
-      verbose = -100
-    )
-
-    # aplico el modelo a testing y calculo la ganancia
-    prediccion <- predict(
-      modelo_train,
-      data.matrix(dataset_test[, campos_buenos, with = FALSE])
-    )
-
-    tbl <- copy(dataset_test[, list("gan" = ifelse(clase_ternaria == "BAJA+2",
-      PARAM$hyperparametertuning$POS_ganancia, 
-      PARAM$hyperparametertuning$NEG_ganancia))])
-
-    tbl[, prob := prediccion]
-    setorder(tbl, -prob)
-    tbl[, gan_acum := cumsum(gan)]
-    tbl[, gan_suavizada := frollmean(
-      x = gan_acum, n = 2001,
-      align = "center", na.rm = TRUE, hasNA = TRUE
-    )]
-
-
-    ganancia_test <- tbl[, max(gan_suavizada, na.rm = TRUE)]
-    ganancia_test_normalizada <- c( ganancia_test_normalizada, ganancia_test )
-    cantidad_test_normalizada <- c( cantidad_test_normalizada, which.max(tbl[, gan_suavizada]) )
-
-    rm(tbl)
-    gc()
-  }
   cat("\n")
+
+  cant_corte <- vcant_optima[modelo_train$best_iter]
+
+  # aplico el modelo a testing y calculo la ganancia
+  prediccion <- predict(
+    modelo_train,
+    data.matrix(dataset_test[, campos_buenos, with = FALSE])
+  )
+
+  tbl <- copy(dataset_test[, list("gan" = ifelse(clase_ternaria == "BAJA+2",
+    PARAM$hyperparametertuning$POS_ganancia, 
+    PARAM$hyperparametertuning$NEG_ganancia))])
+
+  tbl[, prob := prediccion]
+  setorder(tbl, -prob)
+  tbl[, gan_acum := cumsum(gan)]
+  tbl[, gan_suavizada := frollmean(
+    x = gan_acum, n = 2001,
+    align = "center", na.rm = TRUE, hasNA = TRUE
+  )]
+
+
+  ganancia_test <- tbl[, max(gan_suavizada, na.rm = TRUE)]
+
+  cantidad_test_normalizada <- which.max(tbl[, gan_suavizada])
+
+  rm(tbl)
+  gc()
+
+  ganancia_test_normalizada <- ganancia_test
 
 
   # voy grabando las mejores column importance
-  if ( mean(ganancia_test_normalizada) > GLOBAL_gananciamax) {
-    GLOBAL_gananciamax <<- mean(ganancia_test_normalizada)
+  if (ganancia_test_normalizada > GLOBAL_gananciamax) {
+    GLOBAL_gananciamax <<- ganancia_test_normalizada
     tb_importancia <- as.data.table(lgb.importance(modelo_train))
 
     fwrite(tb_importancia,
@@ -232,14 +255,16 @@ EstimarGanancia_lightgbm <- function(x) {
   ds <- list("cols" = ncol(dtrain), "rows" = nrow(dtrain))
   xx <- c(ds, copy(param_completo))
 
-  xx$estimulos <- mean(cantidad_test_normalizada)
-  xx$ganancia <- mean(ganancia_test_normalizada)
+  xx$early_stopping_rounds <- NULL
+  xx$num_iterations <- modelo_train$best_iter
+  xx$estimulos <- cantidad_test_normalizada
+  xx$ganancia <- ganancia_test_normalizada
   xx$iteracion_bayesiana <- GLOBAL_iteracion
 
   loguear(xx, arch = "BO_log.txt")
 
   set.seed(PARAM$lgb_semilla, kind = "L'Ecuyer-CMRG")
-  return(mean(ganancia_test_normalizada))
+  return(ganancia_test_normalizada)
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -250,36 +275,10 @@ EstimarGanancia_lightgbm <- function(x) {
 #  la salud mental de los alumnos es el bien mas preciado 
 action_limitar_memoria( 4 )
 
-# genero las semillas con las que voy a trabajar
-#  ninguna de ellas es exactamente la original del alumno
-primos <- generate_primes(min = 100000, max = 1000000)
-set.seed(PARAM$semilla_azar)
-# me quedo con PARAM$semillerio  primos al azar
-ksemillas <- sample(primos)[seq(PARAM$semillas_cantidad)]
-
 setwd("~/buckets/b1/exp/") # Establezco el Working Directory
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(paste0(PARAM$experimento_data,"/dataset.csv.gz"))
-
-# En un mundo prolijo, estas variables se eliminan
-#  durante la creacion del dataset
-# https://www.youtube.com/watch?v=eitDnP0_83k
-dataset[, cprestamos_personales := NULL ]
-dataset[, cprestamos_personales_lag1 := NULL ]
-dataset[, cprestamos_personales_delta1 := NULL ]
-
-dataset[, mprestamos_personales := NULL ]
-dataset[, mprestamos_personales_lag1 := NULL ]
-dataset[, mprestamos_personales_delta1 := NULL ]
-
-dataset[, cplazo_fijo := NULL ]
-dataset[, cplazo_fijo_lag1 := NULL ]
-dataset[, cplazo_fijo_delta1 := NULL ]
-
-dataset[, ctarjeta_debito := NULL ]
-dataset[, ctarjeta_debito_lag1 := NULL ]
-dataset[, ctarjeta_debito_delta1 := NULL ]
 
 
 # creo la carpeta donde va el experimento
@@ -306,6 +305,7 @@ if (file.exists(klog)) {
 }
 
 
+
 # paso la clase a binaria que tome valores {0,1}  enteros
 dataset[, clase01 := ifelse(clase_ternaria == "CONTINUA", 0L, 1L)]
 
@@ -323,9 +323,22 @@ campos_buenos <- setdiff(
 dtrain <- lgb.Dataset(
   data = data.matrix(dataset[part_training == 1L, campos_buenos, with = FALSE]),
   label = dataset[part_training == 1L, clase01],
+  weight = dataset[part_training == 1L, 
+    ifelse(clase_ternaria == "BAJA+2", 1.0000001, 
+      ifelse(clase_ternaria == "BAJA+1", 1.0, 1.0))],
   free_raw_data = FALSE
 )
 
+
+
+dvalidate <- lgb.Dataset(
+  data = data.matrix(dataset[part_validation == 1L, campos_buenos, with = FALSE]),
+  label = dataset[part_validation == 1L, clase01],
+  weight = dataset[part_validation == 1L, 
+    ifelse(clase_ternaria == "BAJA+2", 1.0000001, 
+      ifelse(clase_ternaria == "BAJA+1", 1.0, 1.0))],
+  free_raw_data = FALSE
+)
 
 dataset_test <- dataset[part_testing == 1]
 
@@ -343,7 +356,7 @@ configureMlr(show.learner.output = FALSE)
 obj.fun <- makeSingleObjectiveFunction(
   fn = funcion_optimizar, # la funcion que voy a maximizar
   minimize = FALSE, # estoy Maximizando la ganancia
-  noisy = TRUE,  # para que no se impaciente Joaquin Tschopp
+  noisy = FALSE,  # para que no se impaciente Joaquin Tschopp
   par.set = PARAM$bo_lgb, # definido al comienzo del programa
   has.simple.signature = FALSE # paso los parametros en una lista
 )
