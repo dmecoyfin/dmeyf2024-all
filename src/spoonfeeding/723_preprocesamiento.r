@@ -27,9 +27,9 @@ PARAM <- list()
 
 PARAM$experimento <- "PP7230"
 
-PARAM$input$dataset <- "./datasets/competencia_01_R.csv"
+PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 903761 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
@@ -89,7 +89,7 @@ vdolar_oficial <- c(
    91.474000,  93.997778,  96.635909,
    98.526000,  99.613158, 100.619048
 )
-  
+
 vUVA <- c(
   0.9669867858358365, 0.9323750098728378, 0.8958202912590305,
   0.8631993702994263, 0.8253893405524657, 0.7928918905364516
@@ -122,7 +122,7 @@ Corregir_interpolar <- function(pcampo, pmeses) {
 AsignarNA_campomeses <- function(pcampo, pmeses) {
 
   if( pcampo %in% colnames( dataset ) ) {
-  
+
     dataset[ foto_mes %in% pmeses, paste0(pcampo) := NA ]
   }
 }
@@ -167,7 +167,10 @@ Corregir_Rotas <- function(dataset, pmetodo) {
   Corregir_atributo("mtarjeta_master_descuentos",
     c(202102), pmetodo)
 
-  cat( "fin Corregir_rotas()\n")
+  Corregir_atributo("ccajas_depositos",
+    c(202105), pmetodo)
+
+    cat( "fin Corregir_rotas()\n")
 }
 #------------------------------------------------------------------------------
 
@@ -229,7 +232,7 @@ drift_estandarizar <- function(campos_drift) {
   for (campo in campos_drift)
   {
     cat(campo, " ")
-    dataset[, paste0(campo, "_normal") := 
+    dataset[, paste0(campo, "_normal") :=
       (get(campo) -mean(campo, na.rm=TRUE)) / sd(get(campo), na.rm=TRUE),
       by = "foto_mes"]
 
@@ -241,14 +244,14 @@ drift_estandarizar <- function(campos_drift) {
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-# Limito la memoria, para que ningun alumno debe sufrir que el R 
+# Limito la memoria, para que ningun alumno debe sufrir que el R
 #  aborte sin avisar si no hay suficiente memoria
-#  la salud mental de los alumnos es el bien mas preciado 
+#  la salud mental de los alumnos es el bien mas preciado
 action_limitar_memoria( 4 )
 
 
  # tabla de indices financieros
-tb_indices <- as.data.table( list( 
+tb_indices <- as.data.table( list(
   "IPC" = vIPC,
   "dolar_blue" = vdolar_blue,
   "dolar_oficial" = vdolar_oficial,
@@ -277,7 +280,7 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 
 # Catastrophe Analysis  -------------------------------------------------------
 # corrijo las variables que con el script Catastrophe Analysis detecte que
-#   eestaban rotas
+#   estaban rotas
 
 # ordeno dataset
 setorder(dataset, numero_de_cliente, foto_mes)
