@@ -435,15 +435,15 @@ wf_junio_variables_evolutivas_prep_iter_1 <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
-#  FEhist_base()
+  FEhist_base()
 
-#  FErf_attributes_base( arbolitos= 20,
-#    hojas_por_arbol= 16,
-#    datos_por_hoja= 1000,
-#    mtry_ratio= 0.2
-#  )
+FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 16,
+    datos_por_hoja= 1000,
+    mtry_ratio= 0.2
+  )
 
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=2.0)
 
   # Etapas modelado
 ts6 <- TS_strategy_base6()
