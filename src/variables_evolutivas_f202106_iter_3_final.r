@@ -17,7 +17,7 @@ impo_1 <- fread("impo_1.txt")
 variables_importantes <- impo_1[1:20, Feature] #Selecciono las 20 variables mas importantes
 
 #ACA HAY QUE EMPEZAR UN MEGA BUCLE
-k=2
+k=33
 #AQUI COMIENZO A CREAR NUEVAS VARIABLES-----------------------------------------
 
 # Inicializa nuevas_variables como un data.table vacío
