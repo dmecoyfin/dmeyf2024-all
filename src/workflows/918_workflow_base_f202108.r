@@ -1,4 +1,4 @@
-# Corrida general del Workflow Baseline
+l# Corrida general del Workflow Baseline
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 102191
+envg$EXPENV$semilla_primigenia <- 319993
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -420,7 +420,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_resultado_semilla1 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -428,22 +428,24 @@ wf_agosto <- function( pnombrewf )
   DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
 
   # Etapas preprocesamiento
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MachineLearning") # probar cambiarlo
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="rank_cero_fijo") # probar cambiarlo
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+# "Apagado" en primera instancia de prueba
+  
+#  FErf_attributes_base( arbolitos= 20,
+#    hojas_por_arbol= 16,
+#    datos_por_hoja= 1000,
+#    mtry_ratio= 0.2
+#  )
 
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes LA BAYESIANA, LA QUE TARDA
 
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
@@ -457,5 +459,5 @@ wf_agosto <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto()
+wf_resultado_semilla1()
 
