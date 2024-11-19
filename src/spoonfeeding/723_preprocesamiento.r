@@ -27,9 +27,9 @@ PARAM <- list()
 
 PARAM$experimento <- "PP7230"
 
-PARAM$input$dataset <- "./datasets/competencia_01_R.csv"
+PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_azar <- 113311 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 878777 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
@@ -46,7 +46,7 @@ PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
 PARAM$trainingstrategy$future <- c(202106)
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 1.0
+PARAM$trainingstrategy$training_undersampling <- 0.25
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
@@ -278,6 +278,8 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # Catastrophe Analysis  -------------------------------------------------------
 # corrijo las variables que con el script Catastrophe Analysis detecte que
 #   eestaban rotas
+dataset <- dataset[, !c("cprestamos_personales", "mprestamos_personales"), with = FALSE]
+
 
 # ordeno dataset
 setorder(dataset, numero_de_cliente, foto_mes)
