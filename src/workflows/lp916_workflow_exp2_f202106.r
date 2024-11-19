@@ -388,7 +388,7 @@ SC_scoring <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2401_SC_scoring_lightgbm.r"
+  param_local$meta$script <- "/src/wf-etapas/2401_SC_scoring_lightgbm_exp.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
