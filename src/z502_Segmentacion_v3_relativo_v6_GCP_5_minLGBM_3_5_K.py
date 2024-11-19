@@ -1,22 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 12 22:24:19 2024
+
+@author: reinaldo
+"""
+
 
 import pandas as pd
 import numpy as np
 #import seaborn as sns
 #pip install polars
 #from umap import UMAP
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #from sklearn.cluster import DBSCAN
 #from sklearn.ensemble import  RandomForestClassifier
 #from sklearn.impute import SimpleImputer
 from joblib import Parallel, delayed
-import dask.dataframe as dd
+#import dask.dataframe as dd
 from boruta import BorutaPy
 import time
 
 import pandas as pd
 import numpy as np
 #import seaborn as sns
-import matplotlib.pyplot as plt
+
 
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
@@ -1462,49 +1470,19 @@ def create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_se
     #data = data.sample(fraction=0.1, with_replacement=False)  # Set with
    
     original_columns= data.columns
-    data= AgregarVariables_IntraMes(data)
+    
     original_columns_inta_mes= data.columns
    
-    data= convert_to_int_float32_polars(data)
-   
-    data= standardize_columns(data) 
-    data= convert_to_int_float32_polars(data)
     col_dinero= ['mcaja_ahorro_std' , 'mcuenta_corriente_std', 'mcuentas_saldo_std', 'ctrx_quarter_std', 'mrentabilidad_std', 'ctrx_quarter_normalizado_std']
     #data = add_forecast_elasticnet( data, col_dinero )
     
     
-    feature_importance_df_ranking, feature_importance_df_bool = get_top_and_least_important_boruta( data,ganancia_acierto,  mes_train, mes_test  )
-    baja_importancia = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==False ]['feature'].to_list()       
-    data, new_features = enhanced_feature_binning(data, baja_importancia, N_bins)
-
-    data = time_features(data)
-    data= convert_to_int_float32_polars(data)
-    
-    lag_flag, delta_lag_flag = True, True
-    data= add_lags_diff(data, lag_flag, delta_lag_flag )
-    data= add_moth_encode( data)
-    
-    feature_importance_df_ranking, feature_importance_df_bool = get_top_and_least_important_boruta( data,ganancia_acierto,  mes_train, mes_test  )
-    features_finales = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==True ]['feature'].to_list()   
-    data= data[['numero_de_cliente','foto_mes','clase_ternaria']+ features_finales]
-# 16% 624GB
-    data.write_parquet(exp_folder+'data_lags.parquet' , compression='gzip')
-    joblib.dump( [ original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool], exp_folder+'acc_lagsjoblib')    
-    # data= pl.read_parquet(exp_folder+'data_lags.parquet' )
-    # original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool = joblib.load(exp_folder+'acc_lags.joblib')
-    #data_reg = regression_per_client(data ,features_below_canritos) #muy lento Usae el codigo de R
-    data = div_sum_top_features_polars(data, feature_importance_df_ranking['feature'][:50].to_list())
-        
-    data= convert_to_int_float32_polars(data)
-    
+    new_features = []
+ 
     feature_importance_df_ranking, feature_importance_df_bool = get_top_and_least_important_boruta( data,ganancia_acierto,  mes_train, mes_test  )
     features_finales = feature_importance_df_bool[ feature_importance_df_bool['importance_split']==True ]['feature'].to_list()    
     data= data[['numero_de_cliente','foto_mes','clase_ternaria']+ features_finales]
 
-    #data.write_parquet(exp_folder+'data_x_final.parquet' , compression='gzip')
-    data.write_parquet(exp_folder+'data_x_final.parquet' )
-    joblib.dump( [ original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool], exp_folder+'acc_final.joblib')
-    
 
     return original_columns,original_columns_inta_mes,  data,  features_finales, feature_importance_df_ranking, feature_importance_df_bool, new_features
 
@@ -1680,53 +1658,43 @@ exp_folder = '/home/medina_robledo/buckets/b3/exp/escopeta_1'
 exp_folder = '/home/medina_robledo/buckets/b3/exp/escopeta_2/'
 exp_folder = '/home/medina_robledo/buckets/b2/exp/escopeta_2/'
 exp_folder = '/home/medina_robledo/buckets/b3/exp/escopeta_2/'
+exp_folder = '/home/medina_robledo/buckets/b3/exp/escopeta_3/'
+
+exp_folder = '/buckets/b3/exp/escopeta_3/'
 
 
+
+path_set_crudo = '/buckets/b3/exp/kaggle_0/competencia_01_crudo.csv'
+path_set_con_ternaria = '/buckets/b3/exp/kaggle_0/competencia_02.csv'
+exp_folder = '/buckets/b3/exp/kaggle_0/'
+
+ds()
 
 
 lag_flag, delta_lag_flag = True, True
 #original_columns, data_x,  top_15_feature_names , least_15_features, least_ampliado = create_data(last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
 #ds()
-#original_columns,original_columns_inta_mes,  data_x,  features_finales, feature_importance_df_ranking, feature_importance_df_bool, new_features =create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
+original_columns,original_columns_inta_mes,  data_x,  features_finales, feature_importance_df_ranking, feature_importance_df_bool, new_features =create_data(ganancia_acierto, last_date_to_consider, path_set_crudo, path_set_con_ternaria, N_top, N_least,  mes_train, mes_test , N_least_ampliado, N_bins,lag_flag, delta_lag_flag)
 
-#joblib.dump( [ original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool, new_features], exp_folder+ 'aacc1.joblib')
-#data_x.write_parquet(exp_folder+'data_x.parquet' )
-#ds()
-#data_x = pl.read_parquet(exp_folder+'data_x_w0_final.parquet')
-data_x = pl.read_parquet( '/home/medina_robledo/Documents/data_x_final.parquet')
-#data_x = pl.read_parquet( '/home/medina_robledo/buckets/b3/exp/escopeta_2/exp_escopeta_2_data_x_final.parquet')
+joblib.dump( [ original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool, new_features], exp_folder+ 'aacc1.joblib')
+
+data_x.write_parquet(exp_folder+'data_x_basico.parquet' )
 
 #original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool, new_features = joblib.load( exp_folder+ 'acc_final.joblib')
 original_columns,original_columns_inta_mes, features_finales, feature_importance_df_ranking, feature_importance_df_bool = joblib.load( exp_folder+ 'acc_final.joblib')
 
 
-#data_x= data
-#del(data)
-leaks=[]
-for col in data_x.columns:
-    if 'clase_peso'in col.lower():
-        leaks.append(col)
-
-
-
-
-penalty=0
-
 #exp_folder = '/home/reinaldo/7a310714-2a6d-44bd-bd76-c6a65540eb82/DMEF/exp/Python_optuna1/'
 #exp_folder = "~/buckets/b2/exp/comp2/"
 #nombre_exp_study = 'comp2_study_4_1.joblib'
-nombre_exp_study = 'study_MiniLGBM_3.joblib'
+nombre_exp_study = 'study_MiniLGBM.joblib'
 random_state=42
 cant_semillas_ensamble= 100
 cant_ensambples_ensamble= 10
 trains= [202004,202005,202006,202007,202008,202009,202010,202011,202012,202101,202102, 202103, 202104]
 final_train = [202006,202007,202008,202009,202010,202011,202012,202101,202102, 202103, 202104, 202105, 202106]
+final_train = [202006,202007,202008,202009,202010,202011,202012,202101,202102, 202103, 202104]
 
-
-#trains= [ 202103, 202104]
-#trains= [202011,202012,202101,202102, 202103, 202104]
-#trains= [202102, 202103, 202104]
-#final_train = [202006,202007,202008,202009,202010,202011,202012,202101,202102, 202103, 202104, 202105, 202106]
 
 params = {
       "boosting_type": "gbdt",  # Can also be 'dart', but not tested with random_forest
@@ -1744,201 +1712,233 @@ params = {
       "lambda_l2": 0.0,         # L2 regularization
       "max_bin": 31,            # Maximum number of bins
       #"num_iterations": 9999,   # Large number, controlled by early stopping
-      "bagging_fraction": 1.0,  # Fraction of data used for bagging
-      "pos_bagging_fraction": 1.0,  # Fraction of positive data used for bagging
-      "neg_bagging_fraction": 1.0,  # Fraction of negative data used for bagging
+      #"bagging_fraction": 1.0,  # Fraction of data used for bagging
+      #"pos_bagging_fraction": 1.0,  # Fraction of positive data used for bagging
+      #"neg_bagging_fraction": 1.0,  # Fraction of negative data used for bagging
       "is_unbalance": False,    # Do not balance the classes
       "scale_pos_weight": 1.0,  # Weighting for positive class
-      "drop_rate": 0.1,         # Drop rate for DART (if used)
-      "max_drop": 50,           # Maximum number of drops for DART
-      "skip_drop": 0.5,         # Probability of skipping a drop for DART
+      #"drop_rate": 0.1,         # Drop rate for DART (if used)
+      #"max_drop": 50,           # Maximum number of drops for DART
+      #"skip_drop": 0.5,         # Probability of skipping a drop for DART
       "extra_trees": False,     # Disable extra trees
   }
   
 
+
 #top_15_feature_names= features_finales[:50]
 top_15_feature_names= feature_importance_df_ranking['feature'][:50]
+import os
+from kaggle.api.kaggle_api_extended import KaggleApi
+import pandas as pd
+
+competition_name = 'dm-ey-f-2024-primera'  
+competition_name = 'dm-ey-f-2024-segunda'
+
+kaggle_mode = True
+def to_kaggle_file (n_envios, y_future, exp_folder , X_future) :
+    idx = np.argsort(y_future)[::-1]    
+    wt= y_future[idx[n_envios]]
+    w_final = np.where(y_future >= wt, 1, 0)
+    w_final_df = X_future[['numero_de_cliente']].copy()  # Use .copy() to avoid SettingWithCopyWarning
+    w_final_df['Predicted'] = w_final  # Add the predictions
+    submission_path = exp_folder + 'trial_' + str(trail_number)+'.csv'
+    w_final_df.to_csv( submission_path, index=False)
+    return submission_path
+
+
+
+def get_kaggle_score( submission_path, competition_name  ):
+    api = KaggleApi()
+    api.authenticate()
+    for i in range (0,5):
+        try:
+            #api.competitions_submissions_submit(blob_file_tokens, submission_description='tst api', id )
+            api.competition_submit(submission_path, message='submission X', competition=competition_name)
+            
+            #api.competitions_submissions_list(competition_name)
+            time.sleep(20)
+            for i in range (0,5):
+                try: 
+                    submissions = api.competition_submissions(competition=competition_name)
+                    latest_submission = submissions[0] 
+                    print("Submission ID:", latest_submission.ref)
+                    print("Score:", latest_submission.publicScore)
+                    print("Submission Status:", latest_submission.status)
+                    return float(latest_submission.publicScore)
+                except Exception as e:
+                    time.sleep(20)
+        except Exception as e:
+            time.sleep(60)
+            pass
+    return '5 tryes at kaggle'
 
 
 
 def objective(trial):
-    global best_result, best_predictions, penalty, top_15_feature_names, data,random_state, trains,mes_test
+    #global best_result, best_predictions, penalty, top_15_feature_names, data,random_state, trains,mes_test
     
     params['learning_rate'] = trial.suggest_float("learning_rate", 0.1, 0.7)   
-    params['feature_fraction'] = trial.suggest_float("feature_fraction", 0.1, 0.9)
+    params['feature_fraction'] = trial.suggest_float("feature_fraction", 0.3, 0.9)
     params['num_leaves'] = trial.suggest_int("num_leaves", 8, 2048)
-    params['min_data_in_leaf'] = trial.suggest_int("min_data_in_leaf",  1.5E-05, 0.002)  # Example of leaf size    
-    params['num_iterations'] = trial.suggest_int("num_iterations",  1, 50)  # Example of leaf size    
+    params['num_iterations'] = trial.suggest_int("num_iterations", 5, 50)
+    min_data_in_leaf = trial.suggest_int("min_data_in_leaf",  1.5E-05, 0.002)  # Example of leaf size    
     
+    params['neg_bagging_fraction'] = trial.suggest_float("neg_bagging_fraction", 0.03, 0.35)  # Example of leaf size    
+    params['pos_bagging_fraction'] = 1
+    params['bagging_fraction'] = trial.suggest_float("bagging_fraction", 0.1, 1)
     
+    n_envios = trial.suggest_int("n_envios",  8000, 16000)  # Example of leaf size   
   
     clase_peso_lgbm = trial.suggest_int('clase_peso_lgbm',2, ganancia_acierto+10000)   
-    cant_semillas_ensamble = trial.suggest_int('cant_semillas_ensamble',60, 400)   
+    cant_semillas_ensamble = trial.suggest_int('cant_semillas_ensamble',20, 200)   
 #    fraction = 0.1# trial.suggest_float('fraction', 0.01, 1)             
-    fraction  = trial.suggest_float('fracccion', 0.01, 0.2)   
-    cantidad_meses = trial.suggest_int('cantidad_meses', 1, 12)   
-    trial_number= trial.number
+    #fraction  = trial.suggest_float('fracccion', 0.01, 0.2)   
+    cantidad_meses = trial.suggest_int('cantidad_meses', 6, 12)   
+    trial_number = trial.number
+    if trial_number>60 :
+        params['max_bin']  = trial.suggest_int("max_bin",  31 , 255)  
     
     """ 
     params['learning_rate'] = 0.3
     params['feature_fraction'] = 0.8
     params['num_leaves'] = 7
-    params['min_data_in_leaf'] = 0.002
-    params['num_iterations'] = 10
+    min_data_in_leaf = 0.002
+    params['num_iterations'] = 5
+    params['num_iterations'] = 5
     clase_peso_lgbm =  ganancia_acierto+1000
-    cant_semillas_ensamble =20
+    cant_semillas_ensamble =5
 #    fraction = 0.1# trial.suggest_float('fraction', 0.01, 1)             
     fraction  = 0.25
-    cantidad_meses = 2
+    cantidad_meses = 1
     trial_number=0
+    params['max_bin'] = 255
     """
     
-    woriginal_columns = list( set(original_columns) -{'clase_ternaria'})    
-    
-    if trial_number>400:
-        feature_selection=[]
-        for  col in least_ampliado:
-            w_col = trial.suggest_categorical(col, [True, False])
-            if w_col:
-                feature_selection.append(col)            
-    else: 
-        feature_selection = woriginal_columns
-    
-        
-    columns = data_x.columns
-    final_selection=[]
-    for col in columns:
-        if any(orig_col.lower() in col.lower() for orig_col in feature_selection):
-            final_selection.append(col)
-          
-    
-    final_selection= list( set(final_selection))
-    
-    final_selection = set(final_selection).union({'clase_ternaria', 'foto_mes', 'clase_peso'}) 
-    final_selection = list( final_selection.union(top_15_feature_names) )
-    
-    
-    random_state+=     trial_number
+    random_state= trial_number
     trains = final_train[-cantidad_meses:]
     #train_for_predict= [wt +2 for wt in trains]
     random.seed(random_state)
     #random_numbers = [random.random() for _ in range(max_semillas)]
     random_numbers = np.random.randint(low=1, high=32767, size=cant_semillas_ensamble, dtype=np.int16).tolist()
+    final_selection= None
+    
+    
     res= []
-    start= time.time()
+    start= time.time()  
+    train_data, X_test, y_test = create_LGBM_dataset(final_selection, trains, mes_test, data_x, clase_peso_lgbm,params)
     for rnd in random_numbers:
+        
         print('trial', trial_number, ' ensamble n: ', random_numbers.index(rnd))
-        y_test_pred,test_data,y_test= exectue_model(final_selection,trains, mes_test, data_x, fraction, params,trial_number,feature_selection,rnd,clase_peso_lgbm)
+        params['bagging_seed'] = rnd
+        params['feature_fraction_seed'] = rnd+1
+        params['seed'] =   rnd+2
+        train_data, X_test, y_test = create_LGBM_dataset(final_selection, trains, mes_test, data_x, clase_peso_lgbm,params)
+        #params['data_random_seed'] =   rnd+3
+        
+        
+        y_test_pred =  exectue_model(  train_data, X_test , params, trial_number, min_data_in_leaf ,exp_folder,random_state)
         res.append( y_test_pred)
-        welapsed_time =  time.time() -start
-        welapsed_time= welapsed_time/60/60
-        if welapsed_time >3:
-            elapsed_time =  time.time() -start
-           
-            res =np.mean( res, axis=0)
-            #res0= lgb_gan_eval(res, test_data)[1]  
-            res0 = lgb_gan_eval(res, y_test)[1]  
-            return res0 ,elapsed_time  * cant_semillas_ensamble/random_numbers.index(rnd)#- len(feature_selection )*penalty, time
-            
+        if not kaggle_mode:
+            welapsed_time =  time.time() -start
+            welapsed_time= welapsed_time/60/60
+            if welapsed_time >1:
+                elapsed_time =  time.time() -start
+               
+                res =np.mean( res, axis=0)
+                #res0= lgb_gan_eval(res, test_data)[1]  
+                res0 = lgb_gan_eval(res, y_test)[1]  
+                return res0 ,elapsed_time  * cant_semillas_ensamble/random_numbers.index(rnd)#- len(feature_selection )*penalty, time
+                
     elapsed_time =  time.time() -start
    
     res =np.mean( res, axis=0)
     #res0= lgb_gan_eval(res, test_data)[1]  
+    if kaggle_mode:
+        submission_path = to_kaggle_file (n_envios, y_future, exp_folder , X_future) 
+        res0 = get_kaggle_score( submission_path, competition_name  )
+        return res0
+        
     res0 = lgb_gan_eval(res, y_test)[1]  
     return res0 ,elapsed_time #- len(feature_selection )*penalty, time
 
 
-
-#final_selection,trains, mes_test, data_x, fraction, params,trial_number,feature_selection = objective_params(mock_trial)    
-def exectue_model(final_selection,trains, mes_test, data_x, fraction, params, trial_number, feature_selection, random_state,clase_peso_lgbm):
-    #data_x['clase_peso'] = 1.0
+def create_LGBM_dataset(final_selection, trains, mes_test, data_x, clase_peso_lgbm,params):
+  
     data_x = data_x.with_columns( pl.lit(1.0).alias('clase_peso')  )
     data_x = data_x.with_columns(
         pl.when(pl.col('clase_ternaria') == 'BAJA+2').then(clase_peso_lgbm+0.00002)
         .when(pl.col('clase_ternaria') == 'BAJA+1').then(clase_peso_lgbm+0.00001)
         .otherwise(pl.col('clase_peso'))  # Keep the original value if no condition matches
         .alias('clase_peso')
-    )
+    )    
     
-    
-    global best_result, best_predictions, penalty,exp_folder, mode_recalc
-    data_x_selected= data_x[final_selection]
-    #df_train_3 = data_x_selected[data_x_selected['foto_mes'].isin(trains)]  
+    if type(final_selection) == list:
+        data_x_selected= data_x[final_selection]
+    else:
+        data_x_selected= data_x    
     df_train_3 = data_x_selected.filter(pl.col('foto_mes').is_in(trains))
-    #df_test = data_x_selected[data_x_selected['foto_mes'] == mes_test]    
-    df_test = data_x_selected.filter(pl.col('foto_mes') == mes_test)
-   
-    df_train_3= subsample_data_time_polars(df_train_3, fraction, 'CONTINUA', 'clase_ternaria', random_state)           
-    params['min_data_in_leaf'] = int( len(df_train_3)  * params['min_data_in_leaf'] )
-                                     
-    """
-    y_train = df_train_3["clase_ternaria"].map(lambda x: 0 if x == "CONTINUA" else 1)    
-    y_test = df_test["clase_ternaria"].map(lambda x: 0 if x == "CONTINUA" else 1)
     
-    w_train = df_train_3['clase_peso']
-    w_test = df_test['clase_peso']    
-    
-    X_train = df_train_3.drop(columns=['clase_ternaria', 'foto_mes', 'clase_peso'])    
-    X_test = df_test.drop(columns=['clase_ternaria', 'foto_mes', 'clase_peso'])  
-    """
-   
+       
     y_train = df_train_3.select(
         pl.when(pl.col("clase_ternaria") == "CONTINUA").then(0)
         .otherwise(1)
         .alias("y_train")
-    )
-    
-    y_test = df_test.select(
-        pl.when(pl.col("clase_ternaria") == "CONTINUA").then(0)
-        .otherwise(1)
-        .alias("y_test")
-    )
-    
-    # Extract weights
-    w_train = df_train_3['clase_peso']
-    w_test = df_test['clase_peso']
-    
-    # Drop specified columns for X_train and X_test
+    )        
+    w_train = df_train_3['clase_peso']       
     X_train = df_train_3.drop(['clase_ternaria', 'foto_mes', 'clase_peso'])
-    X_test = df_test.drop(['clase_ternaria', 'foto_mes', 'clase_peso'])
     
+    train_data = lgb.Dataset( X_train.to_pandas(),
+                         label=y_train.to_pandas(),
+                         weight=w_train.to_pandas(), params=params)
     
-    print( X_train.shape)
-    #X_train = subsample_data_time(X_train,  fraction, target_class='CONTINUA')
-    #X_pred = subsample_data_time(X_pred,  fraction, target_class='CONTINUA')  
+    print( X_train.shape)         
         
-    train_data = lgb.Dataset(X_train.to_pandas(),
-                          label=y_train.to_pandas(), # eligir la clase
-                          weight=w_train.to_pandas())
-    test_data = lgb.Dataset(X_test.to_pandas(),
-                          label=y_test.to_pandas(), # eligir la clase
-                          weight=w_test.to_pandas())
-    print(params)
-    params['seed'] =   random_state
-    model = lgb.train(params, train_data, feval=lgb_gan_eval)
-    y_test_pred = model.predict(X_test)
-    #res0= lgb_gan_eval(y_test_pred, test_data)[1]  
+    if type(mes_test) != None:
+        df_test = data_x_selected.filter(pl.col('foto_mes') == mes_test)
+        y_test = df_test.select(
+            pl.when(pl.col("clase_ternaria") == "CONTINUA").then(0)
+            .otherwise(1)
+            .alias("y_test")
+        )
+        w_test = df_test['clase_peso']
+        X_test = df_test.drop(['clase_ternaria', 'foto_mes', 'clase_peso'])
+        """
+        test_data = lgb.Dataset(X_test.to_pandas(),
+                              label=y_test.to_pandas(), # eligir la clase
+                              weight=w_test.to_pandas())"""
+        return train_data, X_test.to_pandas(), y_test.to_pandas()
+    else:
+        return train_data, X_train.to_pandas(), y_train.to_pandas()
+
+
+
+
+#final_selection,trains, mes_test, data_x, fraction, params,trial_number,feature_selection = objective_params(mock_trial)    
+def exectue_model(  train_data,X_test , params, trial_number, min_data_in_leaf ,exp_folder,random_state):  
     
+    params['min_data_in_leaf'] = int( len(train_data.get_label())  * min_data_in_leaf )                                  
+      
+    model = lgb.train(params, train_data, feval=lgb_gan_eval)
+    y_test_pred = model.predict(X_test)       
     file_path = os.path.join(exp_folder, 'comp_2_dict.joblib')
-  
+    
+    if trial_number==0:
+        res_dict = {}
+        res_dict[trial_number] = {}
+        res_dict[trial_number][random_state] = y_test_pred
+        joblib.dump(res_dict, file_path)           
     if os.path.exists(file_path):
         res_dict = joblib.load(file_path)
-        res_dict[trial_number] = y_test_pred
+        res_dict[trial_number][random_state] = y_test_pred
     else:
         res_dict = {}
-        res_dict[trial_number] = y_test_pred
-        joblib.dump(res_dict, file_path)
-        """
-    if trial_number>400:
-        df_future = data_x_selected.filter(pl.col('foto_mes') == test_future)
-        X_future = df_future.drop(['clase_ternaria', 'foto_mes', 'clase_peso'])
-        future_data = lgb.Dataset(X_future.to_pandas() )       
-        y_future = model.predict( future_data )"""
-       
-    return y_test_pred,test_data,y_test.to_pandas()
+        res_dict[trial_number] = {}
+        res_dict[trial_number][random_state] = y_test_pred
+        joblib.dump(res_dict, file_path)           
+    return y_test_pred
 
 
-
+ds()
 if os.path.exists(exp_folder+nombre_exp_study):
     study= joblib.load(exp_folder+nombre_exp_study )
 else: 
@@ -1948,7 +1948,7 @@ else:
 
 for i in range(0, 3000):
     #study.optimize(objective, n_trials=1)  # You can specify the number of trials
-    study.optimize(objective, n_trials=5, n_jobs=-1)
+    study.optimize(objective, n_trials=1, n_jobs=-1)
     joblib.dump( study, exp_folder+ nombre_exp_study)     
     
     
@@ -1958,4 +1958,17 @@ ds()
 #study = optuna.create_study(direction="maximize")
 optuna.visualization.plot_optimization_history(study).show(renderer="browser")
 #optuna.visualization.plot_intermediate_values(study).show(renderer="browser")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
