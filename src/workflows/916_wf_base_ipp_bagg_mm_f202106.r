@@ -18,8 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-# lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-envg$EXPENV$semilla_primigenia <- 799991
+envg$EXPENV$semilla_primigenia <- 990211 
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -261,25 +260,24 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
-TS_strategy_base8 <- function( pinputexps )
+TS_strategy_base6 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
-
-  param_local$future <- c(202108)
-
+  
+  param_local$future <- c(202106)
+  
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
-
-
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
+  param_local$final_train$training <- c(202104,202103, 202102, 202101, 202012,202011,202010,202009,202008,202007)
+  
+  
+  param_local$train$training <- c(202102, 202101, 202012,202011,202010,202009,202008,202007)
+  param_local$train$validation <- c(202103)
+  param_local$train$testing <- c(202104)
+  
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -330,35 +328,27 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    # bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    # neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
-    
-    
-    # # quantized me rompió 
-    # use_quantized_grad = TRUE, # enabling this will discretize (quantize) the gradients and hessians into bins
-    # num_grad_quant_bins =  4,
-    # quant_train_renew_leaf = TRUE,
 
     extra_trees = FALSE,
-    
     # Parte variable
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
-    
-    
+    num_leaves = c( 8L, 1000L,  "integer" ),
+    min_data_in_leaf = c( 100L, 15000L, "integer" ),
+    bagging_fraction = c(0.1, 0.5),
+    neg_bagging_fraction = c(0.1, 0.5)
   )
 
 
-  
   # iteraciones de la Optimizacion Bayesiana
   param_local$bo_iteraciones <- bo_iteraciones
 
@@ -404,34 +394,38 @@ SC_scoring <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
-# proceso KA_evaluate_kaggle
+# proceso EV_conclase  Baseline
 # deterministico, SIN random
 
-KA_evaluate_kaggle <- function( pinputexps )
+EV_evaluate_conclase_gan <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
+  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 273000
+  param_local$train$gan0 <-  -7000
+  param_local$train$meseta <- 2001
 
-  param_local$envios_desde <-   9000L
-  param_local$envios_hasta <-  13000L
-  param_local$envios_salto <-   500L
-  param_local$competition <- "dm-ey-f-2024-segunda"
+  # para graficar
+  param_local$graficar$envios_desde <-   8000L
+  param_local$graficar$envios_hasta <-  16000L
+  param_local$graficar$ventana_suavizado <- 2001L
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
 # Este es el  Workflow Baseline
-# Que predice 202108 donde NO conozco la clase
+# Que predice 202106 donde SI hay clase completa
 
-wf_base <- function( pnombrewf )
+wf_junio_ipp <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -441,7 +435,7 @@ wf_base <- function( pnombrewf )
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="pollo-parrillero")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
@@ -450,16 +444,16 @@ wf_base <- function( pnombrewf )
     mtry_ratio= 0.2
   )
 
-  # CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ts6 <- TS_strategy_base6()
+  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1,2,3), qsemillas=5 )
-  SC_scoring( c(fm, ts8) )
-  KA_evaluate_kaggle()  # genera archivos para Kaggle
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1,2,3), qsemillas=20 )
+  SC_scoring( c(fm, ts6) )
+  EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -467,6 +461,6 @@ wf_base <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-# llamo al workflow con future = 202108
-wf_base()
+# llamo al workflow con future = 202106
+wf_junio_ipp()
 
