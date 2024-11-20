@@ -2,14 +2,14 @@ require( "data.table" )
 
 #Especificar carpeta donde guarda el dataset los canarios asesinos.
 #Si va a ser la primer iteracion, especificar carpeta del dataset original
-setwd("~/buckets/b1/expw/CN-0011") # Establezco el Working Directory
+setwd("~/buckets/b1/expw/FEintra-0001") # Establezco el Working Directory
 
 #Nombre del dataset
 dataset <- fread("dataset.csv.gz")
 
 #Nombre de la carpeta donde se guardan la importancia de las variables. suele ser la del ultimo canario asesino
 #Si es primer iteración, correr un canario asesino que da el archivo con la importancia
-#setwd("~/buckets/b1/expw/CN-0014")
+setwd("~/buckets/b1/expw/CN-0017")
 
 #Nombre del archivo con las variables ordendas por importancia.
 impo_1 <- fread("impo_1.txt")
@@ -99,15 +99,11 @@ for (i in 1:length(variables_importantes)) {
 
 setwd("~/buckets/b1/datasets")
 
-
-## lightGBM sobre dataset nuevo
-
-
 # grabo las variables
 cat( "escritura de variables nuevas\n")
 cat( "Iniciando grabado de variables nuevas\n" )
 # Crea el nombre del archivo usando la iteración k
-nombre_archivo <- paste0("nuevas_variables_iter_", k, ".txt")
+nombre_archivo <- paste0("nuevas_variables_f202106_iter_", k, ".txt")
 
 # Guarda el archivo
 fwrite(nuevas_variables, file = nombre_archivo, logical01 = TRUE, sep = ",")
@@ -116,7 +112,7 @@ cat( "Finalizado grabado de nuevas variables\n" )
 # grabo el dataset
 cat( "escritura del dataset nuevo\n")
 cat( "Iniciando grabado del dataset nuevo\n" )
-nombre_dataset <- paste0("dataset_iter_", k, ".csv.gz")
+nombre_dataset <- paste0("dataset_iter_f202106_", k, ".csv.gz")
 
 # Guarda el archivo
 fwrite(dataset, file = nombre_dataset, logical01 = TRUE, sep = ",")
