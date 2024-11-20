@@ -22,31 +22,40 @@ options(error = function() {
 
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
-#  muy pronto esto se leera desde un archivo formato .yaml
+#  muy pronto esto se leerasi desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230"
+PARAM$experimento <- "PP7230V2"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
 PARAM$semilla_azar <- 103301 # Aqui poner su  primer  semilla
 
-
+# Corrección del drifting por deflación 
 PARAM$driftingcorreccion <- "ninguno"
+
 PARAM$clase_minoritaria <- c("BAJA+1","BAJA+2")
 
 # los meses en los que vamos a entrenar
 #  la magia estara en experimentar exhaustivamente
+#PARAM$trainingstrategy$testing <- c(202104)
+#PARAM$trainingstrategy$validation <- c(202103)
+#PARAM$trainingstrategy$training <- c(202102)
+## Cambiar la estrategia de entrenamiento
+PARAM$trainingstrategy$training <- c(202103)
 PARAM$trainingstrategy$testing <- c(202104)
-PARAM$trainingstrategy$validation <- c(202103)
-PARAM$trainingstrategy$training <- c(202102)
 
 
-PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
+
+#PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
+#PARAM$trainingstrategy$future <- c(202106)
+##cambiamos la estrategia
+PARAM$trainingstrategy$final_train <- c(202104)
 PARAM$trainingstrategy$future <- c(202106)
 
+
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 1.0
+PARAM$trainingstrategy$training_undersampling <- 0.25
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
@@ -260,10 +269,14 @@ tb_indices$foto_mes <- vfoto_mes
 
 tb_indices
 
-setwd("~/buckets/b1/") # Establezco el Working Directory
+#setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")# Establezco el Working Directory
+setwd("~/buckets/b1/exp/") 
 
 # cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(PARAM$input$dataset)
+
+## Elimino los campos cprestamos_personales y mprestamos_personales
+dataset[, c("cprestamos_personales", "mprestamos_personales") := NULL]
 
 
 
@@ -334,6 +347,15 @@ dataset[
 #  perdi el link a la tesis, NO es de mi autoria
 dataset[, mpayroll_sobre_edad := mpayroll / cliente_edad]
 
+# **Incorporación: Ratios Financieros**
+dataset[, ratio_payroll_saldo := mpayroll / (1 + mcuentas_saldo)]
+dataset[, ratio_visa_consumo := mtarjeta_visa_consumo / (1 + ctarjeta_visa)]
+dataset[, ratio_productos := cproductos / (1 + mpasivos_margen)]
+
+# **Incorporación: Interacciones entre Variables**
+dataset[, interaccion_transacciones := ctrx_quarter_normalizado * cproductos]
+dataset[, interaccion_margen := mactivos_margen * mpasivos_margen]
+dataset[, interaccion_saldo_payroll := mcuentas_saldo * mpayroll]
 
 # Por supuesto, usted puede COMENTARIAR todo lo que desee
 dataset[, vm_mfinanciacion_limite := rowSums(cbind(Master_mfinanciacion_limite, Visa_mfinanciacion_limite), na.rm = TRUE)]
@@ -439,6 +461,11 @@ for (vcol in cols_lagueables)
   dataset[, paste0(vcol, "_delta1") := get(vcol) - get(paste0(vcol, "_lag1"))]
 }
 
+# **Incorporación: Aceleración (Delta-Lags de Orden 2)**
+for (vcol in cols_lagueables) {
+  dataset[, paste0(vcol, "_delta2") := get(paste0(vcol, "_delta1")) - 
+            shift(get(paste0(vcol, "_delta1")), 1, type = "lag")]
+}
 
 # Training Strategy  ----------------------------------------------
 
@@ -446,9 +473,9 @@ dataset[, part_future := 0L ]
 dataset[ foto_mes %in% PARAM$trainingstrategy$future,
   part_future := 1L]
 
-dataset[, part_validation := 0L ]
-dataset[ foto_mes %in% PARAM$trainingstrategy$validation,
-  part_validation := 1L]
+#dataset[, part_validation := 0L ]
+#dataset[ foto_mes %in% PARAM$trainingstrategy$validation,
+#  part_validation := 1L]
 
 dataset[, part_testing := 0L ]
 dataset[ foto_mes %in% PARAM$trainingstrategy$testing,
