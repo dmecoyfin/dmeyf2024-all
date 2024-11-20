@@ -434,7 +434,7 @@ wf_junio_variables_evolutivas_prep_iter_1 <- function( pnombrewf )
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-#  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="rank_cero_fijo")
 #  FEhist_base()
 
 #  FErf_attributes_base( arbolitos= 20,
