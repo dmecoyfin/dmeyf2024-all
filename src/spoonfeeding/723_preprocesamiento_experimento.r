@@ -25,12 +25,12 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "PP7230_75_s3"
+PARAM$experimento <- "PP7230_replica"
 
 PARAM$input$dataset <- "./datasets/competencia_01.csv"
 
 # lugar para alternar semillas 799891, 799921, 799961, 799991, 800011
-PARAM$semilla_azar <- 799961 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 799891 # Aqui poner su  primer  semilla
 
 
 PARAM$driftingcorreccion <- "ninguno"
@@ -43,11 +43,11 @@ PARAM$trainingstrategy$validation <- c(202103)
 PARAM$trainingstrategy$training <- c(202102)
 
 # acá me tengo que meter si quiero hacer el loop
-PARAM$trainingstrategy$final_train <- c(202102, 202103, 202104)
+PARAM$trainingstrategy$final_train <- c(202104,202103,202102)
 PARAM$trainingstrategy$future <- c(202106)
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
-PARAM$trainingstrategy$training_undersampling <- 0.25
+PARAM$trainingstrategy$training_undersampling <- 1.0
 
 # esta aberracion fue creada a pedido de Joaquin Tschopp
 #  Publicamente Gustavo Denicolay NO se hace cargo de lo que suceda
@@ -341,6 +341,28 @@ dataset[
 dataset[, mpayroll_sobre_edad := mpayroll / cliente_edad]
 
 
+# En un mundo prolijo, estas variables se eliminan
+#  durante la creacion del dataset
+# https://www.youtube.com/watch?v=eitDnP0_83k
+dataset[, cprestamos_personales := NULL ]
+# dataset[, cprestamos_personales_lag1 := NULL ]
+# dataset[, cprestamos_personales_delta1 := NULL ]
+
+dataset[, mprestamos_personales := NULL ]
+# dataset[, mprestamos_personales_lag1 := NULL ]
+# dataset[, mprestamos_personales_delta1 := NULL ]
+
+dataset[, cplazo_fijo := NULL ]
+# dataset[, cplazo_fijo_lag1 := NULL ]
+# dataset[, cplazo_fijo_delta1 := NULL ]
+
+dataset[, ctarjeta_debito := NULL ]
+# dataset[, ctarjeta_debito_lag1 := NULL ]
+# dataset[, ctarjeta_debito_delta1 := NULL ]
+
+
+
+
 # Por supuesto, usted puede COMENTARIAR todo lo que desee
 dataset[, vm_mfinanciacion_limite := rowSums(cbind(Master_mfinanciacion_limite, Visa_mfinanciacion_limite), na.rm = TRUE)]
 dataset[, vm_Fvencimiento := pmin(Master_Fvencimiento, Visa_Fvencimiento, na.rm = TRUE)]
@@ -353,7 +375,7 @@ dataset[, vm_mconsumosdolares := rowSums(cbind(Master_mconsumosdolares, Visa_mco
 dataset[, vm_mlimitecompra := rowSums(cbind(Master_mlimitecompra, Visa_mlimitecompra), na.rm = TRUE)]
 dataset[, vm_madelantopesos := rowSums(cbind(Master_madelantopesos, Visa_madelantopesos), na.rm = TRUE)]
 dataset[, vm_madelantodolares := rowSums(cbind(Master_madelantodolares, Visa_madelantodolares), na.rm = TRUE)]
-dataset[, vm_fultimo_cierre := pmax(Master_fultimo_cierre, Visa_fultimo_cierre, na.rm = TRUE)]
+# dataset[, vm_fultimo_cierre := pmax(Master_fultimo_cierre, Visa_fultimo_cierre, na.rm = TRUE)]
 dataset[, vm_mpagado := rowSums(cbind(Master_mpagado, Visa_mpagado), na.rm = TRUE)]
 dataset[, vm_mpagospesos := rowSums(cbind(Master_mpagospesos, Visa_mpagospesos), na.rm = TRUE)]
 dataset[, vm_mpagosdolares := rowSums(cbind(Master_mpagosdolares, Visa_mpagosdolares), na.rm = TRUE)]
@@ -404,16 +426,17 @@ nans <- lapply(
   function(.name) dataset[, sum(is.nan(get(.name)))]
 )
 
-nans_qty <- sum(unlist(nans))
-if (nans_qty > 0) {
-  cat(
-    "ATENCION, hay", nans_qty,
-    "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n"
-  )
 
-  cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
-  dataset[mapply(is.nan, dataset)] <- 0
-}
+# nans_qty <- sum(unlist(nans))
+# if (nans_qty > 0) {
+#  cat(
+#    "ATENCION, hay", nans_qty,
+#    "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n"
+#  )
+#
+#  cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
+#  dataset[mapply(is.nan, dataset)] <- 0
+# }
 
 
 
