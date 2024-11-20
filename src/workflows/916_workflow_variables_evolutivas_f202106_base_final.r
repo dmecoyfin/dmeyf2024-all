@@ -435,24 +435,24 @@ wf_junio_variables_evolutivas_prep_iter_1 <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
-#  FEhist_base()
+  FEhist_base()
 
-#  FErf_attributes_base( arbolitos= 20,
-#    hojas_por_arbol= 16,
-#    datos_por_hoja= 1000,
-#    mtry_ratio= 0.2
-#  )
+  FErf_attributes_base( arbolitos= 20,
+    hojas_por_arbol= 16,
+    datos_por_hoja= 1000,
+    mtry_ratio= 0.2
+  )
 
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=2.0)
 
   # Etapas modelado
-#  ts6 <- TS_strategy_base6()
-#  ht <- HT_tuning_base( bo_iteraciones = 42 )  # iteraciones inteligentes
+  ts6 <- TS_strategy_base6()
+  ht <- HT_tuning_base( bo_iteraciones = 42 )  # iteraciones inteligentes
 
   # Etapas finales
-#  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20 )
-#  SC_scoring( c(fm, ts6) )
-#  EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=20 )
+  SC_scoring( c(fm, ts6) )
+  EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
   return( exp_wf_end() ) # linea workflow final fija
 }
