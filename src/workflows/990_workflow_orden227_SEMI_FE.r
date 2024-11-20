@@ -378,7 +378,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     lambda_l1 = 0.0, # lambda_l1 >= 0.0
     lambda_l2 = 0.0, # lambda_l2 >= 0.0
     #max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    max_bin = 91L, # lo debo dejar fijo, no participa de la BO
+    max_bin = 41, # lo debo dejar fijo, no participa de la BO
 
     num_iterations = 9999L, # un numero muy grande
     early_stopping_base = 200L,
@@ -503,8 +503,8 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts8), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 150,   # cantidad de semillas finales
-    repeticiones_exp = 4  # cantidad de repeticiones del semillerio
+    semillerio = 50,   # cantidad de semillas finales
+    repeticiones_exp = 7  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts8) )
