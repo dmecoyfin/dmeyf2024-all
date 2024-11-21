@@ -13,17 +13,17 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 102191   # aqui va SU semilla
-PARAM$dataset <- "~/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 500041   # aqui va SU semilla
+PARAM$dataset <- "~/Maestria/DMEyF/datasets/competencia_01.csv"
 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-setwd("~/buckets/b1")
+setwd("~/Maestria/DMEyF")
 
 # leo el dataset
-dataset <- fread(PARAM$dataset)
+dataset <- fread(PARAM$dataset) ###leer el dataframe
 
 
 # creo la carpeta donde va el experimento
@@ -37,10 +37,53 @@ setwd(paste0("./exp/", PARAM$experimento, "/"))
 # campos arbitrarios, solo como ejemplo
 # usted DEBE MANDARIAMENTE agregar más campos aqui
 # no permita que la pereza se apodere de su alma
-campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
-  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
-  "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado")
+campos_cluster <- c("mrentabilidad",
+                    "mrentabilidad_annual",
+                    "mcomisiones",
+                    "mactivos_margen",
+                    "mpasivos_margen",
+                    "mcuenta_corriente_adicional",
+                    "mcaja_ahorro",
+                    "mcaja_ahorro_adicional",
+                    "mcaja_ahorro_dolares",
+                    "mcuentas_saldo",
+                    "ctarjeta_debito_transacciones",
+                    "mautoservicio",
+                    "ctarjeta_visa",
+                    "ctarjeta_visa_transacciones",
+                    "mtarjeta_visa_consumo",
+                    "mtarjeta_master_consumo",
+                    "mprestamos_prendarios",
+                    "mprestamos_hipotecarios",
+                    "mplazo_fijo_dolares",
+                    "mplazo_fijo_pesos",
+                    "minversion1_pesos",
+                    "minversion2",
+                    "mpayroll",
+                    "mcuenta_debitos_automaticos",
+                    "mttarjeta_visa_debitos_automaticos",
+                    "mttarjeta_master_debitos_automaticos",
+                    "mpagodeservicios",
+                    "mpagomiscuentas",
+                    "mtarjeta_visa_descuentos",
+                    "mcomisiones_mantenimiento",
+                    "mforex_sell",
+                    "mtransferencias_recibidas",
+                    "mtransferencias_emitidas",
+                    "mcheques_depositados",
+                    "mcheques_depositados_rechazados",
+                    "mcheques_emitidos_rechazados",
+                    "chomebanking_transacciones",
+                    "matm_other",
+                    "ctrx_quarter",
+                    "Master_msaldototal",
+                    "Master_msaldopesos",
+                    "Master_msaldodolares",
+                    "Master_mconsumospesos",
+                    "Master_madelantopesos",
+                    "Master_mpagominimo",
+                    "Visa_mpagominimo"
+)
 
 
 # genero el dataset chico
@@ -50,7 +93,7 @@ dchico <- dataset[
   with=FALSE]
 
 # arreglo los valores NA
-dchico  <- na.roughfix( dchico )
+dchico  <- na.roughfix( dchico ) ###los valores faltantes se reemplazan por la media
 # no hace falta escalar
 
 # invoco a la distancia de Random Forest
@@ -61,27 +104,26 @@ set.seed(PARAM$semilla_primigenia)
 
 modelo <- randomForest( 
   x= dchico[, campos_cluster, with=FALSE ],
-  y= NULL,
+  y= NULL, ###para hacer un modelo no supervisado
   ntree= 1000, #se puede aumentar a 10000
-  proximity= TRUE,
-  oob.prox=  TRUE )
+  proximity= TRUE, ###matriz que tan cerca estan las observaciones de las otras
+  oob.prox=  TRUE ) ###las observaciones que no fueron usadas para entrenar los arboles
 
 # genero los clusters jerarquicos
 # distancia = 1.0 - proximidad
 hclust.rf <- hclust( 
-  as.dist ( 1.0 - modelo$proximity),
+  as.dist ( 1.0 - modelo$proximity), ###para colocar que lo más cercano es 0 y lo mas distante es 1
   method= "ward.D2" )
 
 
 # imprimo un pdf con la forma del cluster jerarquico
-
 pdf( "cluster_jerarquico.pdf" )
 plot( hclust.rf )
 dev.off()
 
 
 kclusters <- 5  # cantidad de clusters
-h <- 20
+h <- 20 ##altura inicial
 distintos <- 0
 
 while(  h>0  &  !( distintos >=kclusters & distintos <=kclusters ) )
@@ -127,7 +169,6 @@ muestra <- 0.1  # me voy a quedar con los menores a este valor
 
 # calculo la cantidad de campos
 n <- length(campos_cluster)
-
 
 # voy a graficar en escala logaritmica
 # cuidado con 
@@ -175,7 +216,7 @@ setorder( dwalkingdead, numero_de_cliente, -foto_mes )
 dwalkingdead[, periodo := - rowid(numero_de_cliente)]
 
 # ejemplo
-dwalkingdead[numero_de_cliente==1550236937, list( numero_de_cliente, foto_mes, periodo ) ]
+dwalkingdead[numero_de_cliente==249246268, list( numero_de_cliente, foto_mes, periodo ) ]
 
 
 # grafico la evolucion de cada < cluster, variable >  univariado ------
