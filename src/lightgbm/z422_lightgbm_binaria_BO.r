@@ -34,11 +34,11 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 500009
 PARAM$experimento <- "HT4220"
 
-PARAM$input$dataset <- "./datasets/competencia_01.csv"
-PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
+PARAM$input$dataset <- "./datasets/competencia_01_Lag.csv"
+PARAM$input$training <- c(202103) # los meses en los que vamos a entrenar
 
 # un undersampling de 0.1  toma solo el 10% de los CONTINUA
 # undersampling de 1.0  implica tomar TODOS los datos
@@ -211,7 +211,7 @@ EstimarGanancia_lightgbm <- function(x) {
 # Aqui empieza el programa
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/Maestria/DMEyF/") # Establezco el Working Directory
 
 
 # genero numeros primos

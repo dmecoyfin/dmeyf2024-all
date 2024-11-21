@@ -21,7 +21,7 @@ PARAM <- list()
 
 PARAM$dataset <- "./datasets/competencia_01.csv"
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 500009
 
 PARAM$minsplit <- 300
 PARAM$minbucket <- 20
@@ -55,7 +55,7 @@ particionar <- function(data, division, agrupa = "", campo = "fold",
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
 
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/Maestria/DMEyF/") # Establezco el Working Directory
 
 
 # cargo los datos
