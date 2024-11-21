@@ -37,7 +37,7 @@ PARAM <- list()
 
 PARAM$experimento <- "HT4740"
 
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 500009
 PARAM$dataset <- "./datasets/competencia_01.csv"
 PARAM$input$training <- c(202104) # los meses en los que vamos a entrenar
 
@@ -150,7 +150,7 @@ ranger_CrossValidation <- function(
     seq(qfolds), # 1 2 3 4 5
     MoreArgs = list(data, param),
     SIMPLIFY = FALSE,
-    mc.cores = detectCores()
+    mc.cores = 1
   ) # dejar esto en  1, porque ranger ya corre en paralelo
 
   data[, fold := NULL] # elimino el campo fold
@@ -197,7 +197,7 @@ EstimarGanancia_ranger <- function(x) {
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/Maestria/DMEyF/") # Establezco el Working Directory
 
 
 # cargo el dataset donde voy a entrenar el modelo
