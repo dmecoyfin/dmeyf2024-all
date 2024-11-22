@@ -25,7 +25,7 @@ PARAM <- list()
 PARAM$experimento <- "HT4480"
 
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
+PARAM$semilla_primigenia <- 101111
 
 PARAM$BO_iter <- 100 #cantidad de iteraciones de la Bayesian Optimization
 
@@ -143,7 +143,7 @@ ArbolesCrossValidation <- function(param_rpart, qfolds, pagrupa, semilla) {
     seq(qfolds), # 1 2 3 4 5
     MoreArgs = list(param_rpart),
     SIMPLIFY = FALSE,
-    mc.cores = detectCores()
+    mc.cores = 1
   )
 
   dataset[, fold := NULL]
@@ -197,11 +197,11 @@ EstimarGanancia <- function(x) {
 # Aqui empieza el programa
 
 # Establezco el Working Directory
-setwd("~/buckets/b1/")
+setwd("C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/buckets/b1/")
 
 
 # cargo los datos
-dataset <- fread("./datasets/competencia_01.csv")
+dataset <- fread("C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/datasets/competencia_01.csv")
 
 # trabajo, por ahora, solo con 202104
 dataset <- dataset[foto_mes==202104]
