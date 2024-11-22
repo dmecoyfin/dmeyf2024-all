@@ -607,7 +607,7 @@ cat( "Iniciando lectura del dataset\n" )
 dataset <- fread(envg$PARAM$dataset)
 cat( "Finalizada lectura del dataset\n" )
 
-dataset[, azar := NULL]
+
 
 # Verificaciones
 if (!("fold_train" %in% colnames(dataset))) {
