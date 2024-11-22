@@ -40,7 +40,7 @@ particionar <- function(
 # Aqui comienza el programa
 
 # Establezco el Working Directory, elija una carpeta de su 
-setwd("~/buckets/b1/")
+setwd("C:/Eugenio/Maestria/DMEyF")
 
 # cargo el dataset
 dataset <- fread("./datasets/competencia_01.csv")
@@ -48,7 +48,7 @@ dataset <- fread("./datasets/competencia_01.csv")
 # trabajo, por ahora, solo con 202104
 dataset <- dataset[foto_mes==202104]
 
-# particiono estratificadamente el dataset 70%, 30%
+# particiono estratificadamente el dataset 70%, 30% (agrega la columna fold donde indica a que particion pertenece cada fila)
 particionar(dataset,
   division = c(PARAM$training_pct, 100L -PARAM$training_pct), 
   agrupa = "clase_ternaria",
@@ -57,14 +57,11 @@ particionar(dataset,
 
 
 # genero el modelo
-# quiero predecir clase_ternaria a partir del resto
-# fold==1  es training,  el 70% de los datos
-modelo <- rpart("clase_ternaria ~ .",
-  data = dataset[fold == 1],
+modelo <- rpart("clase_ternaria ~ .", # quiero predecir clase_ternaria a partir del resto
+  data = dataset[fold == 1], # fold==1  es training,  el 70% de los datos
   xval = 0,
   control = PARAM$rpart # aqui van los parametros
 )
-
 
 # aplico el modelo a los datos de testing
 prediccion <- predict(modelo, # el modelo que genere recien
@@ -81,6 +78,8 @@ dataset[, ganancia := ifelse(clase_ternaria == "BAJA+2", 273000, -7000)]
 
 # para testing agrego la probabilidad
 dataset[fold == 2, prob_baja2 := prediccion[, "BAJA+2"]]
+
+unique(dataset[,.(fold,prob_baja2)]) # esta bueno lo de arriba porque data.table te permite filtrar y asignar a otra columna en la misma linea, en tidyverse creo que si o si tenes que hacer un if_else para asignarle NA al fold que no queres modificar
 
 # calculo la ganancia en testing  qu es fold==2
 ganancia_test <- dataset[fold == 2 & prob_baja2 > 0.025, sum(ganancia)]
