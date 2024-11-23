@@ -51,7 +51,7 @@ arch_future <- paste0("./", envg$PARAM$input[2], "/dataset_future.csv.gz")
 cat( "lectura dataset_future.csv.gz\n")
 dfuture <- fread(arch_future)
 
-campos_buenos <- setdiff(colnames(dfuture), c(envg$PARAM$dataset_metadata$clase, "clase01"))
+campos_buenos <- setdiff(colnames(dfuture), c(envg$PARAM$dataset_metadata$clase, "clase01","pesos"))
 
 if( file.exists( "tb_future_prediccion.txt" ) ){
   tb_future_prediccion <- fread( "tb_future_prediccion.txt" )
