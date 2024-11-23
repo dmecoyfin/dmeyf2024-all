@@ -375,7 +375,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2212_HT_lightgbm_SEMI.r"
+  param_local$meta$script <- "/src/wf-etapas/2212_HT_lightgbm_SEMI_estacionalidad.r"
 
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
@@ -446,7 +446,7 @@ FM_final_models_lightgbm_semillerio <- function( pinputexps, ranks, semillerio, 
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2302_FM_final_models_lightgbm_SEMI.r"
+  param_local$meta$script <- "/src/wf-etapas/2302_FM_final_models_lightgbm_SEMI_estacionalidad.r"
 
   # Que modelos quiero, segun su posicion en el ranking de la Bayesian Optimizacion, ordenado por metrica descendente
   param_local$modelos_rank <- ranks
@@ -472,7 +472,7 @@ SC_scoring_semillerio <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2402_SC_scoring_lightgbm_SEMI.r"
+  param_local$meta$script <- "/src/wf-etapas/2402_SC_scoring_lightgbm_SEMI_estacionalidad.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -512,16 +512,17 @@ wf_SEMI_ago_orden227_competencia2 <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_f202106_1.csv.gz")
 
   CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
-  FEintra_manual_propio()
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=2.0)
+#  FEintra_manual_base()
+#  DR_drifting_base(metodo="rank_cero_fijo")
+#  FEintra_manual_propio()
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=1.0, desvio=1.0)
-#  FEintra_manual_estacionalidad()
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=2.0)
+  FEintra_manual_estacionalidad()
 
   ts8 <- TS_strategy_base8()
 

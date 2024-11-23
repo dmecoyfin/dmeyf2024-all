@@ -41,9 +41,6 @@ AgregarVariables_IntraMes <- function(dataset) {
   gc(verbose= FALSE)
   # INICIO de la seccion donde se deben hacer cambios con variables nuevas
 
-  if( atributos_presentes( c("Master_Fvencimiento", "Visa_Fvencimiento") ))
-    dataset[, vm_Fvencimiento := pmin(Master_Fvencimiento, Visa_Fvencimiento, na.rm = TRUE)]
-
   # Aqui debe usted agregar sus propias nuevas variables
   # Crear la variable mpasivos_margen_lag1 como un lag de orden 1 de mpasivos_margen
 
@@ -56,77 +53,77 @@ AgregarVariables_IntraMes <- function(dataset) {
    if( atributos_presentes( c("vm_status01", "cpayroll_trx") ))
     dataset[, iter_1_var_644 := vm_status01 / cpayroll_trx]
 
-  if( atributos_presentes( c("cpayroll_trx", "ctarjeta_visa_transacciones") ))
-    dataset[, iter_1_var_69 := cpayroll_trx * ctarjeta_visa_transacciones]
+#  if( atributos_presentes( c("cpayroll_trx", "ctarjeta_visa_transacciones") ))
+#    dataset[, iter_1_var_69 := cpayroll_trx * ctarjeta_visa_transacciones]
 
-  if( atributos_presentes( c("cpayroll_trx", "ctarjeta_visa_transacciones") ))
-    dataset[, iter_1_var_285 := cpayroll_trx / ctarjeta_visa_transacciones]
+#  if( atributos_presentes( c("cpayroll_trx", "ctarjeta_visa_transacciones") ))
+#    dataset[, iter_1_var_285 := cpayroll_trx / ctarjeta_visa_transacciones]
 
-  if( atributos_presentes( c("cpayroll_trx", "vmr_mpagominimo") ))
-    dataset[, iter_1_var_288 := cpayroll_trx / vmr_mpagominimo]
+#  if( atributos_presentes( c("cpayroll_trx", "vmr_mpagominimo") ))
+#    dataset[, iter_1_var_288 := cpayroll_trx / vmr_mpagominimo]
 
-  if( atributos_presentes( c("cpayroll_trx", "vmr_mpagominimo") ))
-    dataset[, iter_1_var_15 := cpayroll_trx / vmr_mpagominimo]
+#  if( atributos_presentes( c("cpayroll_trx", "vmr_mpagominimo") ))
+#    dataset[, iter_1_var_15 := cpayroll_trx / vmr_mpagominimo]
 
-  if( atributos_presentes( c("vm_status01", "tcallcenter") ))
-    dataset[, iter_1_var_796 := rowSums(cbind(vm_status01, tcallcenter), na.rm = TRUE)]
+#  if( atributos_presentes( c("vm_status01", "tcallcenter") ))
+#    dataset[, iter_1_var_796 := rowSums(cbind(vm_status01, tcallcenter), na.rm = TRUE)]
 
-  if( atributos_presentes( c("ctrx_quarter_normalizado", "tcallcenter") ))
-    dataset[, iter_1_var_227 := ctrx_quarter_normalizado / tcallcenter]
+#  if( atributos_presentes( c("ctrx_quarter_normalizado", "tcallcenter") ))
+#    dataset[, iter_1_var_227 := ctrx_quarter_normalizado / tcallcenter]
 
-  if( atributos_presentes( c("vm_status01", "tcallcenter") ))
-    dataset[, iter_1_var_796 := rowSums(cbind(vm_status01, ctarjeta_visa_transacciones), na.rm = TRUE)]
+#  if( atributos_presentes( c("vm_status01", "tcallcenter") ))
+#   dataset[, iter_1_var_796 := rowSums(cbind(vm_status01, ctarjeta_visa_transacciones), na.rm = TRUE)]
   
-  if( atributos_presentes( c("ctrx_quarter_normalizado", "cliente_edad") ))
-    dataset[, iter_1_var_20 := ctrx_quarter_normalizado * cliente_edad]
+#  if( atributos_presentes( c("ctrx_quarter_normalizado", "cliente_edad") ))
+#    dataset[, iter_1_var_20 := ctrx_quarter_normalizado * cliente_edad]
 
-  if( atributos_presentes( c("ctarjeta_visa_transacciones", "tcallcenter") ))
-    dataset[, iter_1_var_227 := ctarjeta_visa_transacciones / tcallcenter]
+#  if( atributos_presentes( c("ctarjeta_visa_transacciones", "tcallcenter") ))
+#    dataset[, iter_1_var_227 := ctarjeta_visa_transacciones / tcallcenter]
 
-  if( atributos_presentes( c("ctrx_quarter_normalizado", "vmr_mpagominimo") ))
-    dataset[, iter_1_var_796 := rowSums(cbind(ctrx_quarter_normalizado, vmr_mpagominimo), na.rm = TRUE)]
+#  if( atributos_presentes( c("ctrx_quarter_normalizado", "vmr_mpagominimo") ))
+#    dataset[, iter_1_var_796 := rowSums(cbind(ctrx_quarter_normalizado, vmr_mpagominimo), na.rm = TRUE)]
 
-  if( atributos_presentes( c("cpayroll_trx", "vm_status01") ))
-    dataset[, iter_1_var_227 := cpayroll_trx / vm_status01]
+#  if( atributos_presentes( c("cpayroll_trx", "vm_status01") ))
+#    dataset[, iter_1_var_227 := cpayroll_trx / vm_status01]
 
-  if( atributos_presentes( c("tcallcenter", "vmr_mpagominimo") ))
-    dataset[, iter_1_var_548 := tcallcenter / vmr_mpagominimo]
+#  if( atributos_presentes( c("tcallcenter", "vmr_mpagominimo") ))
+#    dataset[, iter_1_var_548 := tcallcenter / vmr_mpagominimo]
 
-  if( atributos_presentes( c("ctrx_quarter_normalizado", "vmr_mpagominimo") ))
-    dataset[, iter_1_var_18 := ctrx_quarter_normalizado / vmr_mpagominimo]
+#  if( atributos_presentes( c("ctrx_quarter_normalizado", "vmr_mpagominimo") ))
+#    dataset[, iter_1_var_18 := ctrx_quarter_normalizado / vmr_mpagominimo]
 
-  if( atributos_presentes( c("vm_status01", "tcallcenter") ))
-    dataset[, iter_1_var_487 := vm_status01 / tcallcenter] 
+#  if( atributos_presentes( c("vm_status01", "tcallcenter") ))
+#    dataset[, iter_1_var_487 := vm_status01 / tcallcenter] 
 
-  if( atributos_presentes( c("cpayroll_trx", "vmr_mpagominimo") ))
-    dataset[, iter_1_var_796 := rowSums(cbind(cpayroll_trx, vmr_mpagominimo), na.rm = TRUE)]
+#  if( atributos_presentes( c("cpayroll_trx", "vmr_mpagominimo") ))
+#    dataset[, iter_1_var_796 := rowSums(cbind(cpayroll_trx, vmr_mpagominimo), na.rm = TRUE)]
 
-  if( atributos_presentes( c("ctrx_quarter_normalizado", "ctarjeta_visa_transacciones", "mpayroll_sobre_edad") ))
-    dataset[, iter_2_var_617 := rowSums(cbind(ctrx_quarter_normalizado, ctarjeta_visa_transacciones, mpayroll_sobre_edad), na.rm = TRUE)]
+#  if( atributos_presentes( c("ctrx_quarter_normalizado", "ctarjeta_visa_transacciones", "mpayroll_sobre_edad") ))
+#    dataset[, iter_2_var_617 := rowSums(cbind(ctrx_quarter_normalizado, ctarjeta_visa_transacciones, mpayroll_sobre_edad), na.rm = TRUE)]
 
-  if( atributos_presentes( c("ctrx_quarter", "ctarjeta_visa_transacciones", "cpayroll_trx", "vmr_mpagominimo") ))
-    dataset[, iter_2_var_667 := rowSums(cbind(ctrx_quarter, ctarjeta_visa_transacciones, cpayroll_trx / vmr_mpagominimo), na.rm = TRUE)]
+#  if( atributos_presentes( c("ctrx_quarter", "ctarjeta_visa_transacciones", "cpayroll_trx", "vmr_mpagominimo") ))
+#    dataset[, iter_2_var_667 := rowSums(cbind(ctrx_quarter, ctarjeta_visa_transacciones, cpayroll_trx / vmr_mpagominimo), na.rm = TRUE)]
 
-   if( atributos_presentes( c("mprestamos_personales_rank", "mcaja_ahorro_rank") ))
-    dataset[, iter_2_var_669 := rowSums(cbind(mprestamos_personales_rank, mcaja_ahorro_rank), na.rm = TRUE)]
+#   if( atributos_presentes( c("mprestamos_personales_rank", "mcaja_ahorro_rank") ))
+#    dataset[, iter_2_var_669 := rowSums(cbind(mprestamos_personales_rank, mcaja_ahorro_rank), na.rm = TRUE)]
 
-  if( atributos_presentes( c("mprestamos_personales_rank", "mpasivos_margen_rank") ))
-    dataset[, iter_2_var_674 := rowSums(cbind(mprestamos_personales_rank, mpasivos_margen_rank), na.rm = TRUE)]
+#  if( atributos_presentes( c("mprestamos_personales_rank", "mpasivos_margen_rank") ))
+#    dataset[, iter_2_var_674 := rowSums(cbind(mprestamos_personales_rank, mpasivos_margen_rank), na.rm = TRUE)]
 
-  if( atributos_presentes( c("mtarjeta_visa_consumo_rank", "mcuenta_debitos_automaticos_rank") ))
-    dataset[, iter_2_var_774 := rowSums(cbind(mtarjeta_visa_consumo_rank, mcuenta_debitos_automaticos_rank), na.rm = TRUE)]
+#  if( atributos_presentes( c("mtarjeta_visa_consumo_rank", "mcuenta_debitos_automaticos_rank") ))
+#    dataset[, iter_2_var_774 := rowSums(cbind(mtarjeta_visa_consumo_rank, mcuenta_debitos_automaticos_rank), na.rm = TRUE)]
 
-  if( atributos_presentes( c("mprestamos_personales_rank", "mrentabilidad_annual_rank") ))
-    dataset[, iter_2_var_673 := rowSums(cbind(mprestamos_personales_rank, mrentabilidad_annual_rank), na.rm = TRUE)]
+#  if( atributos_presentes( c("mprestamos_personales_rank", "mrentabilidad_annual_rank") ))
+#    dataset[, iter_2_var_673 := rowSums(cbind(mprestamos_personales_rank, mrentabilidad_annual_rank), na.rm = TRUE)]
 
-  if( atributos_presentes( c("mcaja_ahorro_rank", "cpayroll_trx", "ctarjeta_visa_transacciones") ))
-    dataset[, iter_2_var_83 := mcaja_ahorro_rank * cpayroll_trx * ctarjeta_visa_transacciones]
+#  if( atributos_presentes( c("mcaja_ahorro_rank", "cpayroll_trx", "ctarjeta_visa_transacciones") ))
+#    dataset[, iter_2_var_83 := mcaja_ahorro_rank * cpayroll_trx * ctarjeta_visa_transacciones]
 
-  if( atributos_presentes( c("mcuenta_corriente_rank", "mtarjeta_visa_consumo_rank") ))
-    dataset[, iter_2_var_481 := mcuenta_corriente_rank / mtarjeta_visa_consumo_rank ]
+#  if( atributos_presentes( c("mcuenta_corriente_rank", "mtarjeta_visa_consumo_rank") ))
+#    dataset[, iter_2_var_481 := mcuenta_corriente_rank / mtarjeta_visa_consumo_rank ]
 
-  if( atributos_presentes( c("mcaja_ahorro_rank", "cpayroll_trx", "vmr_mpagominimo") ))
-    dataset[, iter_2_var_78 := rowSums(cbind(cpayroll_trx, vmr_mpagominimo), na.rm = TRUE) * mcaja_ahorro_rank]
+#  if( atributos_presentes( c("mcaja_ahorro_rank", "cpayroll_trx", "vmr_mpagominimo") ))
+#    dataset[, iter_2_var_78 := rowSums(cbind(cpayroll_trx, vmr_mpagominimo), na.rm = TRUE) * mcaja_ahorro_rank]
 
 
 
