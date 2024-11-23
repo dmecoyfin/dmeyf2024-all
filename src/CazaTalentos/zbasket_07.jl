@@ -3,7 +3,7 @@
 # si hay un empate ( dos máximos) se queda con la que esta primera en el vector
 using Random
 
-Random.seed!(102191)
+Random.seed!(113149)
 
 function ftirar(prob, qty)
   return   sum( rand() < prob for i in 1:qty )
@@ -31,4 +31,3 @@ for tiros_libres in [ 10, 20, 50, 100, 200, 300, 400, 415, 500, 600, 700, 1000 ]
 
   println( tiros_libres,  "\t", ultima_ganadora/10000 )
 end
-
