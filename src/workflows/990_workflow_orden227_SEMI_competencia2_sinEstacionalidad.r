@@ -520,7 +520,7 @@ wf_SEMI_ago_orden227_competencia2 <- function( pnombrewf )
   FEintra_manual_propio()
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=1.0, desvio=1.0)
+#  CN_canaritos_asesinos_base(ratio=1.0, desvio=1.0)
 #  FEintra_manual_estacionalidad()
 
   ts8 <- TS_strategy_base8()
