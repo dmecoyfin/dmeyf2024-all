@@ -183,7 +183,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 25,
+    num_iterations = 20,
     num_leaves  = 16,
     min_data_in_leaf = 1000,
     feature_fraction_bynode  = 0.2,
@@ -481,7 +481,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_SinBAJA1.csv.gz")
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
