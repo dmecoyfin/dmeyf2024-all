@@ -280,7 +280,7 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   #param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+    #202103, 202102, 202101)
   #23/11/24 SE AGREGAN 24 MESES
   param_local$final_train$training <- c(202106, 202105, 202104,
     202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
