@@ -522,7 +522,7 @@ wf_compe2b <- function( pnombrewf )
   FEhist_base()
   ultimo <- FErf_attributes_base()
   CN_canaritos_asesinos_base(ratio=0.2, desvio=2.0)
-  FEintra_manual_estacionalidad()
+  #FEintra_manual_estacionalidad()
 
   ts8 <- TS_strategy_base8()
 
