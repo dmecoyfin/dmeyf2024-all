@@ -79,7 +79,7 @@ dataset <- fread(arch_dataset)
 envg$PARAM$dataset_metadata <- read_yaml( paste0( "./", envg$PARAM$input[2], "/dataset_metadata.yml" ) )
 
 
-campos_buenos <- setdiff(colnames(dataset), c(envg$PARAM$dataset_metadata$clase, "clase01"))
+campos_buenos <- setdiff(colnames(dataset), c(envg$PARAM$dataset_metadata$clase, "clase01","pesos"))
 
 dataset[ , clase01 := 
   ifelse( get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 1, 0 ) ]
@@ -122,7 +122,8 @@ for (modelo_rank in envg$PARAM$modelos_rank) {
   dtrain <- lgb.Dataset(
     data = data.matrix(dataset[, campos_buenos, with = FALSE]),
     label = dataset[, clase01],
-    free_raw_data = FALSE
+    free_raw_data = FALSE,
+    weight = dataset[, pesos]
   )
 
   ganancia <- parametros$ganancia
