@@ -644,7 +644,7 @@ dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_va
 cat( "creacion campos_buenos\n")
 campos_buenos <- setdiff(
   copy(colnames(dataset)),
-  c("clase01", envg$PARAM$dataset_metadata$clase, "fold_train", "fold_validate", "fold_test")
+  c("clase01", envg$PARAM$dataset_metadata$clase, "fold_train", "fold_validate", "fold_test","pesos")
 )
 
 # la particion de train siempre va
@@ -652,10 +652,7 @@ cat( "creacion dtrain\n")
 dtrain <- lgb.Dataset(
   data = data.matrix(dataset[fold_train == 1, campos_buenos, with = FALSE]),
   label = dataset[fold_train == 1, clase01],
-  weight = dataset[
-    fold_train == 1,
-    ifelse(get(envg$PARAM$dataset_metadata$clase) %in%  envg$PARAM$train$positivos, 1.0000001, 1.0 )
-  ],
+  weight = dataset[fold_train == 1, pesos],
   free_raw_data = FALSE
 )
 

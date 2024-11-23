@@ -418,7 +418,7 @@ FM_final_models_lightgbm_semillerio <- function( pinputexps, ranks, semillerio, 
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2302_FM_final_models_lightgbm_SEMI.r"
+  param_local$meta$script <- "/src/wf-etapas/2302_FM_final_models_lightgbm_SEMI-exp.r"
 
   # Que modelos quiero, segun su posicion en el ranking de la Bayesian Optimizacion, ordenado por metrica descendente
   param_local$modelos_rank <- ranks
