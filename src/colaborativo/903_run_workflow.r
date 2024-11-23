@@ -1,7 +1,7 @@
-require("rlang")
+require("rlang", quietly=TRUE) 
 
 # workflow que voy a correr
-PARAM <- "src/workflows/z990_workflow_orden227_new.r"
+PARAM <- "src/workflows/918_workflow_base_f202108.r"
 
 envg <- env()
 
@@ -23,7 +23,7 @@ correr_workflow <- function( wf_scriptname )
       envg$EXPENV$repo_dir,
       wf_scriptname,
       "   ",
-      wf_scriptname,
+      wf_scriptname, 
      "\n",
      "deactivate\n"
     )
