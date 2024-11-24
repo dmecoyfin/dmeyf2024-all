@@ -147,18 +147,18 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$minimo <- TRUE
   param_local$Tendencias1$maximo <- TRUE
   param_local$Tendencias1$promedio <- TRUE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
   
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- TRUE
-  param_local$Tendencias2$ventana <- 4
+  param_local$Tendencias2$ventana <- 6
   param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- TRUE
   param_local$Tendencias2$maximo <- TRUE
   param_local$Tendencias2$promedio <- TRUE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$ratioavg <- TRUE
+  param_local$Tendencias2$ratiomax <- TRUE
   
   param_local$semilla <- NULL # no usa semilla, es deterministico
   
@@ -183,7 +183,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 25,
+    num_iterations = 20,
     num_leaves  = 16,
     min_data_in_leaf = 1000,
     feature_fraction_bynode  = 0.2,
@@ -273,16 +273,16 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202106, 202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
+    #202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
-    202005, 
+    # 202005, 
     #202004, 202003,  Excluyo exp colaborativos
-    202002, 202001,
-    201912, 201911,
+    #202002, 202001,
+    201912, 201911, 201910,
     # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906,
+    201909, 201908, 201907, 201906, 201905,
     # 201905  Excluyo por variables rotas
-    201904, 201903
+    201904, 201903,201902,201901
   )
   
   
@@ -291,16 +291,16 @@ TS_strategy_base8 <- function( pinputexps )
   
   param_local$train$training <- c(
     202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
+    #202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
-    202005, 
+    #202005, 
     #202004, 202003,  Excluyo por experimento colaborativo
-    202002, 202001,
-    201912, 201911,
+    #202002, 202001,
+    201912, 201911, 201910,
     # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906,
+    201909, 201908, 201907, 201906, 201905,
     # 201905  Excluyo por variables rotas
-    201904, 201903
+    201904, 201903, 201902,201901
   )
   
   
@@ -453,19 +453,19 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_SEMI_colab_789101_01 <- function( pnombrewf )
+wf_SEMI_colab_filtrado_789101_02 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
   
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/segunda_competencia_sin_baja1.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_filtrado_sin_vida_corta.csv.gz")
   
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=1, desvio=0)
+  #CN_canaritos_asesinos_base(ratio=1, desvio=0.2)
   
   ts8 <- TS_strategy_base8()
   
@@ -492,6 +492,7 @@ wf_SEMI_colab_789101_01 <- function( pnombrewf )
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
-#CANARITOS, LAGS1-2, TENDENCIAS 2-4, SIN BAJA+1, EXCLUYO MESES FEOS
+#sin CANARITOS, LAGS1-2, TENDENCIAS 2-4, SIN BAJA+1, EXCLUYO MESES FEOS
 # llamo al workflow con future = 202108
-wf_SEMI_colab_789101_01 ()
+#saco 2020
+wf_SEMI_colab_filtrado_789101_02 ()
