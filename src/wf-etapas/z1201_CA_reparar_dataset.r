@@ -211,7 +211,7 @@ dataset <- fread(envg$PARAM$dataset)
 cat( "Finalizada lectura del dataset\n" )
 
 
-# elimino varaibles 
+# elimino variables 
 
 for( atributo in  envg$PARAM$atributos_eliminar ){
   eliminar_atributo(  atributo )
