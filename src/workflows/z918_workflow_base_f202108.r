@@ -433,7 +433,7 @@ wf_agosto <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
+  FErf_attributes_base( arbolitos= 25,
     hojas_por_arbol= 16,
     datos_por_hoja= 1000,
     mtry_ratio= 0.2
