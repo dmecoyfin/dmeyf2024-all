@@ -138,31 +138,41 @@ FEhist_base <- function( pinputexps)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
+  param_local$meta$script <- "/src/wf-etapas/1501_FE_historia_tend3.r"
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$minimo <- TRUE
+  param_local$Tendencias1$maximo <- TRUE
+  param_local$Tendencias1$promedio <- TRUE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$minimo <- TRUE
+  param_local$Tendencias2$maximo <- TRUE
+  param_local$Tendencias2$promedio <- TRUE
+  param_local$Tendencias2$ratioavg <- TRUE
+  param_local$Tendencias2$ratiomax <- TRUE
+  
+  # no me engraso las manos con las tendencias de segundo orden
+  param_local$Tendencias3$run <- TRUE
+  param_local$Tendencias3$ventana <- 3
+  param_local$Tendencias3$tendencia <- TRUE
+  param_local$Tendencias3$minimo <- TRUE
+  param_local$Tendencias3$maximo <- TRUE
+  param_local$Tendencias3$promedio <- TRUE
+  param_local$Tendencias3$ratioavg <- TRUE
+  param_local$Tendencias3$ratiomax <- TRUE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -195,7 +205,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
     # para que LightGBM emule Random Forest
     boosting = "rf",
     bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
-    bagging_freq = 1.0,
+    bagging_freq = 3.0, ##MODIFICADO
     feature_fraction = 1.0,
 
     # genericos de LightGBM
@@ -213,8 +223,8 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
     lambda_l2 = 0.0,
 
     pos_bagging_fraction = 1.0,
-    neg_bagging_fraction = 1.0,
-    is_unbalance = FALSE,
+    neg_bagging_fraction = 0.6, ##MODIFICADO
+    is_unbalance = TRUE,  ###MODIFICADO
     scale_pos_weight = 1.0,
 
     drop_rate = 0.1,
@@ -386,10 +396,10 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     num_iterations = 9999L, # un numero muy grande
     early_stopping_base = 200L,
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    bagging_fraction = 0.6, # 0.0 < bagging_fraction <= 1.0  #MODIFICADO
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-    is_unbalance = FALSE, #
+    neg_bagging_fraction = 0.6, # 0.0 < neg_bagging_fraction <= 1.0 #MODIFICADO
+    is_unbalance = TRUE, ##MODIFICADO
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
@@ -492,7 +502,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   DR_drifting_base(metodo="deflacion")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.3, desvio=0.0)
 
   ts8 <- TS_strategy_base8()
 
