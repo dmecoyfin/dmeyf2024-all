@@ -1,5 +1,3 @@
-# para correr el Google Cloud
-
 # limpio la memoria
 rm(list = ls()) # remove all objects
 gc() # garbage collection
@@ -12,9 +10,9 @@ require("lightgbm")
 PARAM <- list()
 PARAM$experimento <- "KA4210"
 
-PARAM$semilla_primigenia <- 999959
+PARAM$semilla_primigenia <- 750317
 
-
+#Cambiar ruta
 PARAM$input$dataset <- "C:/Users/glova/OneDrive/Documentos/EyF/Video09212024/competencia_01.csv"
 PARAM$input$training <- c(202104) # meses donde se entrena el modelo
 PARAM$input$future <- c(202106) # meses donde se aplica el modelo
@@ -31,6 +29,7 @@ PARAM$finalmodel$max_bin <- 31
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
+# Cambiar ruta
 # Aqui empieza el programa
 setwd("C:/Users/glova/OneDrive/Documentos/EyF/buckets/b13")
 
