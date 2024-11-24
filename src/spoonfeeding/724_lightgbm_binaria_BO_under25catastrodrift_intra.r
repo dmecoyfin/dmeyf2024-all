@@ -278,7 +278,7 @@ action_limitar_memoria( 4 )
 setwd("~/buckets/b1/exp/") # Establezco el Working Directory
 
 # cargo el dataset donde voy a entrenar el modelo
-dataset <- fread(paste0(PARAM$experimento_data,"/dataset_enorme.csv.gz"))
+dataset <- fread(paste0(PARAM$experimento_data,"/dataset.csv.gz"))
 
 
 # creo la carpeta donde va el experimento
