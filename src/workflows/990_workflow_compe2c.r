@@ -13,13 +13,13 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expwSEMI/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flowSEMI/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw227/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow227/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 903761
+envg$EXPENV$semilla_primigenia <- 113311
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
