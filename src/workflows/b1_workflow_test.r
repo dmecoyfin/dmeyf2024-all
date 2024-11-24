@@ -151,9 +151,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -296,7 +296,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$future <- c(202108)
 
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 0.2
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202106, 202105, 202104, 202103, 202102, 202101, 
@@ -329,7 +329,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -488,14 +488,14 @@ wf_SEMI_ago_b1 <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #CN_canaritos_asesinos_base(ratio=0.2, desvio=0)
 
   ts8 <- TS_strategy_base8()
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
     semillerio = 50, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 10  # iteraciones inteligentes, apenas 10
+    bo_iteraciones = 40  # iteraciones inteligentes
   )
 
 
