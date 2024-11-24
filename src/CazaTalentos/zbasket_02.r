@@ -1,6 +1,4 @@
-
-
-set.seed( 102191 )
+set.seed( 113149 )
 
 # calcula cuantos encestes logra una jugadora con indice de enceste prob
 # haciendo qyt tiros libres
