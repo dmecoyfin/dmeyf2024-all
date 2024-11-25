@@ -1,4 +1,4 @@
-# Corrida general del Workflow Semillerio 990_workflow_compe2d
+# Corrida general del Workflow Semillerio 
 # Orden 227 : Ni un paso atras
 
 # limpio la memoria
@@ -476,12 +476,12 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_competencia2d <- function( pnombrewf )
+wf_competencia2e <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_iter_f202106_1.csv.gz")
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
@@ -517,4 +517,4 @@ wf_competencia2d <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_competencia2d()
+wf_competencia2e()
