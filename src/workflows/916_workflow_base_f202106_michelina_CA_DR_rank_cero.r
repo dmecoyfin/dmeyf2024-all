@@ -432,9 +432,9 @@ wf_junio <- function( pnombrewf )
   DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
 
   # Etapas preprocesamiento
-#  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MachineLearning")
 #  FEintra_manual_base()
-#  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="rank_cero_fijo")
 #  FEhist_base()
 
 #  FErf_attributes_base( arbolitos= 20,
