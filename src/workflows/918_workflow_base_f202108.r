@@ -275,28 +275,43 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202108)
-
-  param_local$final_train$undersampling <- 1.0
+  #param_local$future <- c(202108)
+  #27/11 competencia 3
+  param_local$future <- c(202109)
+  param_local$final_train$undersampling <- 0.2
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   #param_local$final_train$training <- c(202106, 202105, 202104,
     #202103, 202102, 202101)
   #23/11/24 SE AGREGAN 24 MESES
-  param_local$final_train$training <- c(202106, 202105, 202104,
+  #param_local$final_train$training <- c(202106, 202105, 202104,
+   # 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
+    #202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
+    #201911, 201910, 201909, 201908, 201907)
+  #27/11/24 se agrega 04/21 para la competencia 3
+  param_local$final_train$training <- c(202107, 202106, 202105, 202104,
     202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
     202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
     201911, 201910, 201909, 201908, 201907)
-
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
-
+  
+  #param_local$train$training <- c(202104, 202103, 202102,
+   # 202101, 202012, 202011)
+  #27/11 competencia 3, agrego 202105 y otros meses
+  param_local$train$training <- c(202105, 202104, 202103, 202102,
+    202101, 202012, 202011,202010, 202009, 202008,
+    202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
+    201911, 201910, 201909, 201908, 201907, 201906 )
+  #param_local$train$validation <- c(202105)
+  #27/11 competencia 3
+  param_local$train$validation <- c(202106)
+  #param_local$train$testing <- c(202106)
+  #27/11 competencia 3
+  param_local$train$testing <- c(202107)
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
   #param_local$train$undersampling <- 0.2
-  #23/11/24 NO APLICO UNDERSAMPLING
-  param_local$train$undersampling <- 1.0
+  #23/11/24 NO APLICO UNDERSAMPLING, lo cambio a 1
+  #27/11 cambio para usasr undersampling
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -423,7 +438,8 @@ KA_evaluate_kaggle <- function( pinputexps )
   param_local$envios_desde <-   9000L
   param_local$envios_hasta <-  13000L
   param_local$envios_salto <-   500L
-  param_local$competition <- "dm-ey-f-2024-segunda"
+  #27/11/2024 cambio por tercera competencia
+  param_local$competition <- "dm-ey-f-2024-tercera"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -439,7 +455,9 @@ wf_agosto <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  #27/11/24 cambio por competencia 03
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03.csv.gz")
+  #DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
   #cambio 21/11/24
   #DT_incorporar_dataset( "~/buckets/b1/datasets/competencia02FS.csv.gz")
   # Etapas preprocesamiento
@@ -460,8 +478,9 @@ wf_agosto <- function( pnombrewf )
   ts8 <- TS_strategy_base8()
   #ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
   #23/11/24 CAMBIO LA CANTIDAD DE ITERACIONES POR 60
-  ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
-
+  #ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
+  #27/11 Cambio por 80
+  ht <- HT_tuning_base( bo_iteraciones = 80 )  # iteraciones inteligentes
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
