@@ -1,0 +1,77 @@
+import polars as pl
+
+dataset = pl.read_csv("competencia_01_crudo.csv", infer_schema_length=10000)
+
+
+dsimple = dataset.select(
+    [
+        "numero_de_cliente",
+        ((pl.col("foto_mes") // 100) * 12 + pl.col("foto_mes") % 100).alias("periodo0"),
+        pl.arange(0, dataset.height, step=1).alias("pos"),
+    ]
+)
+
+
+dsimple = dsimple.sort("numero_de_cliente", "periodo0")
+
+
+# calculo topes
+periodo_ultimo = dsimple.select(pl.max("periodo0"))
+periodo_anteultimo = periodo_ultimo - 1
+
+
+dsimple = dsimple.select(
+    [
+        pl.all(),
+        pl.col("periodo0").shift(-1).over("numero_de_cliente").alias("periodo1"),
+        pl.col("periodo0").shift(-2).over("numero_de_cliente").alias("periodo2"),
+    ]
+)
+
+
+# assign most common class values = "CONTINUA"
+dsimple = dsimple.with_columns(
+    pl.when(pl.col("periodo0") < periodo_anteultimo)
+    .then(pl.lit("CONTINUA"))
+    .alias("clase_ternaria")
+)
+
+
+dsimple = dsimple.with_columns(
+    pl.when(
+        (pl.col("periodo0") < periodo_ultimo)
+        & (
+            pl.col("periodo1").is_null()
+            | ((pl.col("periodo0") + 1) < pl.col("periodo1"))
+        )
+    )
+    .then(pl.lit("BAJA+1"))
+    .otherwise(pl.col("clase_ternaria"))
+    .alias("clase_ternaria")
+)
+
+
+dsimple = dsimple.with_columns(
+    pl.when(
+        (pl.col("periodo0") < periodo_anteultimo)
+        & ((pl.col("periodo0") + 1) == pl.col("periodo1"))
+        & (
+            pl.col("periodo2").is_null()
+            | ((pl.col("periodo0") + 2) < pl.col("periodo2"))
+        )
+    )
+    .then(pl.lit("BAJA+2"))
+    .otherwise(pl.col("clase_ternaria"))
+    .alias("clase_ternaria")
+)
+
+
+dsimple.filter(pl.col("clase_ternaria") == "BAJA+1").count()
+dsimple.filter(pl.col("clase_ternaria") == "BAJA+2").count()
+
+
+# pego el resultado en el dataset original y grabo
+dsimple = dsimple.sort("pos")
+dataset = dataset.with_columns([dsimple["clase_ternaria"]])
+
+dataset.write_csv("competencia_01_polars.csv", separator=",")

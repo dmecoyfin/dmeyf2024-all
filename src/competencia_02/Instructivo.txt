@@ -1,0 +1,8 @@
+Se adjunta en esta misma carpeta los scripts para replicar la predicción. 
+1) Calcular la clase ternaria sobre el dataset.
+	- script: competencia_02/generar_dataset.R
+2) Eliminar los registros BAJA+1 con el script: 
+	- competencia_02/eliminar_baja1_semillerio.R
+3) Ejecutar el script: 
+	- competencia_02/909_run_orden227.r  ### que ejecuta el script: 
+	- competencia_02/990_workflow_orden227_SEMI_KA-0004.R
