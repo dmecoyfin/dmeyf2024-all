@@ -294,12 +294,12 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202109)
 
   param_local$final_train$undersampling <- 0.02
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
-    202106, 202105, 202104, 202103, 202102, 202101, 
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -311,11 +311,11 @@ TS_strategy_base8 <- function( pinputexps )
   )
 
 
-  param_local$train$testing <- c(202106)
-  param_local$train$validation <- c(202105)
+  param_local$train$testing <- c(202107)
+  param_local$train$validation <- c(202106)
 
   param_local$train$training <- c(
-    202104, 202103, 202102, 202101, 
+    202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -464,8 +464,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
   param_local$envios_desde <- 10500L
   param_local$envios_hasta <- 12050L
   param_local$envios_salto <-   500L
-  param_local$competition <- "dm-ey-f-2024-segunda"
-
+  param_local$competition <- "dm-ey-f-2024-tercera"
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
@@ -481,7 +480,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_SinBAJA1.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/dataset_SinBAJA1C3.csv.gz")
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
