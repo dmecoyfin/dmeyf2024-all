@@ -296,7 +296,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 1
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
@@ -329,7 +329,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -455,7 +455,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2602_KA_evaluate_kaggle_SEMI.r"
+  param_local$meta$script <- "/src/wf-etapas/z2603_KA_evaluate_kaggle_SEMI.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
