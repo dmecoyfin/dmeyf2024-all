@@ -61,7 +61,8 @@ end
 # Aqui empieza el programa
 
 # leo el dataset
-dataset = CSV.read("competencia_01_julia.csv", DataFrame)
+
+dataset = CSV.read("G:/Mi unidad/01-Maestria Ciencia de Datos/DMEyF/TPs/dmeyf-2024/datasets/competencia_01_julia.csv", DataFrame)
 
 # restrinjo al periodo 202104
 dataset = dataset[ dataset.foto_mes .== 202104, : ]
