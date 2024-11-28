@@ -19,7 +19,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 789101
+envg$EXPENV$semilla_primigenia <- 100019
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -178,7 +178,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  param_local$train$training <- c( 202104, 202105, 202106)
+  param_local$train$training <- c( 202106, 202105, 202102 )
   
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
@@ -306,7 +306,7 @@ TS_strategy_base8 <- function( pinputexps )
   
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.1
+  param_local$train$undersampling <- 0.02
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   
   return( exp_correr_script( param_local ) ) # linea fija
@@ -455,7 +455,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_3ra_241127_789101_base <- function( pnombrewf )
+wf_3ra_241128_100019_Ferf  <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
   
@@ -495,7 +495,9 @@ wf_3ra_241127_789101_base <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-wf_3ra_241127_789101_base ()
+wf_3ra_241128_100019_Ferf ()
 
 #Nota de la version: incluye mi mejor modelo privado segunda compe(wf_SEMI_colab_filtrado_789101_04),
 #agregando el nuevo dataset y cambiando meses de entrenamiento.Sin borrar baja+1 aun. Meses train como ganadador 2dacomp
+#undersampling 0.02
+#FErf_attributes_bas c( 202106, 202105, 202102 )
