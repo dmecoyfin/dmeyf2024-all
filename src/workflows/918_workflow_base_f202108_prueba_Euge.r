@@ -1,4 +1,4 @@
-# Corrida general del Workflow Baseline
+# Corrida general del Workflow Baseline 
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 602891
+envg$EXPENV$semilla_primigenia <- 111119 
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -135,7 +135,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -271,12 +271,34 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+  param_local$final_train$training <- c(
+    202106, 202105, 202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    #202005, 
+    #202004,
+    202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+  param_local$train$training <- c(
+    202104, 202103, 202102, 202101, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
+    # 202006  Excluyo por variables rotas
+    #202005,
+    #202004,
+    202003, 202002, 202001,
+    201912, 201911,
+    # 201910 Excluyo por variables rotas
+    201909, 201908, 201907, 201906,
+    # 201905  Excluyo por variables rotas
+    201904, 201903
+  )
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
@@ -306,10 +328,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   param_local$train$positivos <- c( "BAJA+2")
   param_local$train$gan1 <- 273000
   param_local$train$gan0 <-  -7000
-  param_local$train$meseta <- 2001
-
-  # Hiperparametros  del LightGBM
-  #  los que tienen un solo valor son los que van fijos
+  param_local$train$meseta <- 2001  #  los que tienen un solo valor son los que van fijos
   #  los que tienen un vector,  son los que participan de la Bayesian Optimization
 
   param_local$lgb_param <- list(
@@ -420,7 +439,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_competencia02 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -439,7 +458,7 @@ wf_agosto <- function( pnombrewf )
     mtry_ratio= 0.2
   )
 
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
@@ -457,5 +476,5 @@ wf_agosto <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto()
+wf_competencia02()
 
