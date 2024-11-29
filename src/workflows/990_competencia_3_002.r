@@ -1,4 +1,4 @@
-# Corrida general del Workflow Semillerio
+# Corrida general del Workflow Semillerio 
 # Orden 227 : Ni un paso atras
 
 # limpio la memoria
@@ -13,13 +13,13 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expwC3S6/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flowC3S6/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expwC3/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flowC3/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 903761
+envg$EXPENV$semilla_primigenia <- 113311
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -263,11 +263,11 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202109)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
+  param_local$final_train$training <- c(202107, 202106, 202105, 202104,
     202103, 202102, 202101)
 
 
@@ -277,7 +277,7 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$train$testing <- c(202106)
 
 
-  # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+ #  Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
   param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
@@ -296,7 +296,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.1
+  param_local$final_train$undersampling <- 0.02
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105,
@@ -332,7 +332,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.1
+  param_local$train$undersampling <- 0.02
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -465,7 +465,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
   param_local$envios_desde <- 10500L
-  param_local$envios_hasta <- 12050L
+  param_local$envios_hasta <- 12500L
   param_local$envios_salto <-   500L
   param_local$competition <- "dm-ey-f-2024-tercera"
 
@@ -479,7 +479,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_c3SEMI6_sep_orden227 <- function( pnombrewf )
+wf_competencia_3_002 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -520,6 +520,4 @@ wf_c3SEMI6_sep_orden227 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_c3SEMI6_sep_orden227()
-
-
+wf_competencia_3_002()

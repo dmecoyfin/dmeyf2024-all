@@ -1,7 +1,7 @@
-require("rlang")
+require("rlang") 
 
-# workflow que voy a correr
-PARAM <- "src/workflows/semi8-990_workflow_orden227_SEMI.r"
+# workflow que voy a correr       909_RUN_competencia_3_003.r
+PARAM <- "src/workflows/990_competencia_3_003.r"
 
 envg <- env()
 
