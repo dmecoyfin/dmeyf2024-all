@@ -13,8 +13,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expwC3S8/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flowC3S8/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expwC3S12/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flowC3S12/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
@@ -137,28 +137,28 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE 
-  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
+  param_local$lag2 <- FALSE
+  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- TRUE
-  param_local$Tendencias1$maximo <- TRUE
-  param_local$Tendencias1$promedio <- TRUE
-  param_local$Tendencias1$ratioavg <- TRUE
-  param_local$Tendencias1$ratiomax <- TRUE
+  param_local$Tendencias1$minimo <- FALSE
+  param_local$Tendencias1$maximo <- FALSE
+  param_local$Tendencias1$promedio <- FALSE
+  param_local$Tendencias1$ratioavg <- FALSE
+  param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- TRUE
-  param_local$Tendencias2$minimo <- TRUE
-  param_local$Tendencias2$maximo <- TRUE
-  param_local$Tendencias2$promedio <- TRUE
-  param_local$Tendencias2$ratioavg <- TRUE
-  param_local$Tendencias2$ratiomax <- TRUE
+  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$minimo <- FALSE
+  param_local$Tendencias2$maximo <- FALSE
+  param_local$Tendencias2$promedio <- FALSE
+  param_local$Tendencias2$ratioavg <- FALSE
+  param_local$Tendencias2$ratiomax <- FALSE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -298,7 +298,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 0.05
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105,
@@ -336,7 +336,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.05
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -483,7 +483,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_c3SEMI8_sep_orden227 <- function( pnombrewf )
+wf_c3SEMI12_sep_orden227 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -524,6 +524,6 @@ wf_c3SEMI8_sep_orden227 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_c3SEMI8_sep_orden227()
+wf_c3SEMI12_sep_orden227()
 
 
