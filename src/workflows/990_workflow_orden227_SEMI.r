@@ -296,10 +296,12 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 0.15
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
-    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
+    202107, 202106, 202105, 
+    #202104, 202103, 
+    202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -315,7 +317,9 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$train$validation <- c(202106)
 
   param_local$train$training <- c(
-    202105, 202104, 202103, 202102, 202101, 
+    202105, 
+    #202104, 202103, 
+    202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -329,7 +333,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.15
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -484,10 +488,10 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="UVA")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=1, desvio=0)
+  #CN_canaritos_asesinos_base(ratio=1, desvio=0)
 
   ts8 <- TS_strategy_base8()
 
