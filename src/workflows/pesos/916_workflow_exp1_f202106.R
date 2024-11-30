@@ -8,17 +8,17 @@ require("rlang")
 require("yaml")
 require("data.table")
 
-if( !exists("envg") ) envg <- env()  # global environment 
+if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw_colaborativo_exp1/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow_colaborativo_exp1/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 602891
+envg$EXPENV$semilla_primigenia <- 111119
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -30,11 +30,11 @@ envg$EXPENV$scriptname <- args[1]
 options(error = function() {
   traceback(20)
   options(error = NULL)
-  
+
   cat(format(Sys.time(), "%Y%m%d %H%M%S"), "\n",
-    file = "z-Rabort.txt",
-    append = TRUE 
-    )
+      file = "z-Rabort.txt",
+      append = TRUE
+  )
 
   stop("exiting after script error")
 })
@@ -99,7 +99,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/1301_FE_intrames_manual_exp1.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -168,16 +168,16 @@ FEhist_base <- function( pinputexps)
 #  azaroso, utiliza semilla
 
 FErf_attributes_base <- function( pinputexps,
-  arbolitos,
-  hojas_por_arbol,
-  datos_por_hoja,
-  mtry_ratio
+                                  arbolitos,
+                                  hojas_por_arbol,
+                                  datos_por_hoja,
+                                  mtry_ratio
 )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1311_FE_rfatributes.r"
+  param_local$meta$script <- "/src/wf-etapas/1311_FE_rfatributes_exp1.r"
 
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
@@ -260,25 +260,27 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
-TS_strategy_base8 <- function( pinputexps )
+TS_strategy_base6 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202106)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+  param_local$final_train$training <- c(202104, 202103, 202102,
+                                        202101, 202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005,
+                                        202004, 202003, 202002, 202001, 201912)
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
+  param_local$train$training <- c(202102, 202101, 202012,
+                                  202111, 202010, 202009,  202008, 202007, 202006, 202005,
+                                  202004, 202003, 202002, 202001, 201912, 201911)
+  param_local$train$validation <- c(202103)
+  param_local$train$testing <- c(202104)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -297,7 +299,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 {
   if( -1 == (param_local <- exp_init(pbypass=bypass))$resultado ) return( 0 ) # linea fija bypass
 
-  param_local$meta$script <- "/src/wf-etapas/z2201_HT_lightgbm_gan.r"
+  param_local$meta$script <- "/src/wf-etapas/2201_HT_lightgbm_gan_exp1.r"
 
   # En caso que se haga cross validation, se usa esta cantidad de folds
   param_local$lgb_crossvalidation_folds <- 5
@@ -361,7 +363,7 @@ FM_final_models_lightgbm <- function( pinputexps, ranks, qsemillas )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2301_FM_final_models_lightgbm.r"
+  param_local$meta$script <- "/src/wf-etapas/2301_FM_final_models_lightgbm_exp1.r"
 
   # Que modelos quiero, segun su posicion en el ranking de la Bayesian Optimizacion, ordenado por metrica descendente
   param_local$modelos_rank <- ranks
@@ -393,34 +395,38 @@ SC_scoring <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
-# proceso KA_evaluate_kaggle
+# proceso EV_conclase  Baseline
 # deterministico, SIN random
 
-KA_evaluate_kaggle <- function( pinputexps )
+EV_evaluate_conclase_gan <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
+  param_local$meta$script <- "/src/wf-etapas/z2501_EV_evaluate_conclase_gan.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
-  param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 273000
+  param_local$train$gan0 <-  -7000
+  param_local$train$meseta <- 2001
 
-  param_local$envios_desde <-   9000L
-  param_local$envios_hasta <-  13000L
-  param_local$envios_salto <-   500L
-  param_local$competition <- "dm-ey-f-2024-segunda"
+  # para graficar
+  param_local$graficar$envios_desde <-   8000L
+  param_local$graficar$envios_hasta <-  16000L
+  param_local$graficar$ventana_suavizado <- 2001L
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
 # Este es el  Workflow Baseline
-# Que predice 202108 donde NO conozco la clase
+# Que predice 202106 donde SI hay clase completa
 
-wf_agosto <- function( pnombrewf )
+wf_junio_exp1 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -434,21 +440,21 @@ wf_agosto <- function( pnombrewf )
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
+                        hojas_por_arbol= 16,
+                        datos_por_hoja= 1000,
+                        mtry_ratio= 0.2
   )
 
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  ts8 <- TS_strategy_base8()
+  ts6 <- TS_strategy_base6()
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  SC_scoring( c(fm, ts8) )
-  KA_evaluate_kaggle()  # genera archivos para Kaggle
+  fm <- FM_final_models_lightgbm( c(ht, ts6), ranks=c(1), qsemillas=10 )
+  SC_scoring( c(fm, ts6) )
+  EV_evaluate_conclase_gan() # evaluacion contra mes CON clase
 
   return( exp_wf_end() ) # linea workflow final fija
 }
@@ -456,6 +462,5 @@ wf_agosto <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-# llamo al workflow con future = 202108
-wf_agosto()
-
+# llamo al workflow con future = 202106
+wf_junio_exp1()
