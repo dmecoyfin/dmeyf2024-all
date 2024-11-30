@@ -178,7 +178,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  param_local$train$training <- c( 202106, 202105, 202102 )
+  param_local$train$training <- c( 202104, 202105, 202106)
   
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
@@ -455,12 +455,12 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_3ra_241128_100019_Ferf  <- function( pnombrewf )
+wf_3ra_241130_100019_k13_sb1 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
   
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03_sb1.csv.gz")
   
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
@@ -495,9 +495,6 @@ wf_3ra_241128_100019_Ferf  <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-wf_3ra_241128_100019_Ferf ()
+wf_3ra_241130_100019_k13_sb1 ()
 
-#Nota de la version: incluye mi mejor modelo privado segunda compe(wf_SEMI_colab_filtrado_789101_04),
-#agregando el nuevo dataset y cambiando meses de entrenamiento.Sin borrar baja+1 aun. Meses train como ganadador 2dacomp
-#undersampling 0.02
-#FErf_attributes_bas c( 202106, 202105, 202102 )
+#wf_3ra_241128_100019_base-001/ Sin baja+1
