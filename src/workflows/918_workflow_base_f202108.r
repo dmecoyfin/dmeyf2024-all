@@ -277,7 +277,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   #param_local$future <- c(202108)
   #27/11 competencia 3
-  param_local$future <- c(202109)
+  param_local$future <- c(202108)
   param_local$final_train$undersampling <- 0.2
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   #param_local$final_train$training <- c(202106, 202105, 202104,
