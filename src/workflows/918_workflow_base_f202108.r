@@ -498,7 +498,7 @@ wf_setiembre <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  SC_scoring( c(fm, ts8) )
+  SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
