@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-cat( "ETAPA  exp1_1301_FE_intrames_manual.r  INIT\n")
+cat( "ETAPA  z1301_FE_intrames_manual.r  INIT\n")
 
 # Workflow  Feature Engineering intrames manual artesanal
 
@@ -209,12 +209,13 @@ AgregarVariables_IntraMes <- function(dataset) {
     dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
 
   # Aqui debe usted agregar sus propias nuevas variables
+  
   # Calcular los pesos directamente, sin conservar columnas intermedias
   library(lubridate)
   mes_reciente <- as.Date("2021-05-01")  # Fecha del mes más reciente
   dataset[, pesos := 0.95^(interval(as.Date(paste0(foto_mes, "01"), "%Y%m%d"), mes_reciente) %/% months(1))]
-
   
+
   # valvula de seguridad para evitar valores infinitos
   # paso los infinitos a NULOS
   infinitos <- lapply(
@@ -256,7 +257,7 @@ AgregarVariables_IntraMes <- function(dataset) {
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
-cat( "ETAPA  exp1_1301_FE_intrames_manual.r  START\n")
+cat( "ETAPA  z1301_FE_intrames_manual.r  START\n")
 action_inicializar() 
 
 
@@ -328,4 +329,4 @@ GrabarOutput()
 #  archivos tiene a los files que debo verificar existen para no abortar
 
 action_finalizar( archivos = c("dataset.csv.gz","dataset_metadata.yml")) 
-cat( "ETAPA  exp1_1301_FE_intrames_manual.r  END\n")
+cat( "ETAPA  z1301_FE_intrames_manual.r  END\n")
