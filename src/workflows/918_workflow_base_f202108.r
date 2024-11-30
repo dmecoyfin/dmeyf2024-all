@@ -157,14 +157,21 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  #param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
-  param_local$Tendencias2$minimo <- FALSE
-  param_local$Tendencias2$maximo <- FALSE
-  param_local$Tendencias2$promedio <- FALSE
-  param_local$Tendencias2$ratioavg <- FALSE
-  param_local$Tendencias2$ratiomax <- FALSE
+  #param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
+  #param_local$Tendencias2$minimo <- FALSE
+  param_local$Tendencias2$minimo <- TRUE
+  #param_local$Tendencias2$maximo <- FALSE
+  param_local$Tendencias2$maximo <- TRUE
+  #param_local$Tendencias2$promedio <- FALSE
+  param_local$Tendencias2$promedio <- TRUE
+  #param_local$Tendencias2$ratioavg <- FALSE
+  param_local$Tendencias2$ratioavg <- TRUE
+  #param_local$Tendencias2$ratiomax <- FALSE
+  param_local$Tendencias2$ratiomax <- TRUE
 
   param_local$semilla <- NULL # no usa semilla, es deterministico
 
@@ -288,18 +295,24 @@ TS_strategy_base8 <- function( pinputexps )
     #202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
     #201911, 201910, 201909, 201908, 201907)
   #27/11/24 se agrega 04/21 para la competencia 3
+  #param_local$final_train$training <- c(202107, 202106, 202105, 202104,
+   # 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
+    #202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
+    #201911, 201910, 201909, 201908, 201907)
+ #30/11/2024
   param_local$final_train$training <- c(202107, 202106, 202105, 202104,
-    202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
-    202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
-    201911, 201910, 201909, 201908, 201907)
-  
+    202103, 202102)
   #param_local$train$training <- c(202104, 202103, 202102,
    # 202101, 202012, 202011)
   #27/11 competencia 3, agrego 202105 y otros meses
+  #param_local$train$training <- c(202105, 202104, 202103, 202102,
+   # 202101, 202012, 202011,202010, 202009, 202008,
+    #202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
+    #201911, 201910, 201909, 201908, 201907, 201906 )
+  #30/11/20224
   param_local$train$training <- c(202105, 202104, 202103, 202102,
-    202101, 202012, 202011,202010, 202009, 202008,
-    202007, 202006, 202005, 202004, 202003, 202002, 202001, 201912,
-    201911, 201910, 201909, 201908, 201907, 201906 )
+    202101, 202012)
+  
   #param_local$train$validation <- c(202105)
   #27/11 competencia 3
   param_local$train$validation <- c(202106)
@@ -463,7 +476,7 @@ wf_setiembre <- function( pnombrewf )
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="rank_simple")
   FEhist_base()
 
   FErf_attributes_base( arbolitos= 20,
@@ -480,7 +493,9 @@ wf_setiembre <- function( pnombrewf )
   #23/11/24 CAMBIO LA CANTIDAD DE ITERACIONES POR 60
   #ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
   #27/11 Cambio por 80
-  ht <- HT_tuning_base( bo_iteraciones = 80 )  # iteraciones inteligentes
+  #ht <- HT_tuning_base( bo_iteraciones = 80 )  # iteraciones inteligentes
+  #30/11
+  ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
   SC_scoring( c(fm, ts8) )
