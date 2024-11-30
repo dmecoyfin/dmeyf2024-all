@@ -19,7 +19,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 789101
+envg$EXPENV$semilla_primigenia <- 100019
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -306,7 +306,7 @@ TS_strategy_base8 <- function( pinputexps )
   
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.1
+  param_local$train$undersampling <- 0.02
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   
   return( exp_correr_script( param_local ) ) # linea fija
@@ -455,12 +455,12 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_3ra_241127_789101_base <- function( pnombrewf )
+wf_3ra_241130_100019_k13_sb1 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
   
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03_sb1.csv.gz")
   
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
@@ -495,7 +495,6 @@ wf_3ra_241127_789101_base <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-wf_3ra_241127_789101_base ()
+wf_3ra_241130_100019_k13_sb1 ()
 
-#Nota de la version: incluye mi mejor modelo privado segunda compe(wf_SEMI_colab_filtrado_789101_04),
-#agregando el nuevo dataset y cambiando meses de entrenamiento.Sin borrar baja+1 aun. Meses train como ganadador 2dacomp
+#wf_3ra_241128_100019_base-001/ Sin baja+1
