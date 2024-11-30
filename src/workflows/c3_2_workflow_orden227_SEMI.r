@@ -431,8 +431,8 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$envios_desde <- 10000L
   param_local$envios_hasta <- 13000L
-  param_local$envios_salto <-   200L
-  param_local$competition <- "dm-ey-f-2024-segunda"
+  param_local$envios_salto <-   250L
+  param_local$competition <- "dm-ey-f-2024-tercera"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -449,7 +449,7 @@ c32 <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03.csv.gz")
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
