@@ -275,7 +275,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 #   y solo incluyo en el dataset al 20% de los CONTINUA
 #  azaroso, utiliza semilla
 
-TS_strategy_base8 <- function( pinputexps )
+TS_strategy_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
@@ -284,7 +284,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   #param_local$future <- c(202108)
   #27/11 competencia 3
-  param_local$future <- c(202108)
+  param_local$future <- c(202109)
   param_local$final_train$undersampling <- 0.2
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   #param_local$final_train$training <- c(202106, 202105, 202104,
@@ -488,17 +488,17 @@ wf_setiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
-  ts8 <- TS_strategy_base8()
+  ts9 <- TS_strategy_base9()
   #ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
   #23/11/24 CAMBIO LA CANTIDAD DE ITERACIONES POR 60
   #ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
   #27/11 Cambio por 80
   #ht <- HT_tuning_base( bo_iteraciones = 80 )  # iteraciones inteligentes
   #30/11
-  ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
-  SC_scoring( c(fm, ts8) )
+  fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=5 )
+  SC_scoring( c(fm, ts9) )
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
