@@ -13,13 +13,13 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expwC3S1/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flowC3S1/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw227/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow227/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 903761
+envg$EXPENV$semilla_primigenia <- 191173
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -137,7 +137,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE 
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -151,9 +151,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -178,7 +178,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
 
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  param_local$train$training <- c( 202103, 202105, 202106)
+  param_local$train$training <- c( 202101, 202102, 202103)
 
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
@@ -257,38 +257,38 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 # Training Strategy  Baseline
 #  azaroso, utiliza semilla
 
-TS_strategy_base8 <- function( pinputexps )
-{
-  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+#TS_strategy_base9 <- function( pinputexps )
+#{
+ # if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
+  #param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
-  param_local$future <- c(202108)
+  #param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 1.0
-  param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+  #param_local$final_train$undersampling <- 1.0
+  #param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  #param_local$final_train$training <- c(202107,202106, 202105, 202104,
+   # 202103, 202102, 202101)
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
+  #param_local$train$training <- c(202105, 202104, 202103, 202102,
+   # 202101, 202012, 202011)
+  #param_local$train$validation <- c(202106)
+  #param_local$train$testing <- c(202107)
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.2
-  param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
+  #param_local$train$undersampling <- 0.2
+  #param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
-  return( exp_correr_script( param_local ) ) # linea fija
-}
+  #return( exp_correr_script( param_local ) ) # linea fija
+#}
 #------------------------------------------------------------------------------
 # Atencion, el undersampling es de 0.02
 #  tanto para entrenamineto como para  Final train$clase01_valor1
 
-TS_strategy_base8 <- function( pinputexps )
+TS_strategy_base9 <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
@@ -299,9 +299,7 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$final_train$undersampling <- 0.02
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
-    202107, 202106, 202105,
-    #202104, 202103, 
-    202102, 202101, 
+    202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -316,9 +314,8 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$train$testing <- c(202107)
   param_local$train$validation <- c(202106)
 
-  param_local$train$training <- c(202105,
-    #202104, 202103, 
-    202102, 202101, 
+  param_local$train$training <- c(
+    202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -458,7 +455,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
-  param_local$meta$script <- "/src/wf-etapas/z2602_KA_evaluate_kaggle_SEMI.r"
+  param_local$meta$script <- "/src/wf-etapas/z2603_KA_evaluate_kaggle_SEMI.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -479,7 +476,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_c3SEMI2_sep_orden227 <- function( pnombrewf )
+wf_SEMI_ago_orden227 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -493,7 +490,7 @@ wf_c3SEMI2_sep_orden227 <- function( pnombrewf )
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
-  ts8 <- TS_strategy_base8()
+  ts9 <- TS_strategy_base9()
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
@@ -503,13 +500,13 @@ wf_c3SEMI2_sep_orden227 <- function( pnombrewf )
 
 
   fm <- FM_final_models_lightgbm_semillerio( 
-    c(ht, ts8), # los inputs
+    c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 50,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
 
-  SC_scoring_semillerio( c(fm, ts8) )
+  SC_scoring_semillerio( c(fm, ts9) )
   KA_evaluate_kaggle_semillerio()
   
 
@@ -520,6 +517,6 @@ wf_c3SEMI2_sep_orden227 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_c3SEMI2_sep_orden227()
+wf_SEMI_ago_orden227()
 
 
