@@ -18,7 +18,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 903761
+envg$EXPENV$semilla_primigenia <- 111119
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -181,7 +181,7 @@ FErf_attributes_base <- function( pinputexps,
 
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
-  param_local$train$training <- c( 202101, 202102, 202103)
+  param_local$train$training <- c( 202101, 202102, 202103, 202104)
 
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
@@ -240,7 +240,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
   # Parametros de un LightGBM que se genera para estimar la column importance
   param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
   param_local$train$positivos <- c( "BAJA+2")
-  param_local$train$training <- c( 202101, 202102, 202103)
+  param_local$train$training <- c( 202101, 202102, 202103, 202104)
   param_local$train$validation <- c( 202105 )
   param_local$train$undersampling <- 0.1
   param_local$train$gan1 <- 273000
@@ -267,16 +267,18 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202106)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+  param_local$final_train$training <- c(202105, 202104,
+    202103, 202102, 202101, 202012, 202011, 202010, 202009,
+    202008,202007,202005, 202004,202003,202002,202001, 201912,201911)
 
 
   param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101, 202012, 202011, 202010, 202009,
+    202008,202007,202005, 202004,202003,202002,202001, 201912,201911)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
@@ -420,7 +422,7 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_pesos_base <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
@@ -446,7 +448,7 @@ wf_agosto <- function( pnombrewf )
   ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts8) )
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
@@ -456,6 +458,6 @@ wf_agosto <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-# llamo al workflow con future = 202108
-wf_agosto()
+# llamo al workflow con future = 202106
+wf_pesos_base()
 
