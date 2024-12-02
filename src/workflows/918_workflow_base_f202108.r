@@ -12,13 +12,13 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw4/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow4/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 903761
+envg$EXPENV$semilla_primigenia <- 750317
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -267,18 +267,18 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202109)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+  param_local$final_train$training <- c(202105, 202106, 202105, 202104,
+    202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007,  202002,202001, 201912, 201911, 201910, 201909, 201908, 201907, 201906, 201905, 201904, 201903, 201902,201901) # agrego 202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004, 202003, 202002,202001, 201912, 201911, 201910, 201909, 201908, 201907, 201906, 201905, 201904, 201903, 201902,201901 y agrego 202105 al principio
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
-  param_local$train$validation <- c(202105)
-  param_local$train$testing <- c(202106)
+  param_local$train$training <- c(202105, 202104, 202103, 202102,
+    202101, 202012, 202011, 202012, 202011, 202010, 202009, 202008, 202007, 202002,202001, 201912, 201911, 201910, 201909, 201908, 201907, 201906, 201905, 201904, 201903, 201902) #agrego 202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004, 202003, 202002,202001, 201912, 201911, 201910, 201909, 201908, 201907, 201906, 201905, 201904, 201903, 201902 y agrego 202105 al principio
+  param_local$train$validation <- c(202106) #antes era 202105
+  param_local$train$testing <- c(202107) #antes era 202106
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -329,9 +329,9 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    #bagging_fraction = 0.1, # 0.0 < bagging_fraction <= 1.0
+    #pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    #neg_bagging_fraction = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
@@ -344,7 +344,11 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    min_data_in_leaf = c( 100L, 10000L, "integer" ),
+    bagging_fraction = c(0, 1), # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = c(0, 1), # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = c(0, 1), # 0.0 < neg_bagging_fraction <= 1.0
+    bagging_freq = c(1L, 100L, "integer" )
   )
 
 
@@ -420,30 +424,32 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_resultado_semilla750317_sincanarito_EstadClas_rank0fijo_optimizacion_baggingfreqhasta100_masmeses_sinpand <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03_R.csv.gz")
 
   # Etapas preprocesamiento
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="EstadisticaClasica") # probar cambiarlo
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="rank_cero_fijo") # probar cambiarlo
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+# "Apagado" en primera instancia de prueba
+  
+#  FErf_attributes_base( arbolitos= 20,
+#    hojas_por_arbol= 16,
+#    datos_por_hoja= 1000,
+#    mtry_ratio= 0.2
+#  )
 
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 30 )  # iteraciones inteligentes LA BAYESIANA, LA QUE TARDA
 
   # Etapas finales
   fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
@@ -457,5 +463,5 @@ wf_agosto <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_agosto()
+wf_resultado_semilla750317_sincanarito_EstadClas_rank0fijo_optimizacion_baggingfreqhasta100_masmeses_sinpand()
 
