@@ -33,7 +33,7 @@ PARAM$experimento_bayesiana <- "HT7440"
 
 PARAM$experimento <- "KA7450"
 
-PARAM$semilla_azar <- 903761 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 103031 # Aqui poner su  primer  semilla
 PARAM$semillas_cantidad <- 5
 
 # c(1,2) son el mejor y el segundo mejor de la bayesian optimization
@@ -60,7 +60,8 @@ action_limitar_memoria <- function( GB_min = 4 ) {
 action_limitar_memoria( 4 )
 
 # Aqui empieza el programa
-setwd("~/buckets/b1/exp/")
+#setwd("~/buckets/b1/exp/")
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf/exp")
 
 # genero las semillas con las que voy a trabajar
 #  ninguna de ellas es exactamente la original del alumno
@@ -111,7 +112,7 @@ dataset[, clase01 := ifelse(clase_ternaria == "CONTINUA", 0L, 1L)]
 campos_buenos <- setdiff(
   colnames(dataset),
   c("clase_ternaria", "clase01",
-    "part_training", "part_validation", "part_testing",
+    "part_training", "part_testing",
     "part_final_train", "part_future")
 )
 
