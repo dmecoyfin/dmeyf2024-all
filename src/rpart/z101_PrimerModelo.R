@@ -7,10 +7,10 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("~/buckets/b1") # Establezco el Working Directory
+setwd("C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset que tiene la clase calculada !
-dataset <- fread("./datasets/competencia_01.csv")
+dataset <- fread("C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/datasets/competencia_01.csv")
 
 dtrain <- dataset[foto_mes <= 202104] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202106] # defino donde voy a aplicar el modelo
@@ -20,11 +20,11 @@ dapply <- dataset[foto_mes == 202106] # defino donde voy a aplicar el modelo
 modelo <- rpart(
     formula = "clase_ternaria ~ .",
     data = dtrain, # los datos donde voy a entrenar
-    xval = 0,
-    cp = -1, # esto significa no limitar la complejidad de los splits
-    minsplit = 250, # minima cantidad de registros para que se haga el split
-    minbucket = 100, # tamaño minimo de una hoja
-    maxdepth = 7  # profundidad maxima del arbol
+    xval = 5,
+    cp = -0.680599525660097, # esto significa no limitar la complejidad de los splits
+    minsplit = 664, # minima cantidad de registros para que se haga el split
+    minbucket = 4, # tamaño minimo de una hoja
+    maxdepth = 6  # profundidad maxima del arbol
 )
 
 
