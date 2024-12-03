@@ -305,7 +305,7 @@ TS_strategy_base8 <- function( pinputexps )
     # 201910 Excluyo por variables rotas
     201909, 201908, 201907, 201906,
     # 201905  Excluyo por variables rotas
-    201904, 201903
+    201904, 201903, 201902, 201901
   )
 
 
@@ -321,7 +321,7 @@ TS_strategy_base8 <- function( pinputexps )
     # 201910 Excluyo por variables rotas
     201909, 201908, 201907, 201906,
     # 201905  Excluyo por variables rotas
-    201904, 201903
+    201904, 201903, 201902, 201901
   )
 
 
@@ -392,7 +392,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.3, 0.8 ),
+    learning_rate = c( 0.1, 0.5 ),
     feature_fraction = c( 0.05, 0.95 ),
 
     leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
@@ -459,8 +459,8 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 9000L
-  param_local$envios_hasta <- 13000L
+  param_local$envios_desde <- 8000L
+  param_local$envios_hasta <- 13500L
   param_local$envios_salto <-   500L
   param_local$competition <- "dm-ey-f-2024-tercera"
 
@@ -471,7 +471,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
 # Este es el  Workflow Baseline
-# Que predice 202107 donde conozco la clase
+# Que predice 202108 donde conozco la clase
 # y ya genera graficos
 
 wf_SEMI_sept_c3 <- function( pnombrewf )
