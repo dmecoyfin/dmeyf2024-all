@@ -149,9 +149,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -459,8 +459,8 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 10500L
-  param_local$envios_hasta <- 12050L
+  param_local$envios_desde <- 9000L
+  param_local$envios_hasta <- 13000L
   param_local$envios_salto <-   500L
   param_local$competition <- "dm-ey-f-2024-tercera"
 
@@ -474,7 +474,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_SEMI_ago_orden227 <- function( pnombrewf )
+wf_SEMI_sept_c3 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -515,6 +515,6 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
-wf_SEMI_ago_orden227()
+wf_SEMI_sept_c3()
 
 
