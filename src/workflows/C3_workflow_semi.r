@@ -294,7 +294,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
@@ -327,7 +327,7 @@ TS_strategy_base8 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.2
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -392,7 +392,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.1, 0.5 ),
+    learning_rate = c( 0.03, 0.5 ),
     feature_fraction = c( 0.05, 0.95 ),
 
     leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
@@ -459,7 +459,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 8000L
+  param_local$envios_desde <- 7000L
   param_local$envios_hasta <- 13500L
   param_local$envios_salto <-   500L
   param_local$competition <- "dm-ey-f-2024-tercera"
@@ -493,15 +493,15 @@ wf_SEMI_sept_c3 <- function( pnombrewf )
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
     semillerio = 50, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 10  # iteraciones inteligentes, apenas 10
+    bo_iteraciones = 40  # iteraciones inteligentes 
   )
 
 
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts8), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 50,   # cantidad de semillas finales
-    repeticiones_exp = 1  # cantidad de repeticiones del semillerio
+    semillerio = 100,   # cantidad de semillas finales
+    repeticiones_exp = 2  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts8) )
