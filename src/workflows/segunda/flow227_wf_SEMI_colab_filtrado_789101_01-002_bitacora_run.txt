@@ -1,0 +1,12 @@
+fecha	id	status	workflow	expw	funcion
+20241123.203940	1	previo_end	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/DT-0002	DT_incorporar_dataset
+20241123.203948	2	previo_end	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/CA-0002	CA_catastrophe_base
+20241123.203955	3	previo_end	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/FEintra-0002	FEintra_manual_base
+20241123.204002	4	previo_end	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/DR-0002	DR_drifting_base
+20241123.204012	5	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/FEhist-0004	FEhist_base
+20241123.205346	6	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/FErf-0006	FErf_attributes_base
+20241123.210718	7	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/TS-0006	TS_strategy_base8
+20241123.211238	8	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/HT-0007	HT_tuning_semillerio
+20241123.231046	9	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/FM-0006	FM_final_models_lightgbm_semillerio
+20241123.231418	10	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/SC-0006	SC_scoring_semillerio
+20241123.231533	11	actual_run	~/buckets/b1/flow227/wf_SEMI_colab_filtrado_789101_01-002	~/buckets/b1/expw227/KA-0006	KA_evaluate_kaggle_semillerio
