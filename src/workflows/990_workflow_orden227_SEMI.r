@@ -19,7 +19,7 @@ envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 881207
+envg$EXPENV$semilla_primigenia <- 450461
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -480,7 +480,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_SEMI_ago_orden_006 <- function( pnombrewf )
+wf_SEMI_ago_orden_0006 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -521,4 +521,4 @@ wf_SEMI_ago_orden_006 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202109
-wf_SEMI_ago_orden_006()
+wf_SEMI_ago_orden_0006()
