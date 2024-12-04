@@ -12,8 +12,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw2/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow2/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
@@ -25,7 +25,7 @@ args <- commandArgs(trailingOnly=TRUE)
 envg$EXPENV$scriptname <- args[1]
 
 #------------------------------------------------------------------------------
-# Error catching
+# Error catching: Configura una funci?n personalizada para capturar errores y registrar un mensaje en un archivo (z-Rabort.txt).
 
 options(error = function() {
   traceback(20)
@@ -55,7 +55,7 @@ source( exp_lib )
 
 #------------------------------------------------------------------------------
 # Incorporacion Dataset
-# deterministico, SIN random
+# deterministico, SIN random: Define claves primarias (primarykey) y columnas importantes.Ejecuta el script /src/wf-etapas/z1101_DT_incorporar_dataset.r.
 
 DT_incorporar_dataset <- function( arch_dataset )
 {
@@ -92,7 +92,7 @@ CA_catastrophe_base <- function( pinputexps, metodo )
 }
 #------------------------------------------------------------------------------
 # Feature Engineering Intra Mes   Baseline
-# deterministico, SIN random
+# deterministico, SIN random: Usa m?todos manuales para ingenier?a de caracter?sticas intra-mes.
 
 FEintra_manual_base <- function( pinputexps )
 {
@@ -107,7 +107,7 @@ FEintra_manual_base <- function( pinputexps )
 }
 #------------------------------------------------------------------------------
 # Data Drifting Baseline
-# deterministico, SIN random
+# deterministico, SIN random: Maneja el "data drift" con m?todos como: Ninguno, Rankeo simple (rank_simple), Deflaci?n (deflacion)
 
 DR_drifting_base <- function( pinputexps, metodo)
 {
@@ -125,7 +125,7 @@ DR_drifting_base <- function( pinputexps, metodo)
 }
 #------------------------------------------------------------------------------
 # Feature Engineering Historico  Baseline
-# deterministico, SIN random
+# deterministico, SIN random: Permite trabajar con lags y tendencias (pueden desactivarse con opciones booleanas).
 
 FEhist_base <- function( pinputexps)
 {
@@ -429,7 +429,7 @@ wf_junio <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02_R.csv.gz")
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
