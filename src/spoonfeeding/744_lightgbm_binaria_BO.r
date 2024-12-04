@@ -43,7 +43,7 @@ PARAM <- list()
 PARAM$experimento_data <- "PP7230"
 PARAM$experimento <- "HT7440"
 
-PARAM$semilla_azar <- 903761 # Aqui poner su  primer  semilla
+PARAM$semilla_azar <- 103301 # Aqui poner su  primer  semilla
 
 # por ahora 1 para que no me llueva una catarata de preguntas de alumnos
 #  justo antes del cierre de la primera competencia
@@ -257,10 +257,12 @@ set.seed(PARAM$semilla_azar)
 # me quedo con PARAM$semillerio  primos al azar
 ksemillas <- sample(primos)[seq(PARAM$semillas_cantidad)]
 
-setwd("~/buckets/b1/exp/") # Establezco el Working Directory
+#setwd("~/buckets/b1/exp/") # Establezco el Working Directory
+setwd("C:/Users/Zonia/OneDrive/Documentos/maest_2024/eyf")# Establezco el Working Directory
 
-# cargo el dataset donde voy a entrenar el modelo
+## cargo el dataset donde voy a entrenar el modelo
 dataset <- fread(paste0(PARAM$experimento_data,"/dataset.csv.gz"))
+
 
 # En un mundo prolijo, estas variables se eliminan
 #  durante la creacion del dataset
