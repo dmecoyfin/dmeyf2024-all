@@ -1,6 +1,6 @@
 using Random
 
-Random.seed!(102191)
+Random.seed!(139)
 
 # calcula cuantos encestes logra una jugadora con indice de enceste prob
 # haciendo qyt tiros libres
