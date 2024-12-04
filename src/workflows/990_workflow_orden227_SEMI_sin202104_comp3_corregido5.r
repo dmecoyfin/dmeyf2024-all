@@ -301,7 +301,7 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, #agrego un mes más
-    202106, 202105, 202102, 202101, #excluyo 202104, 202103
+    202106, 202105, 202103, 202102, 202101, #excluyo 202104
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -317,7 +317,8 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$train$validation <- c(202106)
 
   param_local$train$training <- c(
-    #excluyo 202104, 202103,
+    #excluyo 202104, 
+    202103,
     202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
@@ -464,7 +465,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 10500L
+  param_local$envios_desde <- 10000L
   param_local$envios_hasta <- 12050L
   param_local$envios_salto <-   500L
   param_local$competition <- "dm-ey-f-2024-tercera"
@@ -488,7 +489,7 @@ wf_SEMI_sep_orden227_corregido5 <- function( pnombrewf )
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="ninguno")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
