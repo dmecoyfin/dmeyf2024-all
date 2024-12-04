@@ -13,8 +13,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw227_c3_v3_FRCST/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow227_c3_v3_FRCST/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw227_c3_v3_FRCST_2/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow227_c3_v3_FRCST_2/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
@@ -151,9 +151,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
   
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- TRUE
+  param_local$Tendencias2$run <- FALSE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- TRUE
+  param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -456,7 +456,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
   
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03_forecast.csv")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03_forecast_cleaned.csv")
   # Opciones MachineLearning EstadisticaClasica Ninguno MICE
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
@@ -470,7 +470,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 50, # semillerio dentro de la Bayesian Optim
+    semillerio = 100, # semillerio dentro de la Bayesian Optim
     bo_iteraciones = 15  # iteraciones inteligentes, apenas 10
   )
   
@@ -478,7 +478,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts8), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 300,   # cantidad de semillas finales
+    semillerio = 250,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
   
