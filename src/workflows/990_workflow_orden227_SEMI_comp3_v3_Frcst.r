@@ -13,8 +13,8 @@ if( !exists("envg") ) envg <- env()  # global environment
 
 envg$EXPENV <- list()
 envg$EXPENV$bucket_dir <- "~/buckets/b1"
-envg$EXPENV$exp_dir <- "~/buckets/b1/expw227_c3_v3/"
-envg$EXPENV$wf_dir <- "~/buckets/b1/flow227_c3_v3/"
+envg$EXPENV$exp_dir <- "~/buckets/b1/expw227_c3_v3_FRCST/"
+envg$EXPENV$wf_dir <- "~/buckets/b1/flow227_c3_v3_FRCST/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
 envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
@@ -269,7 +269,7 @@ TS_strategy_base9 <- function( pinputexps )
   
   param_local$future <- c(202109)
   
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 0.03
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
@@ -304,7 +304,7 @@ TS_strategy_base9 <- function( pinputexps )
   
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.03
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   
   return( exp_correr_script( param_local ) ) # linea fija
@@ -436,9 +436,9 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
   
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
   
-  param_local$envios_desde <- 11000L
-  param_local$envios_hasta <- 12550L
-  param_local$envios_salto <-   250L
+  param_local$envios_desde <- 9900L
+  param_local$envios_hasta <- 10950L
+  param_local$envios_salto <-   100L
   param_local$competition <- "dm-ey-f-2024-tercera"
   
   return( exp_correr_script( param_local ) ) # linea fija
@@ -456,7 +456,7 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
   
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03.csv")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03_forecast.csv")
   # Opciones MachineLearning EstadisticaClasica Ninguno MICE
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
@@ -470,8 +470,8 @@ wf_SEMI_ago_orden227 <- function( pnombrewf )
   
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 150, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 20  # iteraciones inteligentes, apenas 10
+    semillerio = 50, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 15  # iteraciones inteligentes, apenas 10
   )
   
   
