@@ -1,4 +1,3 @@
-# ideas para un clustering derivado del Machnie Learning
 # limpio la memoria
 rm(list = ls()) # remove all objects
 gc() # garbage collection
@@ -13,8 +12,8 @@ require("ranger")
 
 PARAM <- list()
 PARAM$experimento <- "clu-randomforest"
-PARAM$semilla_primigenia <- 102191   # aqui va SU semilla
-PARAM$dataset <- "C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/datasets/competencia_01.csv"
+PARAM$semilla_primigenia <- 101111   # aqui va SU semilla
+PARAM$dataset <- "C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/datasets/competencia_01_new_variants.csv"
 
 
 #------------------------------------------------------------------------------
@@ -34,13 +33,8 @@ dir.create(paste0("C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience
 setwd(paste0("C:/Users/vicsa/OneDrive/Documents/Personal/Master_DataScience_UBA/2do Cuatrimestre/DMEyF/data/exp/", PARAM$experimento, "/"))
 
 
-# campos arbitrarios, solo como ejemplo
-# usted DEBE MANDARIAMENTE agregar más campos aqui
-# no permita que la pereza se apodere de su alma
-campos_cluster <- c("cliente_edad", "cliente_antiguedad", "ctrx_quarter",
-  "mpayroll", "mcaja_ahorro", "mtarjeta_visa_consumo",
-  "mtarjeta_master_consumo", "mprestamos_personales",
-  "Visa_status", "Master_status", "cdescubierto_preacordado")
+# campos arbitrarios 
+campos_cluster <- c("mrentabilidad_annual", "mcuentas_saldo","cliente_edad","cliente_antiguedad","active_quarter","mrentabilidad","mcomisiones","cproductos","ctarjeta_debito_transacciones" ,"frecuencia_consumos_total", "promedio_saldo_por_producto")
 
 
 # genero el dataset chico
@@ -105,7 +99,7 @@ fwrite(dchico,
        sep= "\t")
 
 #--------------------------------------
-# Analisis de resultados del clustering jerarquico
+# Analisis de resultados de k-means
 # cantidad de registros por cluster
 
 dcentroides <- dchico[, lapply(.SD, mean, na.rm=TRUE), 
@@ -114,7 +108,7 @@ dcentroides <- dchico[, lapply(.SD, mean, na.rm=TRUE),
 
 dcentroides
 
-fwrite(dcentroides,
+fwrite(dchico,
        file= "centroides.txt",
        sep= "\t" )
 
@@ -132,7 +126,7 @@ n <- length(campos_cluster)
 # voy a graficar en escala logaritmica
 # cuidado con 
 
-pdf("bivariado.pdf")
+pdf("bivariado_02.pdf")
 
 for( i in 1:(n-1) ){
   for( j in (i+1):n ){
@@ -144,7 +138,7 @@ for( i in 1:(n-1) ){
       scale_colour_brewer(palette = "Dark2") +
       geom_point(alpha = 0.50) +
       xlab(campos_cluster[i]) +
-      # scale_x_continuous(trans = pseudolog10_trans) +
+      scale_x_continuous(trans = pseudolog10_trans) +
       ylab(campos_cluster[j]) 
       # scale_y_continuous(trans = pseudolog10_trans)
 
@@ -187,7 +181,7 @@ campos_totales <- setdiff( colnames(dwalkingdead),
 
 
 # Genero el grafico intervalo confianza 95%
-pdf("evol_RandomForest.pdf")
+pdf("evol_RandomForest_03.pdf")
 
 for( campo in campos_totales ) {
 
@@ -237,4 +231,8 @@ for( campo in campos_totales ) {
 
 dev.off()
 
+# Calculate the size of each cluster
+cluster_sizes <- dchico[, .N, by = cluster]
 
+# Print the sizes of the clusters
+print(cluster_sizes)
